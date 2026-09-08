@@ -23,7 +23,7 @@ import {
 interface RulebookDrawerProps {
   isOpen: boolean;
   onClose: () => void;
-  currentUser: AuthUser;
+  currentUser: AuthUser | null;
   onSwitchRole: (role: UserRole) => void;
   onOpenAdmin?: () => void;
   onOpenCloudModal?: () => void;
@@ -93,12 +93,14 @@ export const RulebookDrawer: React.FC<RulebookDrawerProps> = ({
           <div className="bg-blue-950/60 p-2.5 rounded-xl border border-blue-900/60 flex items-center justify-between text-xs">
             <div className="flex items-center gap-2">
               <div className="w-7 h-7 rounded-full bg-[#00A651] text-white font-bold flex items-center justify-center text-xs">
-                {currentUser.name.charAt(0)}
+                {currentUser?.name ? currentUser.name.charAt(0) : 'G'}
               </div>
               <div>
-                <div className="font-bold text-white leading-none">{currentUser.name}</div>
+                <div className="font-bold text-white leading-none">
+                  {currentUser?.name || 'Guest User'}
+                </div>
                 <div className="text-[10px] text-emerald-300 mt-0.5 font-mono">
-                  Role: {currentUser.role} {currentUser.badgeNumber ? `• ${currentUser.badgeNumber}` : ''}
+                  Role: {currentUser?.role || 'CITIZEN'} {currentUser?.badgeNumber ? `• ${currentUser.badgeNumber}` : ''}
                 </div>
               </div>
             </div>
@@ -320,7 +322,7 @@ export const RulebookDrawer: React.FC<RulebookDrawerProps> = ({
             </div>
 
             {/* Admin Access Button for authorized users */}
-            {currentUser.role === 'ADMIN' && onOpenAdmin && (
+            {currentUser?.role === 'ADMIN' && onOpenAdmin && (
               <button
                 onClick={() => {
                   onClose();

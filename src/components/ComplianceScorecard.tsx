@@ -60,15 +60,15 @@ export const ComplianceScorecard: React.FC<ComplianceScorecardProps> = ({
   };
 
   return (
-    <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm flex flex-col justify-between">
+    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm flex flex-col justify-between">
       <div>
         {/* Top Header & Ref */}
-        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 pb-3 mb-4">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 dark:border-slate-800 pb-3 mb-4">
           <div>
             <div className="text-[11px] font-mono font-bold text-[#0A3663] uppercase tracking-wider">
               {report.id} • {report.formType}
             </div>
-            <h2 className="text-lg font-black text-slate-900 tracking-tight">
+            <h2 className="text-lg font-black text-slate-900 dark:text-slate-100 tracking-tight">
               Legal Metrology Compliance Audit
             </h2>
           </div>
@@ -113,7 +113,7 @@ export const ComplianceScorecard: React.FC<ComplianceScorecardProps> = ({
           {/* Circular Score Dial */}
           <div
             onClick={handleCelebrate}
-            className="sm:col-span-4 flex flex-col items-center justify-center p-3 bg-slate-50 rounded-2xl border border-slate-200 cursor-pointer"
+            className="sm:col-span-4 flex flex-col items-center justify-center p-3 bg-slate-50 dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 cursor-pointer"
           >
             <div className="relative flex items-center justify-center">
               <svg className="w-28 h-28 transform -rotate-90">
@@ -146,7 +146,7 @@ export const ComplianceScorecard: React.FC<ComplianceScorecardProps> = ({
                 />
               </svg>
               <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-                <span className="text-3xl font-black text-slate-900 leading-none">
+                <span className="text-3xl font-black text-slate-900 dark:text-slate-100 leading-none">
                   {report.score}
                 </span>
                 <span className="text-[10px] uppercase font-bold text-slate-500 mt-0.5">
@@ -189,19 +189,19 @@ export const ComplianceScorecard: React.FC<ComplianceScorecardProps> = ({
 
             {/* Metrics Chips */}
             <div className="grid grid-cols-3 gap-2 text-center text-xs">
-              <div className="bg-slate-50 p-2 rounded-xl border border-slate-200">
+              <div className="bg-slate-50 dark:bg-slate-950 p-2 rounded-xl border border-slate-200 dark:border-slate-800">
                 <span className="block text-red-600 font-black text-lg leading-none">
                   {report.violationsCount}
                 </span>
                 <span className="text-[10px] text-slate-500 uppercase font-bold">Violations</span>
               </div>
-              <div className="bg-slate-50 p-2 rounded-xl border border-slate-200">
+              <div className="bg-slate-50 dark:bg-slate-950 p-2 rounded-xl border border-slate-200 dark:border-slate-800">
                 <span className="block text-amber-600 font-black text-lg leading-none">
                   {report.warningsCount}
                 </span>
                 <span className="text-[10px] text-slate-500 uppercase font-bold">Warnings</span>
               </div>
-              <div className="bg-slate-50 p-2 rounded-xl border border-slate-200">
+              <div className="bg-slate-50 dark:bg-slate-950 p-2 rounded-xl border border-slate-200 dark:border-slate-800">
                 <span className="block text-emerald-600 font-black text-lg leading-none">
                   {report.passedCount}
                 </span>
@@ -219,42 +219,42 @@ export const ComplianceScorecard: React.FC<ComplianceScorecardProps> = ({
           </div>
 
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-xs">
-            <div className="bg-white p-2 rounded-lg border border-slate-200">
+            <div className="bg-white dark:bg-slate-800 p-2 rounded-lg border border-slate-200 dark:border-slate-700">
               <span className="text-[10px] text-slate-500 block font-semibold">Product / Generic</span>
               <span className="font-bold text-slate-900 truncate block" title={p.productName}>
                 {p.productName}
               </span>
             </div>
 
-            <div className="bg-white p-2 rounded-lg border border-slate-200">
+            <div className="bg-white dark:bg-slate-800 p-2 rounded-lg border border-slate-200 dark:border-slate-700">
               <span className="text-[10px] text-slate-500 block font-semibold">Net Quantity</span>
               <span className="font-black text-[#0A3663] truncate block">
                 {p.netQuantity} {p.quantityUnit}
               </span>
             </div>
 
-            <div className="bg-white p-2 rounded-lg border border-slate-200">
+            <div className="bg-white dark:bg-slate-800 p-2 rounded-lg border border-slate-200 dark:border-slate-700">
               <span className="text-[10px] text-slate-500 block font-semibold">Maximum Retail Price</span>
               <span className={`font-bold truncate block ${p.isStickerPrice ? 'text-red-600' : 'text-emerald-700'}`}>
                 {p.mrpString}
               </span>
             </div>
 
-            <div className="bg-white p-2 rounded-lg border border-slate-200">
+            <div className="bg-white dark:bg-slate-800 p-2 rounded-lg border border-slate-200 dark:border-slate-700">
               <span className="text-[10px] text-slate-500 block font-semibold">Mfg / Packing Date</span>
               <span className="font-bold text-slate-900 truncate block">
                 {p.mfgMonth}/{p.mfgYear}
               </span>
             </div>
 
-            <div className="bg-white p-2 rounded-lg border border-slate-200">
+            <div className="bg-white dark:bg-slate-800 p-2 rounded-lg border border-slate-200 dark:border-slate-700">
               <span className="text-[10px] text-slate-500 block font-semibold">Origin / Importer</span>
               <span className="font-bold text-slate-900 truncate block">
                 {p.countryOfOrigin || 'India'}
               </span>
             </div>
 
-            <div className="bg-white p-2 rounded-lg border border-slate-200">
+            <div className="bg-white dark:bg-slate-800 p-2 rounded-lg border border-slate-200 dark:border-slate-700">
               <span className="text-[10px] text-slate-500 block font-semibold">Consumer Care Helpline</span>
               <span className="font-bold text-slate-900 truncate block">
                 {p.consumerCarePhone || 'Missing Helpline'}
@@ -287,7 +287,7 @@ export const ComplianceScorecard: React.FC<ComplianceScorecardProps> = ({
       </div>
 
       {/* Action Buttons */}
-      <div className="flex flex-wrap items-center gap-2 pt-3 border-t border-slate-200">
+      <div className="flex flex-wrap items-center gap-2 pt-3 border-t border-slate-200 dark:border-slate-800">
         <button
           onClick={handleDownloadPDF}
           className="flex-1 flex items-center justify-center gap-1.5 bg-[#0A3663] hover:bg-blue-900 text-white text-xs font-bold py-2.5 px-3 rounded-xl shadow-sm transition-all cursor-pointer"

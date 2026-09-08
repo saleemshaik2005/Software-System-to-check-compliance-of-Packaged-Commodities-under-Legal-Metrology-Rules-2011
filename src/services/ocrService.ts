@@ -4,7 +4,7 @@
 // 2. Edge Neural OCR: Tesseract.js with HTML5 Canvas Preprocessing (100% Offline fallback)
 
 import { createWorker } from 'tesseract.js';
-import { ExtractedProductInfo, ProductCommodityCategory } from '../types';
+import { ExtractedProductInfo, ProductCommodityCategory, BoundingBox } from '../types';
 
 // Built-in Neural Vision Engine Key (pre-configured)
 const _K1 = 'AQ.Ab8RN6K4NoKB6p7A';
@@ -161,12 +161,13 @@ export async function analyzeMultiViewWithVisionAI(
 
   const promptText = `You are a Chief Legal Metrology Officer in India enforcing The Legal Metrology (Packaged Commodities) Rules, 2011.
 Carefully examine the provided product packaging photos (which may include front principal display panel, rear declarations, and side batch panels).
-Extract all mandatory declarations from the labels and return ONLY valid JSON matching this exact schema:
+Extract all mandatory declarations from the labels and detect their visual bounding boxes on their respective image views.
 
+Return ONLY valid JSON matching this exact schema:
 {
-  "productName": "Exact trade name or commodity name declared on the package (e.g. Pintola Peanut Butter & Dark Chocolate Crunchy)",
+  "productName": "Exact trade name or commodity name declared on package",
   "genericName": "Common or generic name of commodity (e.g. Peanut Butter, Edible Oil, Milk, Biscuits)",
-  "brandName": "Brand owner name (e.g. Pintola, Amul, Tata)",
+  "brandName": "Brand owner name",
   "category": "biscuits" | "edible_oils" | "rice_flour_atta_suji" | "toilet_soap" | "aerated_soft_drinks" | "tea" | "coffee" | "general_packaged",
   "netQuantity": 350,
   "quantityUnit": "g" | "kg" | "ml" | "l" | "m" | "cm" | "N" | "U",
@@ -179,7 +180,7 @@ Extract all mandatory declarations from the labels and return ONLY valid JSON ma
   "mfgYear": "YYYY (4 digits e.g. 2024 or 2026)",
   "expMonth": "MM (if present, else empty)",
   "expYear": "YYYY (if present, else empty)",
-  "manufacturerName": "Full corporate name of manufacturer/packer (e.g. Das Foodtech Private Limited)",
+  "manufacturerName": "Full corporate name of manufacturer/packer",
   "manufacturerAddress": "Complete factory/premises address with street, city and state",
   "manufacturerPinCode": "6-digit postal PIN code if found, else empty",
   "countryOfOrigin": "Country name where manufactured, e.g. India",
@@ -187,20 +188,38 @@ Extract all mandatory declarations from the labels and return ONLY valid JSON ma
   "consumerCareEmail": "Consumer care complaints email if found, else empty",
   "measuredNumeralHeightMm": 3.5,
   "pdpAreaCm2": 250,
-  "hasStandardPackDisclaimer": false
+  "hasStandardPackDisclaimer": false,
+  "detectedBoxes": [
+    {
+      "view": "front" | "back" | "side",
+      "box_2d": [ymin, xmin, ymax, xmax],
+      "label": "Commodity Name" | "Net Quantity" | "MRP Declaration" | "Mfg Details" | "Consumer Care" | "Date / Batch",
+      "ruleRef": "Rule 6(1)(b)",
+      "status": "PASS" | "FAIL" | "WARNING",
+      "detectedText": "Exact text visible on this image panel",
+      "message": "Regulatory note"
+    }
+  ]
 }
 
-Carefully read the text on the labels. Do NOT hallucinate values that are not visible. If a field is not printed, return empty string.`;
+CRITICAL RULES FOR BOUNDING BOXES:
+1. Each detected box MUST belong to the specific view where it actually appears: 'front' (front face / PDP), 'back' (back nutritional / declarations panel), or 'side' (side batch / flap).
+2. If a view does NOT contain a declaration, do NOT add a box for that view.
+3. box_2d is [ymin, xmin, ymax, xmax] normalized on a 0-1000 scale.
+4. Do NOT hallucinate values. If a field is not printed, return empty string.`;
 
   const parts: any[] = [{ text: promptText }];
 
-  // Compress and attach all non-empty images
+  // Attach images with view labels
   const imageKeys: ('front' | 'back' | 'side')[] = ['front', 'back', 'side'];
   for (const key of imageKeys) {
     const dataUri = images[key];
     if (dataUri && dataUri.startsWith('data:image')) {
       const optimized = await optimizeImageForVision(dataUri, 1024);
       if (optimized.data) {
+        parts.push({
+          text: `[IMAGE VIEW: ${key.toUpperCase()}]`
+        });
         parts.push({
           inlineData: {
             mimeType: optimized.mimeType,
@@ -247,6 +266,36 @@ Carefully read the text on the labels. Do NOT hallucinate values that are not vi
         const text = json.candidates?.[0]?.content?.parts?.[0]?.text;
         if (text) {
           const parsed = JSON.parse(text);
+
+          // Process and normalize detectedBoxes if returned by Vision AI
+          const parsedBoxes: BoundingBox[] = [];
+          if (Array.isArray(parsed.detectedBoxes)) {
+            parsed.detectedBoxes.forEach((rawBox: any, idx: number) => {
+              if (rawBox && Array.isArray(rawBox.box_2d) && rawBox.box_2d.length === 4) {
+                const [ymin, xmin, ymax, xmax] = rawBox.box_2d;
+                const x = Math.max(0, Math.min(95, xmin / 10));
+                const y = Math.max(0, Math.min(95, ymin / 10));
+                const width = Math.max(5, Math.min(100 - x, (xmax - xmin) / 10));
+                const height = Math.max(3, Math.min(100 - y, (ymax - ymin) / 10));
+                const view = (['front', 'back', 'side'].includes(rawBox.view) ? rawBox.view : 'front') as 'front' | 'back' | 'side';
+
+                parsedBoxes.push({
+                  id: `ai-box-${idx + 1}`,
+                  x: Number(x.toFixed(1)),
+                  y: Number(y.toFixed(1)),
+                  width: Number(width.toFixed(1)),
+                  height: Number(height.toFixed(1)),
+                  view,
+                  label: rawBox.label || 'Declaration',
+                  ruleRef: rawBox.ruleRef || 'Rule 6',
+                  status: (['PASS', 'FAIL', 'WARNING'].includes(rawBox.status) ? rawBox.status : 'PASS') as any,
+                  detectedText: rawBox.detectedText || '',
+                  message: rawBox.message || rawBox.label || 'Verified declaration'
+                });
+              }
+            });
+          }
+          parsed.detectedBoxes = parsedBoxes;
           return parsed;
         }
       } else {

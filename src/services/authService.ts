@@ -42,8 +42,11 @@ export const TEST_ACCOUNTS: Record<UserRole, AuthUser> = {
 
 const AUTH_STORAGE_KEY = 'inspack_current_user_v1';
 
-export function getCurrentUser(): AuthUser {
+export function getCurrentUser(): AuthUser | null {
   try {
+    if (localStorage.getItem('inspack_signed_out') === 'true') {
+      return null;
+    }
     const raw = localStorage.getItem(AUTH_STORAGE_KEY);
     if (raw) {
       return JSON.parse(raw);
@@ -51,11 +54,12 @@ export function getCurrentUser(): AuthUser {
   } catch (err) {
     console.warn('Failed to load current user:', err);
   }
-  return TEST_ACCOUNTS.OFFICER; // Default to Officer for quick inspection demo
+  return TEST_ACCOUNTS.OFFICER; // Default to Officer for quick demonstration
 }
 
 export function setCurrentUser(user: AuthUser): void {
   try {
+    localStorage.removeItem('inspack_signed_out');
     localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(user));
   } catch (err) {
     console.warn('Failed to save current user:', err);
@@ -90,6 +94,7 @@ export function loginWithEmail(email: string, role: UserRole): AuthUser {
 export function logoutUser(): void {
   try {
     localStorage.removeItem(AUTH_STORAGE_KEY);
+    localStorage.setItem('inspack_signed_out', 'true');
   } catch (err) {
     console.warn('Logout error:', err);
   }

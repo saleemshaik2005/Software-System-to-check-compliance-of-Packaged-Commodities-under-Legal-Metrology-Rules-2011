@@ -56,7 +56,7 @@ export const OfficerAnalyticsDashboard: React.FC<OfficerAnalyticsDashboardProps>
             <span>Total Inspected</span>
             <Layers className="w-4 h-4 text-blue-600" />
           </div>
-          <div className="text-2xl font-black text-slate-900">{stats.total} Packages</div>
+          <div className="text-2xl font-black text-slate-900 dark:text-slate-100">{stats.total} Packages</div>
           <div className="text-[11px] text-slate-500 mt-1">Across retail & dark stores</div>
         </div>
 
@@ -92,7 +92,7 @@ export const OfficerAnalyticsDashboard: React.FC<OfficerAnalyticsDashboardProps>
 
       {/* Category Risk Breakdown */}
       <div className="bg-white border border-slate-200 p-5 rounded-2xl shadow-sm">
-        <h3 className="text-sm font-black text-slate-900 mb-3 flex items-center gap-2">
+        <h3 className="text-sm font-black text-slate-900 dark:text-slate-100 mb-3 flex items-center gap-2">
           <BarChart3 className="w-4 h-4 text-[#0A3663]" />
           <span>Category Risk Heatmap (LMPC Enforcement Hotspots)</span>
         </h3>
@@ -144,10 +144,10 @@ export const OfficerAnalyticsDashboard: React.FC<OfficerAnalyticsDashboardProps>
       </div>
 
       {/* Inspection History & Case Repository */}
-      <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
         <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
           <div>
-            <h3 className="text-base font-black text-slate-900 tracking-tight">
+            <h3 className="text-base font-black text-slate-900 dark:text-slate-100 tracking-tight">
               Inspection Dossier & Seizure Log
             </h3>
             <p className="text-xs text-slate-500">
@@ -184,7 +184,7 @@ export const OfficerAnalyticsDashboard: React.FC<OfficerAnalyticsDashboardProps>
         {/* Table of Scans */}
         <div className="overflow-x-auto rounded-xl border border-slate-200">
           <table className="w-full text-left text-xs text-slate-700">
-            <thead className="bg-slate-50 text-[11px] uppercase font-bold text-slate-600 border-b border-slate-200">
+            <thead className="bg-slate-50 text-[11px] uppercase font-bold text-slate-600 border-b border-slate-200 dark:border-slate-800">
               <tr>
                 <th className="py-3 px-4">Inspection ID</th>
                 <th className="py-3 px-4">Commodity / Manufacturer</th>
@@ -213,7 +213,7 @@ export const OfficerAnalyticsDashboard: React.FC<OfficerAnalyticsDashboardProps>
                     </td>
 
                     <td className="py-3 px-4">
-                      <div className="font-black text-slate-900">{report.productInfo.productName}</div>
+                      <div className="font-black text-slate-900 dark:text-slate-100">{report.productInfo.productName}</div>
                       <div className="text-[11px] text-slate-500 truncate max-w-xs">
                         {report.productInfo.manufacturerName}
                       </div>

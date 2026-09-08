@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navbar } from './components/Navbar';
 import { DemoPresetSelector } from './components/DemoPresetSelector';
 import { LiveCameraScanner } from './components/LiveCameraScanner';
@@ -18,13 +18,14 @@ import { Footer } from './components/Footer';
 import { DEMO_PRESETS, DemoProductPreset } from './data/demoProducts';
 import { evaluateCompliance } from './services/complianceEngine';
 import { saveScanReport } from './services/dbService';
-import { getCurrentUser, switchRole, logoutUser, TEST_ACCOUNTS } from './services/authService';
+import { getCurrentUser, switchRole, logoutUser } from './services/authService';
 import { ComplianceReport, UserRole, AuthUser } from './types';
+import { Camera, Archive, CheckCircle, AlertTriangle, ArrowRight, ShieldCheck, Sparkles } from 'lucide-react';
 
 export function App() {
-  const [currentUser, setCurrentUser] = useState<AuthUser>(() => getCurrentUser());
-  const [userRole, setUserRole] = useState<UserRole>(() => currentUser.role);
-  const [currentTab, setCurrentTab] = useState<'scanner' | 'analytics' | 'ecommerce' | 'manufacturer' | 'admin'>('scanner');
+  const [currentUser, setCurrentUser] = useState<AuthUser | null>(() => getCurrentUser());
+  const [userRole, setUserRole] = useState<UserRole>(() => currentUser?.role || 'CITIZEN');
+  const [currentTab, setCurrentTab] = useState<'scanner' | 'upload' | 'analytics' | 'ecommerce' | 'manufacturer' | 'admin'>('scanner');
   const [activePresetId, setActivePresetId] = useState<string>('demo-amul-milk');
   const [activeView, setActiveView] = useState<'front' | 'back' | 'side'>('front');
   const [isGrievanceOpen, setIsGrievanceOpen] = useState(false);
@@ -34,6 +35,11 @@ export function App() {
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
 
+  // Sync dark mode class with root html element
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', isDarkMode);
+  }, [isDarkMode]);
+
   // Initialize with the Slide 2 demo (Amul Taaza Milk)
   const [currentReport, setCurrentReport] = useState<ComplianceReport>(() => {
     const initialPreset = DEMO_PRESETS[0];
@@ -42,8 +48,8 @@ export function App() {
       'front',
       initialPreset.imageVisual,
       {
-        name: currentUser.name,
-        badge: currentUser.badgeNumber || 'LM-ND-4092',
+        name: currentUser?.name || 'Authorized Inspector',
+        badge: currentUser?.badgeNumber || 'LM-ND-4092',
         location: 'Reliance Smart Bazaar, Connaught Place'
       }
     );
@@ -59,20 +65,24 @@ export function App() {
       'front',
       preset.imageVisual,
       {
-        name: currentUser.name,
-        badge: currentUser.badgeNumber || 'LM-ND-4092',
+        name: currentUser?.name || 'Authorized Inspector',
+        badge: currentUser?.badgeNumber || 'LM-ND-4092',
         location: 'Supermarket Hub'
       }
     );
     rep.id = 'INSP-' + Math.floor(100000 + Math.random() * 900000);
     setCurrentReport(rep);
     saveScanReport(rep);
+    // Transition to the clean audit report view
+    setCurrentTab('scanner');
   };
 
   const handleScanComplete = (report: ComplianceReport) => {
     setActivePresetId('');
     setCurrentReport(report);
     saveScanReport(report);
+    // Transition to the clean audit report view
+    setCurrentTab('scanner');
   };
 
   const handleSelectReportFromDossier = (report: ComplianceReport) => {
@@ -107,7 +117,7 @@ export function App() {
 
   const handleSignOut = () => {
     logoutUser();
-    setCurrentUser(TEST_ACCOUNTS.CITIZEN);
+    setCurrentUser(null);
     setUserRole('CITIZEN');
     setIsLoginOpen(true);
   };
@@ -137,25 +147,119 @@ export function App() {
       />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 py-6">
-        {/* Presets bar always accessible at top of scanner view */}
-        {currentTab === 'scanner' && (
-          <DemoPresetSelector
-            onSelectPreset={handleSelectPreset}
-            activePresetId={activePresetId}
-          />
-        )}
+        {/* ========================================================================= */}
+        {/* TAB 1: DEDICATED UPLOAD & SCAN STUDIO */}
+        {/* ========================================================================= */}
+        {currentTab === 'upload' && (
+          <div className="space-y-6 animate-in fade-in duration-200">
+            {/* Studio Header */}
+            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-xs flex flex-wrap items-center justify-between gap-4">
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  <span className="p-2 rounded-2xl bg-[#0A3663] text-white">
+                    <Camera className="w-5 h-5" />
+                  </span>
+                  <h1 className="text-xl font-black text-slate-900 dark:text-slate-100 tracking-tight">
+                    Package Compliance Scan Studio
+                  </h1>
+                </div>
+                <p className="text-xs text-slate-500 dark:text-slate-400">
+                  Upload photos or snap live camera shots of Front, Back, and Side panels to perform automated LMPC 2011 compliance verification.
+                </p>
+              </div>
 
-        {/* Tab 1: Scanner View */}
-        {currentTab === 'scanner' && (
-          <div className="space-y-6">
-            {/* Live Camera & Image Input Trigger */}
+              {/* Quick Jump back to current report if exists */}
+              <button
+                onClick={() => setCurrentTab('scanner')}
+                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold text-xs transition-colors cursor-pointer border border-slate-200 dark:border-slate-700"
+              >
+                <span>View Latest Audit Report</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
+
+            {/* Live Camera Scanner Uploader Studio */}
             <LiveCameraScanner
               onScanComplete={handleScanComplete}
               activeView={activeView}
               setActiveView={setActiveView}
             />
 
-            {/* Two Column Layout: Evidence Visualizer (Left) and Scorecard/Breakdown (Right) */}
+            {/* FMCG Benchmark Demo Presets */}
+            <div className="pt-2">
+              <div className="flex items-center gap-2 mb-3">
+                <Sparkles className="w-4 h-4 text-[#00A651]" />
+                <span className="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-slate-200">
+                  Or Test With Verified Benchmark Packaging Presets
+                </span>
+              </div>
+              <DemoPresetSelector
+                onSelectPreset={handleSelectPreset}
+                activePresetId={activePresetId}
+              />
+            </div>
+          </div>
+        )}
+
+        {/* ========================================================================= */}
+        {/* TAB 2: CLEAN COMPLIANCE AUDIT REPORT VIEW */}
+        {/* ========================================================================= */}
+        {currentTab === 'scanner' && (
+          <div className="space-y-6 animate-in fade-in duration-200">
+            {/* Top Report Header & Action Bar */}
+            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-xs flex flex-wrap items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className={`p-2.5 rounded-2xl ${
+                  currentReport.overallStatus === 'COMPLIANT'
+                    ? 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 border border-emerald-200 dark:border-emerald-800'
+                    : 'bg-red-50 dark:bg-red-950/50 text-red-600 border border-red-200 dark:border-red-800'
+                }`}>
+                  {currentReport.overallStatus === 'COMPLIANT' ? (
+                    <CheckCircle className="w-5 h-5" />
+                  ) : (
+                    <AlertTriangle className="w-5 h-5" />
+                  )}
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-mono font-bold text-slate-400 dark:text-slate-500">
+                      ID: {currentReport.id}
+                    </span>
+                    <span className={`text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-wide ${
+                      currentReport.overallStatus === 'COMPLIANT'
+                        ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800'
+                        : 'bg-red-100 dark:bg-red-950 text-red-800 dark:text-red-300 border border-red-300 dark:border-red-800'
+                    }`}>
+                      {currentReport.overallStatus === 'COMPLIANT' ? 'Statutory Compliant' : 'Non-Compliant (Violations Detected)'}
+                    </span>
+                  </div>
+                  <h2 className="text-base font-black text-slate-900 dark:text-slate-100 mt-0.5">
+                    {currentReport.productInfo.productName || 'Inspected Packaged Commodity'}
+                  </h2>
+                </div>
+              </div>
+
+              {/* Action Buttons: New Scan / Upload & View Vault */}
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => setIsVaultOpen(true)}
+                  className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs transition-colors border border-slate-200 dark:border-slate-700 cursor-pointer"
+                >
+                  <Archive className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>Stored Vault</span>
+                </button>
+
+                <button
+                  onClick={() => setCurrentTab('upload')}
+                  className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#00A651] hover:bg-emerald-600 text-white font-bold text-xs transition-all cursor-pointer shadow-xs shadow-emerald-700/20"
+                >
+                  <Camera className="w-4 h-4" />
+                  <span>+ Start New Scan / Upload</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Two Column Layout: Evidence Visualizer (Left) and Scorecard (Right) */}
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
               {/* Left Column: Visual Evidence Overlay */}
               <div className="lg:col-span-6 space-y-6">
@@ -168,65 +272,72 @@ export function App() {
                 />
 
                 {/* Statutory Regulatory Context Card */}
-                <div className="bg-white border border-slate-200 rounded-2xl p-4 text-xs text-slate-600 shadow-sm space-y-2">
-                  <div className="font-black text-slate-900 uppercase tracking-wider text-[11px] flex items-center justify-between">
-                    <span>Inspection Protocol Reference</span>
+                <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 text-xs text-slate-600 dark:text-slate-400 shadow-xs space-y-2 transition-colors">
+                  <div className="font-black text-slate-900 dark:text-slate-100 uppercase tracking-wider text-[11px] flex items-center justify-between">
+                    <span>Statutory Inspection Protocol</span>
                     <span className="text-[#00A651] font-mono font-bold">Fifth Schedule Sampling</span>
                   </div>
-                  <p className="leading-relaxed">
+                  <p className="leading-relaxed text-[11px]">
                     Inspection conducted under Section 15 of Legal Metrology Act, 2009. Sample size determined per Fifth Schedule Table (32 samples for lot &lt; 4000; 80 samples for lot &gt; 4000). Tare weight deducted per Sixth Schedule Part-II.
                   </p>
                 </div>
               </div>
 
-              {/* Right Column: Scorecard & Legal Metrology Breakdown */}
+              {/* Right Column: Scorecard & Actions */}
               <div className="lg:col-span-6 space-y-6">
                 <ComplianceScorecard
                   report={currentReport}
                   onOpenGrievanceModal={() => setIsGrievanceOpen(true)}
                 />
-
-                <RuleBreakdownCard evaluations={currentReport.evaluations} />
               </div>
             </div>
+
+            {/* Full Width: Comprehensive Rule Breakdown Card */}
+            <RuleBreakdownCard evaluations={currentReport.evaluations} />
           </div>
         )}
 
-        {/* Tab 2: Officer Analytics Dashboard */}
+        {/* ========================================================================= */}
+        {/* TAB 3: OFFICER ANALYTICS DASHBOARD */}
+        {/* ========================================================================= */}
         {currentTab === 'analytics' && (
           <OfficerAnalyticsDashboard onSelectReport={handleSelectReportFromDossier} />
         )}
 
-        {/* Tab 3: E-Commerce Audit */}
+        {/* ========================================================================= */}
+        {/* TAB 4: E-COMMERCE AUDIT */}
+        {/* ========================================================================= */}
         {currentTab === 'ecommerce' && (
           <EcommerceAuditTab onAuditSelected={handleSelectReportFromDossier} />
         )}
 
-        {/* Tab 4: Manufacturer Pre-Audit */}
+        {/* ========================================================================= */}
+        {/* TAB 5: BRAND PRE-CHECK PORTAL */}
+        {/* ========================================================================= */}
         {currentTab === 'manufacturer' && (
           <ManufacturerSelfAudit onLoadAudit={handleSelectReportFromDossier} />
         )}
 
-        {/* Tab 5: Administrator Control Center */}
+        {/* ========================================================================= */}
+        {/* TAB 6: ADMINISTRATOR CONTROL CENTER */}
+        {/* ========================================================================= */}
         {currentTab === 'admin' && (
           <AdminControlCenter />
         )}
       </main>
 
-      {/* Consumer Grievance Modal */}
+      {/* Modals & Overlays */}
       <ConsumerGrievanceModal
         isOpen={isGrievanceOpen}
         onClose={() => setIsGrievanceOpen(false)}
         report={currentReport}
       />
 
-      {/* Cloud Database & CDN Status Modal */}
       <CloudConfigModal
         isOpen={isCloudModalOpen}
         onClose={() => setIsCloudModalOpen(false)}
       />
 
-      {/* Legal Metrology Rulebook Reference */}
       <RulebookDrawer
         isOpen={isRulebookOpen}
         onClose={() => setIsRulebookOpen(false)}
@@ -236,14 +347,12 @@ export function App() {
         onOpenLogin={() => setIsLoginOpen(true)}
       />
 
-      {/* Stored Regulatory Inspection Vault Modal */}
       <InspectionVaultModal
         isOpen={isVaultOpen}
         onClose={() => setIsVaultOpen(false)}
         onSelectReport={handleSelectReportFromDossier}
       />
 
-      {/* Authentication & 1-Click Test Accounts Modal */}
       <LoginModal
         isOpen={isLoginOpen}
         onClose={() => setIsLoginOpen(false)}

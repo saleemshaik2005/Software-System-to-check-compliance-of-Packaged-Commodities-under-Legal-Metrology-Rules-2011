@@ -17,17 +17,19 @@ import {
   Archive,
   PhoneCall,
   LogOut,
+  Camera,
+  Upload,
   X
 } from 'lucide-react';
 import { UserRole, AuthUser } from '../types';
 import { getAdminConfig } from '../services/adminService';
 
 interface NavbarProps {
-  currentTab: 'scanner' | 'analytics' | 'ecommerce' | 'manufacturer' | 'admin';
-  setCurrentTab: (tab: 'scanner' | 'analytics' | 'ecommerce' | 'manufacturer' | 'admin') => void;
+  currentTab: 'scanner' | 'upload' | 'analytics' | 'ecommerce' | 'manufacturer' | 'admin';
+  setCurrentTab: (tab: 'scanner' | 'upload' | 'analytics' | 'ecommerce' | 'manufacturer' | 'admin') => void;
   userRole: UserRole;
   setUserRole: (role: UserRole) => void;
-  currentUser: AuthUser;
+  currentUser: AuthUser | null;
   isDarkMode: boolean;
   setIsDarkMode: (val: boolean) => void;
   onOpenRulebook?: () => void;
@@ -55,22 +57,22 @@ export const Navbar: React.FC<NavbarProps> = ({
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
-    <header className="sticky top-0 z-40 bg-white border-b border-slate-200 shadow-sm">
-      {/* Top Govt of India & SIH Banner */}
-      <div className="bg-[#0A2540] text-white px-4 py-1.5 text-xs border-b border-blue-950 flex flex-wrap items-center justify-between gap-2">
+    <header className="sticky top-0 z-40 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-xs transition-colors">
+      {/* Sleek Top Govt of India & SIH Strip */}
+      <div className="bg-[#0A2540] dark:bg-slate-950 text-white px-4 py-1 text-[11px] border-b border-blue-950 dark:border-slate-800 flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2">
-          <span className="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
           <span className="font-bold text-amber-300">SMART INDIA HACKATHON 2026</span>
           <span className="text-blue-300">•</span>
-          <span className="text-white font-mono font-bold">PS ID: SIH-26034</span>
+          <span className="font-mono font-bold text-white">PS ID: SIH-26034</span>
           <span className="hidden md:inline text-blue-300">•</span>
-          <span className="hidden md:inline text-slate-200">
+          <span className="hidden md:inline text-slate-300">
             {adminConfig.specialDriveBanner || 'Ministry of Consumer Affairs, Food & Public Distribution'}
           </span>
         </div>
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1 text-emerald-300 font-semibold">
-            <CheckCircle className="w-3.5 h-3.5" />
+            <CheckCircle className="w-3 h-3" />
             <span>LMPC Rules 2011</span>
           </div>
           <span className="text-blue-400">|</span>
@@ -79,56 +81,87 @@ export const Navbar: React.FC<NavbarProps> = ({
       </div>
 
       {/* Main Navbar */}
-      <div className="max-w-7xl mx-auto px-4 py-2.5 flex flex-wrap items-center justify-between gap-4">
+      <div className="max-w-7xl mx-auto px-4 py-2.5 flex flex-wrap items-center justify-between gap-3">
         {/* Left Section: 3-Bars Hamburger Dropdown + Brand Logo */}
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5">
           {/* Top Left 3-Bars Hamburger Dropdown */}
           <div className="relative">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 transition-all cursor-pointer border border-slate-200 shadow-2xs flex items-center justify-center"
-              title="Navigation Menu"
+              className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 transition-all cursor-pointer border border-slate-200 dark:border-slate-700 shadow-2xs flex items-center justify-center"
+              title="Quick Menu"
             >
               {isMenuOpen ? (
-                <X className="w-5 h-5 text-[#0A3663]" />
+                <X className="w-4 h-4 text-[#0A3663] dark:text-blue-400" />
               ) : (
-                <Menu className="w-5 h-5 text-[#0A3663]" />
+                <Menu className="w-4 h-4 text-[#0A3663] dark:text-blue-400" />
               )}
             </button>
 
-            {/* Standard Dropdown Menu */}
+            {/* Polished Dropdown Menu */}
             {isMenuOpen && (
               <>
                 <div
                   className="fixed inset-0 z-40"
                   onClick={() => setIsMenuOpen(false)}
                 />
-                <div className="absolute left-0 mt-2 w-72 bg-white rounded-2xl shadow-2xl border border-slate-200 py-2 z-50 animate-in fade-in zoom-in-95 duration-150">
+                <div className="absolute left-0 mt-2 w-72 bg-white dark:bg-slate-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-slate-800 py-2 z-50 animate-in fade-in zoom-in-95 duration-150">
                   {/* Current User Header */}
-                  <div className="px-4 py-2.5 border-b border-slate-100 flex items-center gap-3 bg-slate-50/50">
-                    <div className="w-8 h-8 rounded-full bg-[#0A3663] text-white flex items-center justify-center font-bold text-xs">
-                      {currentUser.name.charAt(0)}
-                    </div>
-                    <div className="overflow-hidden">
-                      <div className="text-xs font-black text-slate-900 truncate">
-                        {currentUser.name}
+                  {currentUser ? (
+                    <div className="px-4 py-2.5 border-b border-slate-100 dark:border-slate-800 flex items-center gap-3 bg-slate-50/70 dark:bg-slate-950/50">
+                      <div className="w-8 h-8 rounded-full bg-[#0A3663] text-white flex items-center justify-center font-bold text-xs">
+                        {currentUser.name.charAt(0)}
                       </div>
-                      <div className="text-[10px] font-bold text-[#00A651] uppercase">
-                        {userRole} • Active Session
+                      <div className="overflow-hidden">
+                        <div className="text-xs font-black text-slate-900 dark:text-slate-100 truncate">
+                          {currentUser.name}
+                        </div>
+                        <div className="text-[10px] font-bold text-[#00A651] uppercase">
+                          {userRole} • Active Session
+                        </div>
                       </div>
                     </div>
-                  </div>
+                  ) : (
+                    <div className="px-4 py-2.5 border-b border-slate-100 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-950/50">
+                      <div className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                        Signed Out (Guest Mode)
+                      </div>
+                      <button
+                        onClick={() => {
+                          setIsMenuOpen(false);
+                          onOpenLogin?.();
+                        }}
+                        className="text-[11px] font-bold text-[#00A651] hover:underline cursor-pointer mt-0.5 block"
+                      >
+                        Sign in with test account →
+                      </button>
+                    </div>
+                  )}
 
                   {/* Menu Items */}
                   <div className="py-1">
                     <button
                       onClick={() => {
                         setIsMenuOpen(false);
+                        setCurrentTab('upload');
+                      }}
+                      className="w-full px-4 py-2 text-left text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white flex items-center gap-3 transition-colors cursor-pointer"
+                    >
+                      <Camera className="w-4 h-4 text-emerald-600 shrink-0" />
+                      <div>
+                        <div>New Package Scan Studio</div>
+                        <div className="text-[10px] font-normal text-slate-400">Upload or snap multi-view photos</div>
+                      </div>
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        setIsMenuOpen(false);
                         onOpenRulebook?.();
                       }}
-                      className="w-full px-4 py-2.5 text-left text-xs font-bold text-slate-700 hover:bg-slate-50 hover:text-slate-900 flex items-center gap-3 transition-colors cursor-pointer"
+                      className="w-full px-4 py-2 text-left text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white flex items-center gap-3 transition-colors cursor-pointer"
                     >
-                      <BookOpen className="w-4 h-4 text-[#0A3663] shrink-0" />
+                      <BookOpen className="w-4 h-4 text-[#0A3663] dark:text-blue-400 shrink-0" />
                       <div>
                         <div>Legal Metrology Rulebook</div>
                         <div className="text-[10px] font-normal text-slate-400">Gazette rules, standard packs & fines</div>
@@ -138,11 +171,25 @@ export const Navbar: React.FC<NavbarProps> = ({
                     <button
                       onClick={() => {
                         setIsMenuOpen(false);
+                        onOpenVault?.();
+                      }}
+                      className="w-full px-4 py-2 text-left text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white flex items-center gap-3 transition-colors cursor-pointer"
+                    >
+                      <Archive className="w-4 h-4 text-emerald-600 shrink-0" />
+                      <div>
+                        <div>Stored Inspections Vault</div>
+                        <div className="text-[10px] font-normal text-slate-400">View saved audits & PDF downloads</div>
+                      </div>
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        setIsMenuOpen(false);
                         setCurrentTab('admin');
                       }}
-                      className="w-full px-4 py-2.5 text-left text-xs font-bold text-slate-700 hover:bg-slate-50 hover:text-slate-900 flex items-center gap-3 transition-colors cursor-pointer"
+                      className="w-full px-4 py-2 text-left text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white flex items-center gap-3 transition-colors cursor-pointer"
                     >
-                      <Settings className="w-4 h-4 text-purple-700 shrink-0" />
+                      <Settings className="w-4 h-4 text-purple-600 shrink-0" />
                       <div>
                         <div>System Settings & Fines</div>
                         <div className="text-[10px] font-normal text-slate-400">Compounding fines & threshold tuner</div>
@@ -152,23 +199,9 @@ export const Navbar: React.FC<NavbarProps> = ({
                     <button
                       onClick={() => {
                         setIsMenuOpen(false);
-                        onOpenVault?.();
-                      }}
-                      className="w-full px-4 py-2.5 text-left text-xs font-bold text-slate-700 hover:bg-slate-50 hover:text-slate-900 flex items-center gap-3 transition-colors cursor-pointer"
-                    >
-                      <Archive className="w-4 h-4 text-emerald-600 shrink-0" />
-                      <div>
-                        <div>Stored Inspections Vault</div>
-                        <div className="text-[10px] font-normal text-slate-400">All saved audits & PDF downloads</div>
-                      </div>
-                    </button>
-
-                    <button
-                      onClick={() => {
-                        setIsMenuOpen(false);
                         onOpenGrievance?.();
                       }}
-                      className="w-full px-4 py-2.5 text-left text-xs font-bold text-slate-700 hover:bg-slate-50 hover:text-slate-900 flex items-center gap-3 transition-colors cursor-pointer"
+                      className="w-full px-4 py-2 text-left text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white flex items-center gap-3 transition-colors cursor-pointer"
                     >
                       <PhoneCall className="w-4 h-4 text-amber-600 shrink-0" />
                       <div>
@@ -178,21 +211,37 @@ export const Navbar: React.FC<NavbarProps> = ({
                     </button>
                   </div>
 
-                  {/* Sign Out Action */}
-                  <div className="border-t border-slate-100 pt-1 mt-1">
-                    <button
-                      onClick={() => {
-                        setIsMenuOpen(false);
-                        onSignOut();
-                      }}
-                      className="w-full px-4 py-2.5 text-left text-xs font-bold text-red-600 hover:bg-red-50 flex items-center gap-3 transition-colors cursor-pointer"
-                    >
-                      <LogOut className="w-4 h-4 text-red-500 shrink-0" />
-                      <div>
-                        <div>Sign Out</div>
-                        <div className="text-[10px] font-normal text-red-400">Switch to login page & test accounts</div>
-                      </div>
-                    </button>
+                  {/* Sign Out / Sign In Action */}
+                  <div className="border-t border-slate-100 dark:border-slate-800 pt-1 mt-1">
+                    {currentUser ? (
+                      <button
+                        onClick={() => {
+                          setIsMenuOpen(false);
+                          onSignOut();
+                        }}
+                        className="w-full px-4 py-2 text-left text-xs font-bold text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 flex items-center gap-3 transition-colors cursor-pointer"
+                      >
+                        <LogOut className="w-4 h-4 text-red-500 shrink-0" />
+                        <div>
+                          <div>Sign Out</div>
+                          <div className="text-[10px] font-normal text-red-400">Log out to sign-in page</div>
+                        </div>
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => {
+                          setIsMenuOpen(false);
+                          onOpenLogin?.();
+                        }}
+                        className="w-full px-4 py-2 text-left text-xs font-bold text-[#00A651] hover:bg-emerald-50 dark:hover:bg-emerald-950/40 flex items-center gap-3 transition-colors cursor-pointer"
+                      >
+                        <KeyRound className="w-4 h-4 text-[#00A651] shrink-0" />
+                        <div>
+                          <div>Sign In to Inspack</div>
+                          <div className="text-[10px] font-normal text-slate-400">Choose role profile</div>
+                        </div>
+                      </button>
+                    )}
                   </div>
                 </div>
               </>
@@ -207,110 +256,122 @@ export const Navbar: React.FC<NavbarProps> = ({
             <img
               src="/logos/inspack-logo.jpg"
               alt="Inspack Logo"
-              className="h-10 w-auto object-contain rounded-md"
+              className="h-9 w-auto object-contain rounded-md"
               onError={(e) => {
                 e.currentTarget.style.display = 'none';
               }}
             />
             <div className="flex flex-col">
-              <span className="text-2xl font-black tracking-tight text-[#0A3663] leading-none">
+              <span className="text-xl font-black tracking-tight text-[#0A3663] dark:text-white leading-none">
                 in<span className="text-[#00A651]">spack</span>
               </span>
-              <span className="text-[9px] uppercase tracking-wider text-slate-600 font-extrabold mt-0.5">
+              <span className="text-[9px] uppercase tracking-wider text-slate-500 dark:text-slate-400 font-extrabold mt-0.5">
                 Inspect Packages • Ensure Compliance
               </span>
             </div>
           </div>
         </div>
 
-        {/* Navigation Tabs - Dynamically adapted to active user role */}
-        <nav className="flex items-center gap-1.5 overflow-x-auto py-1">
-          {/* 1. Package Inspector (All Roles) */}
+        {/* Navigation Tabs */}
+        <nav className="flex items-center gap-1 overflow-x-auto py-1">
+          {/* 1. Package Inspector (Report View) */}
           <button
             onClick={() => setCurrentTab('scanner')}
-            className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs md:text-sm font-bold transition-all cursor-pointer ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
               currentTab === 'scanner'
-                ? 'bg-[#00A651] text-white shadow-md shadow-emerald-700/20'
-                : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900'
+                ? 'bg-[#00A651] text-white shadow-xs'
+                : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
             }`}
           >
-            <Scale className="w-4 h-4" />
+            <Scale className="w-3.5 h-3.5" />
             <span>{userRole === 'CITIZEN' ? 'Consumer Check' : 'Package Inspector'}</span>
           </button>
 
-          {/* 2. Officer Dashboard (Officer & Admin) */}
+          {/* 2. Upload & Scan (Dedicated Studio) */}
+          <button
+            onClick={() => setCurrentTab('upload')}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              currentTab === 'upload'
+                ? 'bg-[#0A3663] dark:bg-blue-600 text-white shadow-xs'
+                : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+            }`}
+          >
+            <Camera className="w-3.5 h-3.5" />
+            <span>Upload & Scan</span>
+          </button>
+
+          {/* 3. Officer Analytics (Officer & Admin) */}
           {(userRole === 'OFFICER' || userRole === 'ADMIN') && (
             <button
               onClick={() => setCurrentTab('analytics')}
-              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs md:text-sm font-bold transition-all cursor-pointer ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                 currentTab === 'analytics'
-                  ? 'bg-[#0A3663] text-white shadow-md shadow-blue-950/20'
-                  : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900'
+                  ? 'bg-[#0A3663] text-white shadow-xs'
+                  : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
               }`}
             >
-              <BarChart3 className="w-4 h-4" />
+              <BarChart3 className="w-3.5 h-3.5" />
               <span>Officer Dashboard</span>
             </button>
           )}
 
-          {/* 3. E-Commerce Audit */}
+          {/* 4. E-Commerce Audit */}
           <button
             onClick={() => setCurrentTab('ecommerce')}
-            className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs md:text-sm font-bold transition-all cursor-pointer ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
               currentTab === 'ecommerce'
-                ? 'bg-indigo-600 text-white shadow-md shadow-indigo-700/20'
-                : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900'
+                ? 'bg-indigo-600 text-white shadow-xs'
+                : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
             }`}
           >
-            <Globe className="w-4 h-4" />
+            <Globe className="w-3.5 h-3.5" />
             <span>{userRole === 'CITIZEN' ? 'Dark Store Deals' : 'E-Commerce Audit'}</span>
           </button>
 
-          {/* 4. Brand Pre-Check Simulator (Brand, Officer, Admin) */}
+          {/* 5. Brand Pre-Check Simulator */}
           {(userRole === 'MANUFACTURER' || userRole === 'OFFICER' || userRole === 'ADMIN') && (
             <button
               onClick={() => setCurrentTab('manufacturer')}
-              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs md:text-sm font-bold transition-all cursor-pointer ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                 currentTab === 'manufacturer'
-                  ? 'bg-amber-600 text-white shadow-md shadow-amber-700/20'
-                  : 'text-slate-700 hover:bg-slate-100 hover:text-slate-900'
+                  ? 'bg-amber-600 text-white shadow-xs'
+                  : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
               }`}
             >
-              <Building2 className="w-4 h-4" />
+              <Building2 className="w-3.5 h-3.5" />
               <span>Brand Pre-Check</span>
             </button>
           )}
 
-          {/* 5. Administrator Control Center (Admin Only) */}
+          {/* 6. Administrator Control Center */}
           {userRole === 'ADMIN' && (
             <button
               onClick={() => setCurrentTab('admin')}
-              className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs md:text-sm font-bold transition-all cursor-pointer ${
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                 currentTab === 'admin'
-                  ? 'bg-purple-700 text-white shadow-md shadow-purple-900/20'
-                  : 'text-purple-900 bg-purple-50 hover:bg-purple-100'
+                  ? 'bg-purple-700 text-white shadow-xs'
+                  : 'text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-950/40 hover:bg-purple-100'
               }`}
             >
-              <Settings className="w-4 h-4" />
+              <Settings className="w-3.5 h-3.5" />
               <span>Admin Center</span>
             </button>
           )}
         </nav>
 
-        {/* Right Section: User Profile Chip, Theme Toggle */}
+        {/* Right Section: User Profile Chip / Sign-In & Theme Toggle */}
         <div className="flex items-center gap-2">
-          {/* User Account Login / Switch Chip */}
-          {onOpenLogin && (
+          {currentUser ? (
             <button
               onClick={onOpenLogin}
-              className="flex items-center gap-2 px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-xl text-xs font-bold transition-all cursor-pointer"
-              title={`Logged in as ${currentUser.name} (${userRole}). Click to switch or sign in.`}
+              className="flex items-center gap-2 px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-bold transition-all cursor-pointer"
+              title={`Logged in as ${currentUser.name} (${userRole}). Click to switch or sign out.`}
             >
               <div className="w-6 h-6 rounded-full bg-[#0A3663] text-white flex items-center justify-center text-xs font-bold">
                 {currentUser.name.charAt(0)}
               </div>
               <div className="hidden sm:flex flex-col text-left">
-                <span className="text-[11px] font-black text-slate-900 leading-none truncate max-w-[100px]">
+                <span className="text-[11px] font-black text-slate-900 dark:text-slate-100 leading-none truncate max-w-[100px]">
                   {currentUser.name}
                 </span>
                 <span className="text-[9px] font-bold text-[#00A651] uppercase mt-0.5">
@@ -318,15 +379,23 @@ export const Navbar: React.FC<NavbarProps> = ({
                 </span>
               </div>
             </button>
+          ) : (
+            <button
+              onClick={onOpenLogin}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-[#00A651] hover:bg-emerald-600 text-white rounded-xl text-xs font-bold transition-all cursor-pointer shadow-xs"
+            >
+              <KeyRound className="w-3.5 h-3.5" />
+              <span>Sign In</span>
+            </button>
           )}
 
           {/* Theme Mode Toggle */}
           <button
             onClick={() => setIsDarkMode(!isDarkMode)}
-            className="p-2 rounded-xl border border-slate-200 hover:bg-slate-100 text-slate-700 transition-colors cursor-pointer"
+            className="p-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-300 transition-colors cursor-pointer"
             title={isDarkMode ? 'Switch to Light Theme' : 'Switch to Dark Theme'}
           >
-            {isDarkMode ? <Sun className="w-4 h-4 text-amber-500" /> : <Moon className="w-4 h-4 text-slate-600" />}
+            {isDarkMode ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-600" />}
           </button>
         </div>
       </div>

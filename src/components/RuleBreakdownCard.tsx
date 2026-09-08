@@ -28,11 +28,11 @@ export const RuleBreakdownCard: React.FC<RuleBreakdownCardProps> = ({ evaluation
   const passCount = evaluations.filter(e => e.status === 'PASS').length;
 
   return (
-    <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-sm">
+    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm">
       {/* Header & Category Filters */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 pb-4 mb-4">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 dark:border-slate-800 pb-4 mb-4">
         <div>
-          <h3 className="text-base font-black text-slate-900 tracking-tight flex items-center gap-2">
+          <h3 className="text-base font-black text-slate-900 dark:text-slate-100 tracking-tight flex items-center gap-2">
             <Scale className="w-5 h-5 text-[#0A3663]" />
             <span>Legal Metrology (Packaged Commodities) Rules 2011 Audit</span>
           </h3>
@@ -160,7 +160,7 @@ export const RuleBreakdownCard: React.FC<RuleBreakdownCardProps> = ({ evaluation
 
               {/* Expanded details */}
               {isExpanded && (
-                <div className="px-4 pb-4 pt-1 border-t border-slate-200 bg-white text-xs space-y-3">
+                <div className="px-4 pb-4 pt-1 border-t border-slate-200 dark:border-slate-800 bg-white text-xs space-y-3">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3 pt-2">
                     <div className="bg-slate-50 p-2.5 rounded-lg border border-slate-200">
                       <span className="text-[10px] uppercase font-bold text-slate-500 block mb-1">

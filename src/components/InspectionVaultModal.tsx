@@ -75,15 +75,15 @@ export const InspectionVaultModal: React.FC<InspectionVaultModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-200">
-      <div className="bg-white border border-slate-200 rounded-3xl max-w-4xl w-full p-6 shadow-2xl space-y-5 max-h-[90vh] flex flex-col">
+      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl max-w-4xl w-full p-6 shadow-2xl space-y-5 max-h-[90vh] flex flex-col">
         {/* Header */}
-        <div className="flex items-start justify-between border-b border-slate-100 pb-4 shrink-0">
+        <div className="flex items-start justify-between border-b border-slate-100 dark:border-slate-800 pb-4 shrink-0">
           <div className="flex items-center gap-3">
             <div className="p-2.5 rounded-2xl bg-[#0A3663] text-white">
               <Archive className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="text-lg font-black text-slate-900 tracking-tight flex items-center gap-2">
+              <h3 className="text-lg font-black text-slate-900 dark:text-slate-100 tracking-tight flex items-center gap-2">
                 Stored Regulatory Inspection Vault
               </h3>
               <p className="text-xs text-slate-500">
@@ -184,7 +184,7 @@ export const InspectionVaultModal: React.FC<InspectionVaultModalProps> = ({
                         </span>
                       </div>
 
-                      <h4 className="text-sm font-black text-slate-900 leading-snug">
+                      <h4 className="text-sm font-black text-slate-900 dark:text-slate-100 leading-snug">
                         {p.productName || 'Packaged Commodity'}
                       </h4>
 
@@ -247,7 +247,7 @@ export const InspectionVaultModal: React.FC<InspectionVaultModalProps> = ({
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between border-t border-slate-100 pt-3 text-xs text-slate-500 shrink-0">
+        <div className="flex items-center justify-between border-t border-slate-100 dark:border-slate-800 pt-3 text-xs text-slate-500 shrink-0">
           <div className="flex items-center gap-1 text-[11px]">
             <ShieldCheck className="w-3.5 h-3.5 text-[#00A651]" />
             <span>Digital Evidence Secured under Section 65B Bharatiya Sakshya Adhiniyam</span>

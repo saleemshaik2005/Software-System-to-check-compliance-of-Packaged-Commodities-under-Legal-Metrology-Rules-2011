@@ -64,6 +64,7 @@ export interface BoundingBox {
   status: RuleStatus;
   detectedText?: string;
   message: string;
+  view?: 'front' | 'back' | 'side';
 }
 
 export interface RuleEvaluation {
@@ -119,6 +120,7 @@ export interface ExtractedProductInfo {
   lotSize?: number;
   sampleSize?: number;
   hasStandardPackDisclaimer?: boolean;
+  detectedBoxes?: BoundingBox[];
 }
 
 export interface ComplianceReport {

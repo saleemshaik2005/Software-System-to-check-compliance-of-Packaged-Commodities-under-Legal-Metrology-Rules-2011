@@ -12,11 +12,11 @@ export const DemoPresetSelector: React.FC<DemoPresetSelectorProps> = ({
   activePresetId,
 }) => {
   return (
-    <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm mb-6">
+    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-sm mb-6">
       <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
         <div className="flex items-center gap-2">
           <Sparkles className="w-4 h-4 text-amber-500" />
-          <h3 className="text-sm font-black text-slate-900 tracking-wide uppercase">
+          <h3 className="text-sm font-black text-slate-900 dark:text-slate-100 tracking-wide uppercase">
             Live Hackathon Presentation Presets
           </h3>
           <span className="text-[10px] bg-amber-100 text-amber-800 font-bold px-2 py-0.5 rounded-full border border-amber-300">
@@ -70,7 +70,7 @@ export const DemoPresetSelector: React.FC<DemoPresetSelectorProps> = ({
                   </span>
                 </div>
 
-                <h4 className="text-xs font-black text-slate-900 leading-tight mb-1 truncate">
+                <h4 className="text-xs font-black text-slate-900 dark:text-slate-100 leading-tight mb-1 truncate">
                   {preset.title}
                 </h4>
                 <p className="text-[11px] text-slate-600 leading-snug line-clamp-2">
@@ -78,7 +78,7 @@ export const DemoPresetSelector: React.FC<DemoPresetSelectorProps> = ({
                 </p>
               </div>
 
-              <div className="mt-2.5 pt-2 border-t border-slate-200/80 flex items-center justify-between text-[10px] text-slate-500">
+              <div className="mt-2.5 pt-2 border-t border-slate-200 dark:border-slate-800/80 flex items-center justify-between text-[10px] text-slate-500">
                 <span className="truncate">{preset.categoryDisplay}</span>
                 <span className="text-[#0A3663] font-bold group-hover:underline">Load Demo →</span>
               </div>

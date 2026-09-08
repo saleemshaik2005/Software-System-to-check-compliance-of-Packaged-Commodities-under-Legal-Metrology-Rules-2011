@@ -13,7 +13,8 @@ export function evaluateCompliance(
   inspectorInfo: { name?: string; badge?: string; location?: string } = {}
 ): ComplianceReport {
   const evaluations: RuleEvaluation[] = [];
-  const boundingBoxes: BoundingBox[] = [];
+  const hasAiBoxes = Boolean(product.detectedBoxes && product.detectedBoxes.length > 0);
+  const boundingBoxes: BoundingBox[] = hasAiBoxes ? [...(product.detectedBoxes || [])] : [];
 
   // ==========================================
   // 1. Rule 6(1)(a) & Rule 10: Manufacturer / Packer Details
@@ -39,18 +40,21 @@ export function evaluateCompliance(
       penaltySection: 'Rule 32(2)',
       compoundingFine: 0
     });
-    boundingBoxes.push({
-      id: 'box-mfg',
-      x: 10,
-      y: 65,
-      width: 42,
-      height: 18,
-      label: 'Rule 6(1)(a) - Mfg Details',
-      ruleRef: 'Rule 6(1)(a) & 10',
-      status: 'PASS',
-      detectedText: product.manufacturerName,
-      message: 'Complete manufacturer name, address & PIN code verified.'
-    });
+    if (!hasAiBoxes) {
+      boundingBoxes.push({
+        id: 'box-mfg',
+        x: 10,
+        y: 65,
+        width: 42,
+        height: 18,
+        view: 'back',
+        label: 'Rule 6(1)(a) - Mfg Details',
+        ruleRef: 'Rule 6(1)(a) & 10',
+        status: 'PASS',
+        detectedText: product.manufacturerName,
+        message: 'Complete manufacturer name, address & PIN code verified.'
+      });
+    }
   } else if (hasMfg && hasAddr && !hasPin) {
     evaluations.push({
       ruleId: 'RULE_6_1_A',
@@ -66,18 +70,21 @@ export function evaluateCompliance(
       penaltySection: 'Rule 32(2)',
       compoundingFine: 2000
     });
-    boundingBoxes.push({
-      id: 'box-mfg-warn',
-      x: 10,
-      y: 65,
-      width: 42,
-      height: 18,
-      label: 'Rule 10(1) - PIN Missing',
-      ruleRef: 'Rule 10(1)',
-      status: 'WARNING',
-      detectedText: product.manufacturerAddress,
-      message: 'PIN code not detected in manufacturer address block.'
-    });
+    if (!hasAiBoxes) {
+      boundingBoxes.push({
+        id: 'box-mfg-warn',
+        x: 10,
+        y: 65,
+        width: 42,
+        height: 18,
+        view: 'back',
+        label: 'Rule 10(1) - PIN Missing',
+        ruleRef: 'Rule 10(1)',
+        status: 'WARNING',
+        detectedText: product.manufacturerAddress,
+        message: 'PIN code not detected in manufacturer address block.'
+      });
+    }
   } else if (isImported && !hasImporterInIndia) {
     evaluations.push({
       ruleId: 'RULE_6_1_A',
@@ -129,18 +136,21 @@ export function evaluateCompliance(
       penaltySection: 'Rule 32(2)',
       compoundingFine: 0
     });
-    boundingBoxes.push({
-      id: 'box-name',
-      x: 15,
-      y: 12,
-      width: 70,
-      height: 14,
-      label: 'Rule 6(1)(b) - Commodity Name',
-      ruleRef: 'Rule 6(1)(b)',
-      status: 'PASS',
-      detectedText: product.productName,
-      message: 'Conspicuous generic commodity title.'
-    });
+    if (!hasAiBoxes) {
+      boundingBoxes.push({
+        id: 'box-name',
+        x: 15,
+        y: 12,
+        width: 70,
+        height: 14,
+        view: 'front',
+        label: 'Rule 6(1)(b) - Commodity Name',
+        ruleRef: 'Rule 6(1)(b)',
+        status: 'PASS',
+        detectedText: product.productName,
+        message: 'Conspicuous generic commodity title.'
+      });
+    }
   } else {
     evaluations.push({
       ruleId: 'RULE_6_1_B',
@@ -297,18 +307,21 @@ export function evaluateCompliance(
       penaltySection: 'Rule 32(2)',
       compoundingFine: 2000
     });
-    boundingBoxes.push({
-      id: 'box-mrp-sticker',
-      x: 55,
-      y: 28,
-      width: 38,
-      height: 12,
-      label: 'Rule 18(5) - MRP Tampering',
-      ruleRef: 'Rule 18(5)',
-      status: 'FAIL',
-      detectedText: product.mrpString,
-      message: 'Unauthorized price sticker over printed MRP.'
-    });
+    if (!hasAiBoxes) {
+      boundingBoxes.push({
+        id: 'box-mrp-sticker',
+        x: 55,
+        y: 28,
+        width: 38,
+        height: 12,
+        view: 'back',
+        label: 'Rule 18(5) - MRP Tampering',
+        ruleRef: 'Rule 18(5)',
+        status: 'FAIL',
+        detectedText: product.mrpString,
+        message: 'Unauthorized price sticker over printed MRP.'
+      });
+    }
   } else if (hasPrice && hasTaxes) {
     evaluations.push({
       ruleId: 'RULE_6_1_E_18',
@@ -324,18 +337,21 @@ export function evaluateCompliance(
       penaltySection: 'Rule 32(2)',
       compoundingFine: 0
     });
-    boundingBoxes.push({
-      id: 'box-mrp',
-      x: 55,
-      y: 28,
-      width: 38,
-      height: 12,
-      label: 'Rule 6(1)(e) - MRP Declaration',
-      ruleRef: 'Rule 6(1)(e)',
-      status: 'PASS',
-      detectedText: product.mrpString,
-      message: 'Statutory MRP format verified.'
-    });
+    if (!hasAiBoxes) {
+      boundingBoxes.push({
+        id: 'box-mrp',
+        x: 55,
+        y: 28,
+        width: 38,
+        height: 12,
+        view: 'back',
+        label: 'Rule 6(1)(e) - MRP Declaration',
+        ruleRef: 'Rule 6(1)(e)',
+        status: 'PASS',
+        detectedText: product.mrpString,
+        message: 'Statutory MRP format verified.'
+      });
+    }
   } else if (hasPrice && !hasTaxes) {
     evaluations.push({
       ruleId: 'RULE_6_1_E_18',
@@ -351,18 +367,21 @@ export function evaluateCompliance(
       penaltySection: 'Rule 32(2)',
       compoundingFine: 2000
     });
-    boundingBoxes.push({
-      id: 'box-mrp-notax',
-      x: 55,
-      y: 28,
-      width: 38,
-      height: 12,
-      label: 'Rule 2(m) - Tax Clause Missing',
-      ruleRef: 'Rule 2(m)',
-      status: 'FAIL',
-      detectedText: product.mrpString,
-      message: '"incl. of all taxes" clause missing.'
-    });
+    if (!hasAiBoxes) {
+      boundingBoxes.push({
+        id: 'box-mrp-notax',
+        x: 55,
+        y: 28,
+        width: 38,
+        height: 12,
+        view: 'back',
+        label: 'Rule 2(m) - Tax Clause Missing',
+        ruleRef: 'Rule 2(m)',
+        status: 'FAIL',
+        detectedText: product.mrpString,
+        message: '"incl. of all taxes" clause missing.'
+      });
+    }
   } else {
     evaluations.push({
       ruleId: 'RULE_6_1_E_18',
@@ -428,18 +447,21 @@ export function evaluateCompliance(
       penaltySection: 'Rule 32(2)',
       compoundingFine: 2000
     });
-    boundingBoxes.push({
-      id: 'box-care-warn',
-      x: 10,
-      y: 84,
-      width: 80,
-      height: 12,
-      label: 'Rule 6(2) - Email Missing',
-      ruleRef: 'Rule 6(2)',
-      status: 'WARNING',
-      detectedText: product.consumerCarePhone,
-      message: 'Consumer care email not declared.'
-    });
+    if (!hasAiBoxes) {
+      boundingBoxes.push({
+        id: 'box-care-warn',
+        x: 10,
+        y: 84,
+        width: 80,
+        height: 12,
+        view: 'back',
+        label: 'Rule 6(2) - Email Missing',
+        ruleRef: 'Rule 6(2)',
+        status: 'WARNING',
+        detectedText: product.consumerCarePhone,
+        message: 'Consumer care email not declared.'
+      });
+    }
   } else {
     evaluations.push({
       ruleId: 'RULE_6_2',
