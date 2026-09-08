@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Camera, RefreshCw, Upload, Sparkles, AlertCircle, Trash2, CheckCircle2, Bot, Layers, ArrowRight } from 'lucide-react';
+import { Camera, RefreshCw, Upload, Sparkles, AlertCircle, Trash2, CheckCircle2, Bot, Layers, ArrowRight, X } from 'lucide-react';
 import { extractTextFromImage, parseLabelDeclarations, analyzeMultiViewWithVisionAI } from '../services/ocrService';
 import { evaluateCompliance } from '../services/complianceEngine';
 import { ComplianceReport } from '../types';
@@ -17,6 +17,7 @@ export const LiveCameraScanner: React.FC<LiveCameraScannerProps> = ({
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const mediaStreamRef = useRef<MediaStream | null>(null);
 
   const [multiImages, setMultiImages] = useState<{
     front?: string;
@@ -30,47 +31,97 @@ export const LiveCameraScanner: React.FC<LiveCameraScannerProps> = ({
   const [statusMessage, setStatusMessage] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
 
+  // Comprehensive hardware camera shutdown
+  const stopCamera = () => {
+    // 1. Immediately stop all tracks on the stream reference
+    if (mediaStreamRef.current) {
+      try {
+        mediaStreamRef.current.getTracks().forEach((track) => {
+          track.stop();
+          track.enabled = false;
+        });
+      } catch (e) {
+        console.warn('Error stopping mediaStreamRef tracks:', e);
+      }
+      mediaStreamRef.current = null;
+    }
+
+    // 2. Also stop tracks directly on video element if attached
+    if (videoRef.current) {
+      try {
+        videoRef.current.pause();
+        if (videoRef.current.srcObject) {
+          const stream = videoRef.current.srcObject as MediaStream;
+          stream.getTracks().forEach((track) => {
+            track.stop();
+            track.enabled = false;
+          });
+          videoRef.current.srcObject = null;
+        }
+      } catch (e) {
+        console.warn('Error cleaning up videoRef element:', e);
+      }
+    }
+
+    setActiveCameraTarget(null);
+  };
+
   // Start Camera for target slot
   const startCameraForSlot = async (slot: 'front' | 'back' | 'side') => {
     setErrorMsg('');
+    // First, ensure any running stream is cleanly stopped
+    stopCamera();
     setActiveCameraTarget(slot);
 
     try {
-      if (videoRef.current && videoRef.current.srcObject) {
-        const stream = videoRef.current.srcObject as MediaStream;
-        stream.getTracks().forEach((track) => track.stop());
-      }
-
       const stream = await navigator.mediaDevices.getUserMedia({
         video: {
           facingMode: facingMode,
           width: { ideal: 1920 },
           height: { ideal: 1080 },
         },
+        audio: false, // Disallow microphone so audio tracks never keep device active
       });
+
+      mediaStreamRef.current = stream;
 
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
-        videoRef.current.play();
+        try {
+          await videoRef.current.play();
+        } catch (playErr) {
+          console.warn('Video auto-play warning:', playErr);
+        }
       }
     } catch (err: any) {
       console.warn('Camera access error:', err);
       setErrorMsg('Camera access unavailable. Please use the Upload File button.');
-      setActiveCameraTarget(null);
+      stopCamera();
     }
   };
 
-  const stopCamera = () => {
-    if (videoRef.current && videoRef.current.srcObject) {
-      const stream = videoRef.current.srcObject as MediaStream;
-      stream.getTracks().forEach((track) => track.stop());
-      videoRef.current.srcObject = null;
-    }
-    setActiveCameraTarget(null);
-  };
-
+  // Sync stream to video element whenever activeCameraTarget is rendered
   useEffect(() => {
+    if (activeCameraTarget && mediaStreamRef.current && videoRef.current) {
+      videoRef.current.srcObject = mediaStreamRef.current;
+      videoRef.current.play().catch((e) => console.warn('Play error:', e));
+    }
+  }, [activeCameraTarget]);
+
+  // Clean up and release hardware camera on unmount or page hide
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden') {
+        stopCamera();
+      }
+    };
+
+    window.addEventListener('beforeunload', stopCamera);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+
     return () => {
+      window.removeEventListener('beforeunload', stopCamera);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
       stopCamera();
     };
   }, []);
@@ -94,14 +145,17 @@ export const LiveCameraScanner: React.FC<LiveCameraScannerProps> = ({
 
     ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
     const dataUrl = canvas.toDataURL('image/jpeg', 0.9);
+    const targetSlot = activeCameraTarget;
+
+    // Turn off camera hardware immediately BEFORE state updates
+    stopCamera();
 
     setMultiImages((prev) => ({
       ...prev,
-      [activeCameraTarget]: dataUrl,
+      [targetSlot]: dataUrl,
     }));
 
-    if (setActiveView) setActiveView(activeCameraTarget);
-    stopCamera();
+    if (setActiveView) setActiveView(targetSlot);
   };
 
   const handleFileUpload = (slot: 'front' | 'back' | 'side', e: React.ChangeEvent<HTMLInputElement>) => {
@@ -229,6 +283,15 @@ export const LiveCameraScanner: React.FC<LiveCameraScannerProps> = ({
             muted
             className="w-full h-full object-cover"
           />
+
+          {/* Close Camera Button Top-Right */}
+          <button
+            onClick={stopCamera}
+            className="absolute top-3 right-3 z-20 p-2 bg-slate-900/80 hover:bg-red-600 text-white rounded-full backdrop-blur-md transition-colors cursor-pointer shadow-lg"
+            title="Turn Off Camera"
+          >
+            <X className="w-5 h-5" />
+          </button>
 
           {/* Viewfinder Frame */}
           <div className="absolute inset-8 border-2 border-emerald-400/80 rounded-2xl pointer-events-none flex flex-col justify-between p-3">
