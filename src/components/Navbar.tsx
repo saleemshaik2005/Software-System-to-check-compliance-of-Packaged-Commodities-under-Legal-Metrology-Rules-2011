@@ -19,14 +19,15 @@ import {
   LogOut,
   Camera,
   Upload,
+  Radio,
   X
 } from 'lucide-react';
-import { UserRole, AuthUser } from '../types';
+import { UserRole, AuthUser, ActiveTab } from '../types';
 import { getAdminConfig } from '../services/adminService';
 
 interface NavbarProps {
-  currentTab: 'scanner' | 'upload' | 'analytics' | 'ecommerce' | 'manufacturer' | 'admin';
-  setCurrentTab: (tab: 'scanner' | 'upload' | 'analytics' | 'ecommerce' | 'manufacturer' | 'admin') => void;
+  currentTab: ActiveTab;
+  setCurrentTab: (tab: ActiveTab) => void;
   userRole: UserRole;
   setUserRole: (role: UserRole) => void;
   currentUser: AuthUser | null;
@@ -55,6 +56,40 @@ export const Navbar: React.FC<NavbarProps> = ({
 }) => {
   const adminConfig = getAdminConfig();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const getRoleSubtitle = () => {
+    switch (userRole) {
+      case 'MANUFACTURER':
+        return 'Brand Packaging Pre-Compliance Portal';
+      case 'CITIZEN':
+        return 'Consumer Protection • Fair Pack & Pricing';
+      case 'OFFICER':
+        return 'Legal Metrology Enforcement Field Station';
+      case 'SURVEILLANCE':
+        return 'National Legal Metrology Directorate';
+      case 'ADMIN':
+        return 'Platform Administration Console';
+      default:
+        return 'Inspect Packages • Ensure Compliance';
+    }
+  };
+
+  const handleLogoClick = () => {
+    switch (userRole) {
+      case 'MANUFACTURER':
+        setCurrentTab('manufacturer');
+        break;
+      case 'SURVEILLANCE':
+        setCurrentTab('surveillance');
+        break;
+      case 'ADMIN':
+        setCurrentTab('admin');
+        break;
+      default:
+        setCurrentTab('scanner');
+        break;
+    }
+  };
 
   return (
     <header className="sticky top-0 z-40 bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 shadow-xs transition-colors">
@@ -98,7 +133,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               )}
             </button>
 
-            {/* Polished Dropdown Menu */}
+            {/* Role-tailored Dropdown Menu */}
             {isMenuOpen && (
               <>
                 <div
@@ -138,77 +173,256 @@ export const Navbar: React.FC<NavbarProps> = ({
                     </div>
                   )}
 
-                  {/* Menu Items */}
+                  {/* Menu Items strictly filtered by Role */}
                   <div className="py-1">
-                    <button
-                      onClick={() => {
-                        setIsMenuOpen(false);
-                        setCurrentTab('upload');
-                      }}
-                      className="w-full px-4 py-2 text-left text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white flex items-center gap-3 transition-colors cursor-pointer"
-                    >
-                      <Camera className="w-4 h-4 text-emerald-600 shrink-0" />
-                      <div>
-                        <div>New Package Scan Studio</div>
-                        <div className="text-[10px] font-normal text-slate-400">Upload or snap multi-view photos</div>
-                      </div>
-                    </button>
+                    {/* Manufacturer Menu Options */}
+                    {userRole === 'MANUFACTURER' && (
+                      <>
+                        <button
+                          onClick={() => {
+                            setIsMenuOpen(false);
+                            setCurrentTab('manufacturer');
+                          }}
+                          className="w-full px-4 py-2 text-left text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white flex items-center gap-3 transition-colors cursor-pointer"
+                        >
+                          <Building2 className="w-4 h-4 text-amber-600 shrink-0" />
+                          <div>
+                            <div>Artwork Pre-Check Simulator</div>
+                            <div className="text-[10px] font-normal text-slate-400">Validate packaging prior to printing</div>
+                          </div>
+                        </button>
 
-                    <button
-                      onClick={() => {
-                        setIsMenuOpen(false);
-                        onOpenRulebook?.();
-                      }}
-                      className="w-full px-4 py-2 text-left text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white flex items-center gap-3 transition-colors cursor-pointer"
-                    >
-                      <BookOpen className="w-4 h-4 text-[#0A3663] dark:text-blue-400 shrink-0" />
-                      <div>
-                        <div>Legal Metrology Rulebook</div>
-                        <div className="text-[10px] font-normal text-slate-400">Gazette rules, standard packs & fines</div>
-                      </div>
-                    </button>
+                        <button
+                          onClick={() => {
+                            setIsMenuOpen(false);
+                            onOpenRulebook?.();
+                          }}
+                          className="w-full px-4 py-2 text-left text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white flex items-center gap-3 transition-colors cursor-pointer"
+                        >
+                          <BookOpen className="w-4 h-4 text-[#0A3663] dark:text-blue-400 shrink-0" />
+                          <div>
+                            <div>Packaging Rules & Font Height Table</div>
+                            <div className="text-[10px] font-normal text-slate-400">Rule 6, 7 Table I, Rule 10, Rule 18</div>
+                          </div>
+                        </button>
 
-                    <button
-                      onClick={() => {
-                        setIsMenuOpen(false);
-                        onOpenVault?.();
-                      }}
-                      className="w-full px-4 py-2 text-left text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white flex items-center gap-3 transition-colors cursor-pointer"
-                    >
-                      <Archive className="w-4 h-4 text-emerald-600 shrink-0" />
-                      <div>
-                        <div>Stored Inspections Vault</div>
-                        <div className="text-[10px] font-normal text-slate-400">View saved audits & PDF downloads</div>
-                      </div>
-                    </button>
+                        <button
+                          onClick={() => {
+                            setIsMenuOpen(false);
+                            onOpenVault?.();
+                          }}
+                          className="w-full px-4 py-2 text-left text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white flex items-center gap-3 transition-colors cursor-pointer"
+                        >
+                          <Archive className="w-4 h-4 text-emerald-600 shrink-0" />
+                          <div>
+                            <div>Pre-Compliance Archive</div>
+                            <div className="text-[10px] font-normal text-slate-400">Saved artwork audit certificates</div>
+                          </div>
+                        </button>
+                      </>
+                    )}
 
-                    <button
-                      onClick={() => {
-                        setIsMenuOpen(false);
-                        setCurrentTab('admin');
-                      }}
-                      className="w-full px-4 py-2 text-left text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white flex items-center gap-3 transition-colors cursor-pointer"
-                    >
-                      <Settings className="w-4 h-4 text-purple-600 shrink-0" />
-                      <div>
-                        <div>System Settings & Fines</div>
-                        <div className="text-[10px] font-normal text-slate-400">Compounding fines & threshold tuner</div>
-                      </div>
-                    </button>
+                    {/* Citizen Menu Options */}
+                    {userRole === 'CITIZEN' && (
+                      <>
+                        <button
+                          onClick={() => {
+                            setIsMenuOpen(false);
+                            setCurrentTab('upload');
+                          }}
+                          className="w-full px-4 py-2 text-left text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white flex items-center gap-3 transition-colors cursor-pointer"
+                        >
+                          <Camera className="w-4 h-4 text-emerald-600 shrink-0" />
+                          <div>
+                            <div>Check Any Package</div>
+                            <div className="text-[10px] font-normal text-slate-400">Snap photos of front/back</div>
+                          </div>
+                        </button>
 
-                    <button
-                      onClick={() => {
-                        setIsMenuOpen(false);
-                        onOpenGrievance?.();
-                      }}
-                      className="w-full px-4 py-2 text-left text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white flex items-center gap-3 transition-colors cursor-pointer"
-                    >
-                      <PhoneCall className="w-4 h-4 text-amber-600 shrink-0" />
-                      <div>
-                        <div>National Helpline (1915)</div>
-                        <div className="text-[10px] font-normal text-slate-400">Direct consumer care grievance dial</div>
-                      </div>
-                    </button>
+                        <button
+                          onClick={() => {
+                            setIsMenuOpen(false);
+                            setCurrentTab('ecommerce');
+                          }}
+                          className="w-full px-4 py-2 text-left text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white flex items-center gap-3 transition-colors cursor-pointer"
+                        >
+                          <Globe className="w-4 h-4 text-indigo-600 shrink-0" />
+                          <div>
+                            <div>Dark Store Price Checker</div>
+                            <div className="text-[10px] font-normal text-slate-400">Blinkit, Zepto, Instamart deals</div>
+                          </div>
+                        </button>
+
+                        <button
+                          onClick={() => {
+                            setIsMenuOpen(false);
+                            onOpenGrievance?.();
+                          }}
+                          className="w-full px-4 py-2 text-left text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white flex items-center gap-3 transition-colors cursor-pointer"
+                        >
+                          <PhoneCall className="w-4 h-4 text-amber-600 shrink-0" />
+                          <div>
+                            <div>National Consumer Helpline (1915)</div>
+                            <div className="text-[10px] font-normal text-slate-400">Direct 1-tap grievance filing</div>
+                          </div>
+                        </button>
+
+                        <button
+                          onClick={() => {
+                            setIsMenuOpen(false);
+                            onOpenRulebook?.();
+                          }}
+                          className="w-full px-4 py-2 text-left text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white flex items-center gap-3 transition-colors cursor-pointer"
+                        >
+                          <BookOpen className="w-4 h-4 text-[#0A3663] dark:text-blue-400 shrink-0" />
+                          <div>
+                            <div>Consumer Rights Guide</div>
+                            <div className="text-[10px] font-normal text-slate-400">Know your packaging protections</div>
+                          </div>
+                        </button>
+                      </>
+                    )}
+
+                    {/* Officer Menu Options */}
+                    {userRole === 'OFFICER' && (
+                      <>
+                        <button
+                          onClick={() => {
+                            setIsMenuOpen(false);
+                            setCurrentTab('upload');
+                          }}
+                          className="w-full px-4 py-2 text-left text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white flex items-center gap-3 transition-colors cursor-pointer"
+                        >
+                          <Camera className="w-4 h-4 text-emerald-600 shrink-0" />
+                          <div>
+                            <div>Field Scan Studio</div>
+                            <div className="text-[10px] font-normal text-slate-400">Multi-panel physical inspection</div>
+                          </div>
+                        </button>
+
+                        <button
+                          onClick={() => {
+                            setIsMenuOpen(false);
+                            setCurrentTab('analytics');
+                          }}
+                          className="w-full px-4 py-2 text-left text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white flex items-center gap-3 transition-colors cursor-pointer"
+                        >
+                          <BarChart3 className="w-4 h-4 text-[#0A3663] dark:text-blue-400 shrink-0" />
+                          <div>
+                            <div>Enforcement Dashboard & Notices</div>
+                            <div className="text-[10px] font-normal text-slate-400">Fifth Schedule sampling & Sec 36 notices</div>
+                          </div>
+                        </button>
+
+                        <button
+                          onClick={() => {
+                            setIsMenuOpen(false);
+                            onOpenRulebook?.();
+                          }}
+                          className="w-full px-4 py-2 text-left text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white flex items-center gap-3 transition-colors cursor-pointer"
+                        >
+                          <BookOpen className="w-4 h-4 text-[#0A3663] dark:text-blue-400 shrink-0" />
+                          <div>
+                            <div>Legal Metrology Gazette Rulebook</div>
+                            <div className="text-[10px] font-normal text-slate-400">Rules 5-32 & Fifth Schedule tables</div>
+                          </div>
+                        </button>
+
+                        <button
+                          onClick={() => {
+                            setIsMenuOpen(false);
+                            onOpenVault?.();
+                          }}
+                          className="w-full px-4 py-2 text-left text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white flex items-center gap-3 transition-colors cursor-pointer"
+                        >
+                          <Archive className="w-4 h-4 text-emerald-600 shrink-0" />
+                          <div>
+                            <div>Inspection Dossier Vault</div>
+                            <div className="text-[10px] font-normal text-slate-400">Saved Form A/B reports & evidence</div>
+                          </div>
+                        </button>
+                      </>
+                    )}
+
+                    {/* Surveillance (Ministry Directorate) Options */}
+                    {userRole === 'SURVEILLANCE' && (
+                      <>
+                        <button
+                          onClick={() => {
+                            setIsMenuOpen(false);
+                            setCurrentTab('surveillance');
+                          }}
+                          className="w-full px-4 py-2 text-left text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white flex items-center gap-3 transition-colors cursor-pointer"
+                        >
+                          <Radio className="w-4 h-4 text-cyan-500 shrink-0" />
+                          <div>
+                            <div>National Surveillance Hub</div>
+                            <div className="text-[10px] font-normal text-slate-400">State rankings, seizures & repeat offenders</div>
+                          </div>
+                        </button>
+
+                        <button
+                          onClick={() => {
+                            setIsMenuOpen(false);
+                            setCurrentTab('analytics');
+                          }}
+                          className="w-full px-4 py-2 text-left text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white flex items-center gap-3 transition-colors cursor-pointer"
+                        >
+                          <Archive className="w-4 h-4 text-emerald-600 shrink-0" />
+                          <div>
+                            <div>Macro Seizure Dossier</div>
+                            <div className="text-[10px] font-normal text-slate-400">Nationwide inspection audit logs</div>
+                          </div>
+                        </button>
+
+                        <button
+                          onClick={() => {
+                            setIsMenuOpen(false);
+                            setCurrentTab('ecommerce');
+                          }}
+                          className="w-full px-4 py-2 text-left text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white flex items-center gap-3 transition-colors cursor-pointer"
+                        >
+                          <Globe className="w-4 h-4 text-indigo-600 shrink-0" />
+                          <div>
+                            <div>Quick Commerce Compliance</div>
+                            <div className="text-[10px] font-normal text-slate-400">Dark store platform rankings</div>
+                          </div>
+                        </button>
+                      </>
+                    )}
+
+                    {/* Platform Admin Options */}
+                    {userRole === 'ADMIN' && (
+                      <>
+                        <button
+                          onClick={() => {
+                            setIsMenuOpen(false);
+                            setCurrentTab('admin');
+                          }}
+                          className="w-full px-4 py-2 text-left text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white flex items-center gap-3 transition-colors cursor-pointer"
+                        >
+                          <Settings className="w-4 h-4 text-purple-600 shrink-0" />
+                          <div>
+                            <div>Platform Control Center</div>
+                            <div className="text-[10px] font-normal text-slate-400">Tune fines, thresholds & announcements</div>
+                          </div>
+                        </button>
+
+                        <button
+                          onClick={() => {
+                            setIsMenuOpen(false);
+                            setCurrentTab('analytics');
+                          }}
+                          className="w-full px-4 py-2 text-left text-xs font-bold text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white flex items-center gap-3 transition-colors cursor-pointer"
+                        >
+                          <BarChart3 className="w-4 h-4 text-blue-600 shrink-0" />
+                          <div>
+                            <div>All Scans & JSON Export</div>
+                            <div className="text-[10px] font-normal text-slate-400">Full audit repository & database dump</div>
+                          </div>
+                        </button>
+                      </>
+                    )}
                   </div>
 
                   {/* Sign Out / Sign In Action */}
@@ -224,7 +438,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                         <LogOut className="w-4 h-4 text-red-500 shrink-0" />
                         <div>
                           <div>Sign Out</div>
-                          <div className="text-[10px] font-normal text-red-400">Log out to sign-in page</div>
+                          <div className="text-[10px] font-normal text-red-400">Return to role login selector</div>
                         </div>
                       </button>
                     ) : (
@@ -251,7 +465,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Logo & Brand */}
           <div
             className="flex items-center gap-2.5 cursor-pointer select-none"
-            onClick={() => setCurrentTab('scanner')}
+            onClick={handleLogoClick}
           >
             <img
               src="/logos/inspack-logo.jpg"
@@ -266,96 +480,217 @@ export const Navbar: React.FC<NavbarProps> = ({
                 in<span className="text-[#00A651]">spack</span>
               </span>
               <span className="text-[9px] uppercase tracking-wider text-slate-500 dark:text-slate-400 font-extrabold mt-0.5">
-                Inspect Packages • Ensure Compliance
+                {getRoleSubtitle()}
               </span>
             </div>
           </div>
         </div>
 
-        {/* Navigation Tabs */}
+        {/* Navigation Tabs - Strictly Role-Specific */}
         <nav className="flex items-center gap-1 overflow-x-auto py-1">
-          {/* 1. Package Inspector (Report View) */}
-          <button
-            onClick={() => setCurrentTab('scanner')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-              currentTab === 'scanner'
-                ? 'bg-[#00A651] text-white shadow-xs'
-                : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
-            }`}
-          >
-            <Scale className="w-3.5 h-3.5" />
-            <span>{userRole === 'CITIZEN' ? 'Consumer Check' : 'Package Inspector'}</span>
-          </button>
+          {/* 1. MANUFACTURER: ONLY Brand Artwork Pre-Check & Pre-Compliance Sheet */}
+          {userRole === 'MANUFACTURER' && (
+            <>
+              <button
+                onClick={() => setCurrentTab('manufacturer')}
+                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  currentTab === 'manufacturer'
+                    ? 'bg-amber-600 text-white shadow-xs'
+                    : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                }`}
+              >
+                <Building2 className="w-3.5 h-3.5" />
+                <span>Artwork Pre-Check Simulator</span>
+              </button>
 
-          {/* 2. Upload & Scan (Dedicated Studio) */}
-          <button
-            onClick={() => setCurrentTab('upload')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-              currentTab === 'upload'
-                ? 'bg-[#0A3663] dark:bg-blue-600 text-white shadow-xs'
-                : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
-            }`}
-          >
-            <Camera className="w-3.5 h-3.5" />
-            <span>Upload & Scan</span>
-          </button>
-
-          {/* 3. Officer Analytics (Officer & Admin) */}
-          {(userRole === 'OFFICER' || userRole === 'ADMIN') && (
-            <button
-              onClick={() => setCurrentTab('analytics')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                currentTab === 'analytics'
-                  ? 'bg-[#0A3663] text-white shadow-xs'
-                  : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
-              }`}
-            >
-              <BarChart3 className="w-3.5 h-3.5" />
-              <span>Officer Dashboard</span>
-            </button>
+              <button
+                onClick={() => setCurrentTab('scanner')}
+                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  currentTab === 'scanner'
+                    ? 'bg-[#00A651] text-white shadow-xs'
+                    : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                }`}
+              >
+                <CheckCircle className="w-3.5 h-3.5" />
+                <span>Pre-Compliance Audit Sheet</span>
+              </button>
+            </>
           )}
 
-          {/* 4. E-Commerce Audit */}
-          <button
-            onClick={() => setCurrentTab('ecommerce')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-              currentTab === 'ecommerce'
-                ? 'bg-indigo-600 text-white shadow-xs'
-                : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
-            }`}
-          >
-            <Globe className="w-3.5 h-3.5" />
-            <span>{userRole === 'CITIZEN' ? 'Dark Store Deals' : 'E-Commerce Audit'}</span>
-          </button>
+          {/* 2. CITIZEN: Scan/Snap Package, Fair Pack Report, Dark Store Deals */}
+          {userRole === 'CITIZEN' && (
+            <>
+              <button
+                onClick={() => setCurrentTab('upload')}
+                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  currentTab === 'upload'
+                    ? 'bg-[#00A651] text-white shadow-xs'
+                    : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                }`}
+              >
+                <Camera className="w-3.5 h-3.5" />
+                <span>Scan / Snap Package</span>
+              </button>
 
-          {/* 5. Brand Pre-Check Simulator */}
-          {(userRole === 'MANUFACTURER' || userRole === 'OFFICER' || userRole === 'ADMIN') && (
-            <button
-              onClick={() => setCurrentTab('manufacturer')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                currentTab === 'manufacturer'
-                  ? 'bg-amber-600 text-white shadow-xs'
-                  : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
-              }`}
-            >
-              <Building2 className="w-3.5 h-3.5" />
-              <span>Brand Pre-Check</span>
-            </button>
+              <button
+                onClick={() => setCurrentTab('scanner')}
+                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  currentTab === 'scanner'
+                    ? 'bg-[#0A3663] text-white shadow-xs'
+                    : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                }`}
+              >
+                <Scale className="w-3.5 h-3.5" />
+                <span>Fair Pack & MRP Report</span>
+              </button>
+
+              <button
+                onClick={() => setCurrentTab('ecommerce')}
+                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  currentTab === 'ecommerce'
+                    ? 'bg-indigo-600 text-white shadow-xs'
+                    : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                }`}
+              >
+                <Globe className="w-3.5 h-3.5" />
+                <span>Dark Store Deals Audit</span>
+              </button>
+            </>
           )}
 
-          {/* 6. Administrator Control Center */}
+          {/* 3. LEGAL METROLOGY INSPECTOR (OFFICER): Field Scan, Inspection Report, Officer Hub, E-Comm Audit */}
+          {userRole === 'OFFICER' && (
+            <>
+              <button
+                onClick={() => setCurrentTab('upload')}
+                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  currentTab === 'upload'
+                    ? 'bg-[#0A3663] dark:bg-blue-600 text-white shadow-xs'
+                    : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                }`}
+              >
+                <Camera className="w-3.5 h-3.5" />
+                <span>Field Scan Studio</span>
+              </button>
+
+              <button
+                onClick={() => setCurrentTab('scanner')}
+                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  currentTab === 'scanner'
+                    ? 'bg-[#00A651] text-white shadow-xs'
+                    : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                }`}
+              >
+                <Scale className="w-3.5 h-3.5" />
+                <span>Official Inspection Report</span>
+              </button>
+
+              <button
+                onClick={() => setCurrentTab('analytics')}
+                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  currentTab === 'analytics'
+                    ? 'bg-[#0A3663] text-white shadow-xs'
+                    : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                }`}
+              >
+                <BarChart3 className="w-3.5 h-3.5" />
+                <span>Officer Enforcement Hub</span>
+              </button>
+
+              <button
+                onClick={() => setCurrentTab('ecommerce')}
+                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  currentTab === 'ecommerce'
+                    ? 'bg-indigo-600 text-white shadow-xs'
+                    : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                }`}
+              >
+                <Globe className="w-3.5 h-3.5" />
+                <span>E-Commerce Audit</span>
+              </button>
+            </>
+          )}
+
+          {/* 4. NATIONAL SURVEILLANCE DIRECTORATE: Surveillance Hub, Central Archive, Quick Commerce */}
+          {userRole === 'SURVEILLANCE' && (
+            <>
+              <button
+                onClick={() => setCurrentTab('surveillance')}
+                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  currentTab === 'surveillance'
+                    ? 'bg-[#0A3663] text-white shadow-xs'
+                    : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                }`}
+              >
+                <Radio className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
+                <span>National Surveillance Hub</span>
+              </button>
+
+              <button
+                onClick={() => setCurrentTab('analytics')}
+                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  currentTab === 'analytics'
+                    ? 'bg-emerald-700 text-white shadow-xs'
+                    : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                }`}
+              >
+                <Archive className="w-3.5 h-3.5" />
+                <span>Central Dossier</span>
+              </button>
+
+              <button
+                onClick={() => setCurrentTab('ecommerce')}
+                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  currentTab === 'ecommerce'
+                    ? 'bg-indigo-600 text-white shadow-xs'
+                    : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                }`}
+              >
+                <Globe className="w-3.5 h-3.5" />
+                <span>Platform Surveillance</span>
+              </button>
+            </>
+          )}
+
+          {/* 5. PLATFORM ADMINISTRATOR (SOFTWARE/TECH ADMIN) */}
           {userRole === 'ADMIN' && (
-            <button
-              onClick={() => setCurrentTab('admin')}
-              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
-                currentTab === 'admin'
-                  ? 'bg-purple-700 text-white shadow-xs'
-                  : 'text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-950/40 hover:bg-purple-100'
-              }`}
-            >
-              <Settings className="w-3.5 h-3.5" />
-              <span>Admin Center</span>
-            </button>
+            <>
+              <button
+                onClick={() => setCurrentTab('admin')}
+                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  currentTab === 'admin'
+                    ? 'bg-purple-700 text-white shadow-xs'
+                    : 'text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-950/40 hover:bg-purple-100'
+                }`}
+              >
+                <Settings className="w-3.5 h-3.5" />
+                <span>Platform Control Center</span>
+              </button>
+
+              <button
+                onClick={() => setCurrentTab('analytics')}
+                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  currentTab === 'analytics'
+                    ? 'bg-[#0A3663] text-white shadow-xs'
+                    : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                }`}
+              >
+                <BarChart3 className="w-3.5 h-3.5" />
+                <span>All Scans & Audit Logs</span>
+              </button>
+
+              <button
+                onClick={() => setCurrentTab('upload')}
+                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                  currentTab === 'upload'
+                    ? 'bg-[#00A651] text-white shadow-xs'
+                    : 'text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                }`}
+              >
+                <Camera className="w-3.5 h-3.5" />
+                <span>Scan Studio</span>
+              </button>
+            </>
           )}
         </nav>
 

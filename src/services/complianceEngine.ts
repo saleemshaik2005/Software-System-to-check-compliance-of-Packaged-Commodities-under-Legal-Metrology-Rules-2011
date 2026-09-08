@@ -14,6 +14,12 @@ export function evaluateCompliance(
 ): ComplianceReport {
   const evaluations: RuleEvaluation[] = [];
   const hasAiBoxes = Boolean(product.detectedBoxes && product.detectedBoxes.length > 0);
+  const isDemoPreset = Boolean(
+    product.productName?.toLowerCase().includes('amul') ||
+    product.productName?.toLowerCase().includes('tata') ||
+    product.productName?.toLowerCase().includes('haldiram') ||
+    product.productName?.toLowerCase().includes('sample')
+  );
   const boundingBoxes: BoundingBox[] = hasAiBoxes ? [...(product.detectedBoxes || [])] : [];
 
   // ==========================================
@@ -40,7 +46,7 @@ export function evaluateCompliance(
       penaltySection: 'Rule 32(2)',
       compoundingFine: 0
     });
-    if (!hasAiBoxes) {
+    if (!hasAiBoxes && isDemoPreset) {
       boundingBoxes.push({
         id: 'box-mfg',
         x: 10,
@@ -70,7 +76,7 @@ export function evaluateCompliance(
       penaltySection: 'Rule 32(2)',
       compoundingFine: 2000
     });
-    if (!hasAiBoxes) {
+    if (!hasAiBoxes && isDemoPreset) {
       boundingBoxes.push({
         id: 'box-mfg-warn',
         x: 10,
@@ -136,7 +142,7 @@ export function evaluateCompliance(
       penaltySection: 'Rule 32(2)',
       compoundingFine: 0
     });
-    if (!hasAiBoxes) {
+    if (!hasAiBoxes && isDemoPreset) {
       boundingBoxes.push({
         id: 'box-name',
         x: 15,
@@ -307,7 +313,7 @@ export function evaluateCompliance(
       penaltySection: 'Rule 32(2)',
       compoundingFine: 2000
     });
-    if (!hasAiBoxes) {
+    if (!hasAiBoxes && isDemoPreset) {
       boundingBoxes.push({
         id: 'box-mrp-sticker',
         x: 55,
@@ -337,7 +343,7 @@ export function evaluateCompliance(
       penaltySection: 'Rule 32(2)',
       compoundingFine: 0
     });
-    if (!hasAiBoxes) {
+    if (!hasAiBoxes && isDemoPreset) {
       boundingBoxes.push({
         id: 'box-mrp',
         x: 55,
@@ -367,7 +373,7 @@ export function evaluateCompliance(
       penaltySection: 'Rule 32(2)',
       compoundingFine: 2000
     });
-    if (!hasAiBoxes) {
+    if (!hasAiBoxes && isDemoPreset) {
       boundingBoxes.push({
         id: 'box-mrp-notax',
         x: 55,
@@ -447,7 +453,7 @@ export function evaluateCompliance(
       penaltySection: 'Rule 32(2)',
       compoundingFine: 2000
     });
-    if (!hasAiBoxes) {
+    if (!hasAiBoxes && isDemoPreset) {
       boundingBoxes.push({
         id: 'box-care-warn',
         x: 10,

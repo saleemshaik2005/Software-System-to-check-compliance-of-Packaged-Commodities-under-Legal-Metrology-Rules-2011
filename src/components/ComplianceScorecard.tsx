@@ -10,6 +10,7 @@ import {
   ShieldAlert,
   MessageSquareWarning,
   Archive,
+  Eye,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { saveScanReport } from '../services/dbService';
@@ -17,11 +18,13 @@ import { saveScanReport } from '../services/dbService';
 interface ComplianceScorecardProps {
   report: ComplianceReport;
   onOpenGrievanceModal?: () => void;
+  onPreviewPDF?: () => void;
 }
 
 export const ComplianceScorecard: React.FC<ComplianceScorecardProps> = ({
   report,
   onOpenGrievanceModal,
+  onPreviewPDF,
 }) => {
   const isCompliant = report.overallStatus === 'COMPLIANT';
   const isWarning = report.overallStatus === 'NEEDS_REVIEW';
@@ -96,6 +99,17 @@ export const ComplianceScorecard: React.FC<ComplianceScorecardProps> = ({
               )}
             </button>
 
+            {onPreviewPDF && (
+              <button
+                onClick={onPreviewPDF}
+                className="flex items-center gap-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 border border-slate-200 dark:border-slate-700 text-xs font-bold px-3.5 py-2 rounded-xl transition-all cursor-pointer shadow-xs"
+                title="Preview Official Seventh Schedule Form A/B Sheet in browser"
+              >
+                <FileText className="w-3.5 h-3.5 text-[#0A3663] dark:text-blue-400" />
+                <span>Preview PDF Sheet</span>
+              </button>
+            )}
+
             <button
               onClick={handleDownloadPDF}
               disabled={isGeneratingPdf}
@@ -103,7 +117,7 @@ export const ComplianceScorecard: React.FC<ComplianceScorecardProps> = ({
               title="Download Seventh Schedule Form A/B Official Data Sheet with Photographic Evidence"
             >
               <Download className={`w-3.5 h-3.5 ${isGeneratingPdf ? 'animate-bounce' : ''}`} />
-              <span>{isGeneratingPdf ? 'Generating Official PDF...' : `Download Form ${report.formType === 'Form A' ? 'A' : 'B'} PDF`}</span>
+              <span>{isGeneratingPdf ? 'Generating...' : `Download PDF`}</span>
             </button>
           </div>
         </div>
@@ -288,12 +302,25 @@ export const ComplianceScorecard: React.FC<ComplianceScorecardProps> = ({
 
       {/* Action Buttons */}
       <div className="flex flex-wrap items-center gap-2 pt-3 border-t border-slate-200 dark:border-slate-800">
+        {onPreviewPDF && (
+          <button
+            onClick={onPreviewPDF}
+            className="flex-1 flex items-center justify-center gap-1.5 bg-[#00A651] hover:bg-emerald-600 text-white text-xs font-black py-2.5 px-3 rounded-xl shadow-xs transition-all cursor-pointer"
+            title="Preview official PDF sheet directly in the website before downloading"
+          >
+            <Eye className="w-4 h-4" />
+            <span>Preview Official PDF</span>
+          </button>
+        )}
+
         <button
           onClick={handleDownloadPDF}
-          className="flex-1 flex items-center justify-center gap-1.5 bg-[#0A3663] hover:bg-blue-900 text-white text-xs font-bold py-2.5 px-3 rounded-xl shadow-sm transition-all cursor-pointer"
+          disabled={isGeneratingPdf}
+          className="flex items-center justify-center gap-1.5 bg-[#0A3663] hover:bg-blue-900 text-white text-xs font-bold py-2.5 px-3.5 rounded-xl shadow-xs transition-all cursor-pointer disabled:bg-slate-400"
+          title="Download statutory inspection PDF"
         >
-          <FileText className="w-4 h-4" />
-          <span>Official {report.formType} Inspection Sheet</span>
+          <Download className="w-4 h-4" />
+          <span>{isGeneratingPdf ? 'Generating...' : 'Download PDF'}</span>
         </button>
 
         {onOpenGrievanceModal && (

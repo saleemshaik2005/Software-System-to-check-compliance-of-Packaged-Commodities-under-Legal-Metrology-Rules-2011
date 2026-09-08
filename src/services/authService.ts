@@ -26,16 +26,25 @@ export const TEST_ACCOUNTS: Record<UserRole, AuthUser> = {
     name: 'Tata Consumer Products QA Division',
     email: 'regulatory@tataagro.in',
     role: 'MANUFACTURER',
-    organization: 'Tata Agro FMCG Regulatory & Quality Assurance Group',
+    organization: 'Tata Agro FMCG Packaging QA & Pre-Market Compliance Group',
     avatarUrl: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=120&auto=format&fit=crop&q=80'
+  },
+  SURVEILLANCE: {
+    id: 'user-surv-01',
+    name: 'Dr. S. K. Rastogi',
+    email: 'surveillance.controller@consumeraffairs.nic.in',
+    role: 'SURVEILLANCE',
+    badgeNumber: 'MOCA-SURV-01',
+    organization: 'National Legal Metrology Surveillance Directorate • Ministry Oversight',
+    avatarUrl: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=120&auto=format&fit=crop&q=80'
   },
   ADMIN: {
     id: 'user-admin-01',
-    name: 'Dr. P. K. Singhal',
-    email: 'admin.metrology@nic.in',
+    name: 'Arjun Mehta (Lead Systems Admin)',
+    email: 'sysadmin@inspack.gov.in',
     role: 'ADMIN',
-    badgeNumber: 'MOCA-ADMIN-01',
-    organization: 'Ministry of Consumer Affairs, Food & Public Distribution',
+    badgeNumber: 'SYS-ADMIN-01',
+    organization: 'Inspack Platform Engineering & Core Software Administration',
     avatarUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=120&auto=format&fit=crop&q=80'
   }
 };

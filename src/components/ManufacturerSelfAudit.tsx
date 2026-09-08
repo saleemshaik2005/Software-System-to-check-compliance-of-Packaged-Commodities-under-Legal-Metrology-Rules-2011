@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { Building2, CheckCircle2, ArrowRight } from 'lucide-react';
 import { ExtractedProductInfo, ComplianceReport } from '../types';
 import { evaluateCompliance } from '../services/complianceEngine';
@@ -323,7 +323,7 @@ export const ManufacturerSelfAudit: React.FC<ManufacturerSelfAuditProps> = ({ on
               onClick={handleTestNow}
               className="w-full bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold py-2.5 px-4 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
-              <span>View Full Inspector Dossier & Form A</span>
+              <span>View Pre-Compliance Audit Sheet & Certificate</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>

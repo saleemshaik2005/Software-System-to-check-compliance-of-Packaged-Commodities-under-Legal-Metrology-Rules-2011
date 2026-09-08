@@ -28,7 +28,8 @@ export type ProductCommodityCategory =
 
 export type ComplianceStatus = 'COMPLIANT' | 'NON_COMPLIANT' | 'NEEDS_REVIEW';
 export type RuleStatus = 'PASS' | 'FAIL' | 'WARNING' | 'EXEMPT';
-export type UserRole = 'OFFICER' | 'CITIZEN' | 'MANUFACTURER' | 'ADMIN';
+export type UserRole = 'OFFICER' | 'CITIZEN' | 'MANUFACTURER' | 'SURVEILLANCE' | 'ADMIN';
+export type ActiveTab = 'scanner' | 'upload' | 'analytics' | 'ecommerce' | 'manufacturer' | 'surveillance' | 'admin';
 
 export interface AuthUser {
   id: string;

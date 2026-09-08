@@ -203,10 +203,12 @@ Return ONLY valid JSON matching this exact schema:
 }
 
 CRITICAL RULES FOR BOUNDING BOXES:
-1. Each detected box MUST belong to the specific view where it actually appears: 'front' (front face / PDP), 'back' (back nutritional / declarations panel), or 'side' (side batch / flap).
-2. If a view does NOT contain a declaration, do NOT add a box for that view.
-3. box_2d is [ymin, xmin, ymax, xmax] normalized on a 0-1000 scale.
-4. Do NOT hallucinate values. If a field is not printed, return empty string.`;
+1. ONLY return a detectedBox for a view if that exact text is clearly printed and readable on that specific image panel!
+2. If a declaration (such as manufacturer premises address, postal PIN, consumer care helpline/email, MRP, or batch number) appears on the BACK panel, ONLY return a box for it with view: 'back'. NEVER create a box for it on 'front' or 'side'!
+3. On the front of retail packages, usually ONLY the trade name / commodity name appears. NEVER place consumer care, factory address, or batch number boxes on the front image.
+4. If an image view (such as 'side' or 'front') does not contain a declaration, DO NOT return any box for that view. It is completely correct to return 0 boxes for that view.
+5. box_2d MUST be [ymin, xmin, ymax, xmax] on a 0-1000 integer scale.
+6. Do NOT hallucinate coordinates. If text is not visibly legible on that image, omit the box.`;
 
   const parts: any[] = [{ text: promptText }];
 
@@ -278,6 +280,18 @@ CRITICAL RULES FOR BOUNDING BOXES:
                 const width = Math.max(5, Math.min(100 - x, (xmax - xmin) / 10));
                 const height = Math.max(3, Math.min(100 - y, (ymax - ymin) / 10));
                 const view = (['front', 'back', 'side'].includes(rawBox.view) ? rawBox.view : 'front') as 'front' | 'back' | 'side';
+
+                // Discard misplaced back-panel declarations mistakenly tagged on 'front'
+                if (
+                  view === 'front' &&
+                  (rawBox.label?.includes('Consumer Care') ||
+                   rawBox.label?.includes('Mfg Details') ||
+                   rawBox.label?.includes('Manufacturer') ||
+                   rawBox.label?.includes('MRP') ||
+                   rawBox.label?.includes('Date'))
+                ) {
+                  return;
+                }
 
                 parsedBoxes.push({
                   id: `ai-box-${idx + 1}`,

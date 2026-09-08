@@ -8,7 +8,9 @@ import { RuleBreakdownCard } from './components/RuleBreakdownCard';
 import { OfficerAnalyticsDashboard } from './components/OfficerAnalyticsDashboard';
 import { EcommerceAuditTab } from './components/EcommerceAuditTab';
 import { ManufacturerSelfAudit } from './components/ManufacturerSelfAudit';
+import { NationalSurveillanceHub } from './components/NationalSurveillanceHub';
 import { AdminControlCenter } from './components/AdminControlCenter';
+import { PDFPreviewModal } from './components/PDFPreviewModal';
 import { ConsumerGrievanceModal } from './components/ConsumerGrievanceModal';
 import { CloudConfigModal } from './components/CloudConfigModal';
 import { RulebookDrawer } from './components/RulebookDrawer';
@@ -19,15 +21,23 @@ import { DEMO_PRESETS, DemoProductPreset } from './data/demoProducts';
 import { evaluateCompliance } from './services/complianceEngine';
 import { saveScanReport } from './services/dbService';
 import { getCurrentUser, switchRole, logoutUser } from './services/authService';
-import { ComplianceReport, UserRole, AuthUser } from './types';
-import { Camera, Archive, CheckCircle, AlertTriangle, ArrowRight, ShieldCheck, Sparkles } from 'lucide-react';
+import { ComplianceReport, UserRole, AuthUser, ActiveTab } from './types';
+import { Camera, Archive, CheckCircle, AlertTriangle, ArrowRight, ShieldCheck, Sparkles, Building2, Radio } from 'lucide-react';
 
 export function App() {
   const [currentUser, setCurrentUser] = useState<AuthUser | null>(() => getCurrentUser());
   const [userRole, setUserRole] = useState<UserRole>(() => currentUser?.role || 'CITIZEN');
-  const [currentTab, setCurrentTab] = useState<'scanner' | 'upload' | 'analytics' | 'ecommerce' | 'manufacturer' | 'admin'>('scanner');
+  const [currentTab, setCurrentTab] = useState<ActiveTab>(() => {
+    const role = currentUser?.role || 'CITIZEN';
+    if (role === 'SURVEILLANCE') return 'surveillance';
+    if (role === 'ADMIN') return 'admin';
+    if (role === 'MANUFACTURER') return 'manufacturer';
+    if (role === 'CITIZEN') return 'upload';
+    return 'scanner';
+  });
   const [activePresetId, setActivePresetId] = useState<string>('demo-amul-milk');
   const [activeView, setActiveView] = useState<'front' | 'back' | 'side'>('front');
+  const [isPDFPreviewOpen, setIsPDFPreviewOpen] = useState(false);
   const [isGrievanceOpen, setIsGrievanceOpen] = useState(false);
   const [isCloudModalOpen, setIsCloudModalOpen] = useState(false);
   const [isRulebookOpen, setIsRulebookOpen] = useState(false);
@@ -73,7 +83,6 @@ export function App() {
     rep.id = 'INSP-' + Math.floor(100000 + Math.random() * 900000);
     setCurrentReport(rep);
     saveScanReport(rep);
-    // Transition to the clean audit report view
     setCurrentTab('scanner');
   };
 
@@ -81,7 +90,6 @@ export function App() {
     setActivePresetId('');
     setCurrentReport(report);
     saveScanReport(report);
-    // Transition to the clean audit report view
     setCurrentTab('scanner');
   };
 
@@ -98,6 +106,10 @@ export function App() {
       setCurrentTab('admin');
     } else if (newRole === 'MANUFACTURER') {
       setCurrentTab('manufacturer');
+    } else if (newRole === 'SURVEILLANCE') {
+      setCurrentTab('surveillance');
+    } else if (newRole === 'CITIZEN') {
+      setCurrentTab('upload');
     } else {
       setCurrentTab('scanner');
     }
@@ -110,6 +122,10 @@ export function App() {
       setCurrentTab('admin');
     } else if (user.role === 'MANUFACTURER') {
       setCurrentTab('manufacturer');
+    } else if (user.role === 'SURVEILLANCE') {
+      setCurrentTab('surveillance');
+    } else if (user.role === 'CITIZEN') {
+      setCurrentTab('upload');
     } else {
       setCurrentTab('scanner');
     }
@@ -119,6 +135,7 @@ export function App() {
     logoutUser();
     setCurrentUser(null);
     setUserRole('CITIZEN');
+    setCurrentTab('upload');
     setIsLoginOpen(true);
   };
 
@@ -153,27 +170,29 @@ export function App() {
         {currentTab === 'upload' && (
           <div className="space-y-6 animate-in fade-in duration-200">
             {/* Studio Header */}
-            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-xs flex flex-wrap items-center justify-between gap-4">
+            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-xs flex flex-wrap items-center justify-between gap-4 transition-colors">
               <div>
                 <div className="flex items-center gap-2 mb-1">
                   <span className="p-2 rounded-2xl bg-[#0A3663] text-white">
                     <Camera className="w-5 h-5" />
                   </span>
                   <h1 className="text-xl font-black text-slate-900 dark:text-slate-100 tracking-tight">
-                    Package Compliance Scan Studio
+                    {userRole === 'CITIZEN' ? 'Consumer Package Compliance Scanner' : 'Field Inspection Scan Studio'}
                   </h1>
                 </div>
                 <p className="text-xs text-slate-500 dark:text-slate-400">
-                  Upload photos or snap live camera shots of Front, Back, and Side panels to perform automated LMPC 2011 compliance verification.
+                  {userRole === 'CITIZEN'
+                    ? 'Upload front and back photos of any packaged product to check if the MRP, weight, and manufacturer details follow the law.'
+                    : 'Upload multi-view photos or capture live camera images of Front, Back, and Side panels for automated LMPC 2011 compliance verification.'}
                 </p>
               </div>
 
-              {/* Quick Jump back to current report if exists */}
+              {/* Quick Jump to latest audit report */}
               <button
                 onClick={() => setCurrentTab('scanner')}
                 className="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold text-xs transition-colors cursor-pointer border border-slate-200 dark:border-slate-700"
               >
-                <span>View Latest Audit Report</span>
+                <span>View Latest Audit Sheet</span>
                 <ArrowRight className="w-3.5 h-3.5" />
               </button>
             </div>
@@ -185,7 +204,7 @@ export function App() {
               setActiveView={setActiveView}
             />
 
-            {/* FMCG Benchmark Demo Presets */}
+            {/* Benchmark Demo Presets */}
             <div className="pt-2">
               <div className="flex items-center gap-2 mb-3">
                 <Sparkles className="w-4 h-4 text-[#00A651]" />
@@ -207,7 +226,7 @@ export function App() {
         {currentTab === 'scanner' && (
           <div className="space-y-6 animate-in fade-in duration-200">
             {/* Top Report Header & Action Bar */}
-            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-xs flex flex-wrap items-center justify-between gap-4">
+            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-xs flex flex-wrap items-center justify-between gap-4 transition-colors">
               <div className="flex items-center gap-3">
                 <div className={`p-2.5 rounded-2xl ${
                   currentReport.overallStatus === 'COMPLIANT'
@@ -249,13 +268,23 @@ export function App() {
                   <span>Stored Vault</span>
                 </button>
 
-                <button
-                  onClick={() => setCurrentTab('upload')}
-                  className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#00A651] hover:bg-emerald-600 text-white font-bold text-xs transition-all cursor-pointer shadow-xs shadow-emerald-700/20"
-                >
-                  <Camera className="w-4 h-4" />
-                  <span>+ Start New Scan / Upload</span>
-                </button>
+                {userRole === 'MANUFACTURER' ? (
+                  <button
+                    onClick={() => setCurrentTab('manufacturer')}
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs transition-all cursor-pointer shadow-xs"
+                  >
+                    <Building2 className="w-4 h-4" />
+                    <span>+ Test Another Artwork</span>
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => setCurrentTab('upload')}
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#00A651] hover:bg-emerald-600 text-white font-bold text-xs transition-all cursor-pointer shadow-xs shadow-emerald-700/20"
+                  >
+                    <Camera className="w-4 h-4" />
+                    <span>+ Start New Scan / Upload</span>
+                  </button>
+                )}
               </div>
             </div>
 
@@ -274,11 +303,19 @@ export function App() {
                 {/* Statutory Regulatory Context Card */}
                 <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 text-xs text-slate-600 dark:text-slate-400 shadow-xs space-y-2 transition-colors">
                   <div className="font-black text-slate-900 dark:text-slate-100 uppercase tracking-wider text-[11px] flex items-center justify-between">
-                    <span>Statutory Inspection Protocol</span>
-                    <span className="text-[#00A651] font-mono font-bold">Fifth Schedule Sampling</span>
+                    <span>
+                      {userRole === 'MANUFACTURER'
+                        ? 'Manufacturer Pre-Pack Verification Protocol'
+                        : 'Statutory Inspection Protocol'}
+                    </span>
+                    <span className="text-[#00A651] font-mono font-bold">
+                      {userRole === 'MANUFACTURER' ? 'Pre-Printing Validation' : 'Fifth Schedule Sampling'}
+                    </span>
                   </div>
                   <p className="leading-relaxed text-[11px]">
-                    Inspection conducted under Section 15 of Legal Metrology Act, 2009. Sample size determined per Fifth Schedule Table (32 samples for lot &lt; 4000; 80 samples for lot &gt; 4000). Tare weight deducted per Sixth Schedule Part-II.
+                    {userRole === 'MANUFACTURER'
+                      ? 'Pre-pack validation confirms all mandatory declarations under Rule 6, numeral heights under Rule 7 Table I, and Second Schedule standard sizes before printing runs to prevent market recalls.'
+                      : 'Inspection conducted under Section 15 of Legal Metrology Act, 2009. Sample size determined per Fifth Schedule Table (32 samples for lot < 4000; 80 samples for lot > 4000). Tare weight deducted per Sixth Schedule Part-II.'}
                   </p>
                 </div>
               </div>
@@ -288,6 +325,7 @@ export function App() {
                 <ComplianceScorecard
                   report={currentReport}
                   onOpenGrievanceModal={() => setIsGrievanceOpen(true)}
+                  onPreviewPDF={() => setIsPDFPreviewOpen(true)}
                 />
               </div>
             </div>
@@ -298,46 +336,71 @@ export function App() {
         )}
 
         {/* ========================================================================= */}
-        {/* TAB 3: OFFICER ANALYTICS DASHBOARD */}
+        {/* TAB 3: OFFICER ENFORCEMENT & ANALYTICS DASHBOARD */}
         {/* ========================================================================= */}
         {currentTab === 'analytics' && (
-          <OfficerAnalyticsDashboard onSelectReport={handleSelectReportFromDossier} />
+          <OfficerAnalyticsDashboard
+            onSelectReport={handleSelectReportFromDossier}
+            onPreviewReport={(rep) => {
+              setCurrentReport(rep);
+              setIsPDFPreviewOpen(true);
+            }}
+          />
         )}
 
         {/* ========================================================================= */}
-        {/* TAB 4: E-COMMERCE AUDIT */}
+        {/* TAB 4: E-COMMERCE / DARK STORE AUDIT */}
         {/* ========================================================================= */}
         {currentTab === 'ecommerce' && (
           <EcommerceAuditTab onAuditSelected={handleSelectReportFromDossier} />
         )}
 
         {/* ========================================================================= */}
-        {/* TAB 5: BRAND PRE-CHECK PORTAL */}
+        {/* TAB 5: BRAND PRE-CHECK PORTAL (MANUFACTURER) */}
         {/* ========================================================================= */}
         {currentTab === 'manufacturer' && (
           <ManufacturerSelfAudit onLoadAudit={handleSelectReportFromDossier} />
         )}
 
         {/* ========================================================================= */}
-        {/* TAB 6: ADMINISTRATOR CONTROL CENTER */}
+        {/* TAB 6: NATIONAL SURVEILLANCE HUB (MINISTRY DIRECTORATE) */}
+        {/* ========================================================================= */}
+        {currentTab === 'surveillance' && (
+          <NationalSurveillanceHub />
+        )}
+
+        {/* ========================================================================= */}
+        {/* TAB 7: ADMINISTRATOR CONTROL CENTER (SOFTWARE/PLATFORM ADMIN) */}
         {/* ========================================================================= */}
         {currentTab === 'admin' && (
           <AdminControlCenter />
         )}
       </main>
 
-      {/* Modals & Overlays */}
+      {/* ========================================================================= */}
+      {/* MODALS & OVERLAYS */}
+      {/* ========================================================================= */}
+      {/* 1. Interactive In-Website PDF Inspection Sheet Preview */}
+      <PDFPreviewModal
+        isOpen={isPDFPreviewOpen}
+        onClose={() => setIsPDFPreviewOpen(false)}
+        report={currentReport}
+      />
+
+      {/* 2. Consumer Grievance / NCH 1915 Modal */}
       <ConsumerGrievanceModal
         isOpen={isGrievanceOpen}
         onClose={() => setIsGrievanceOpen(false)}
         report={currentReport}
       />
 
+      {/* 3. Cloud Database Configuration Modal */}
       <CloudConfigModal
         isOpen={isCloudModalOpen}
         onClose={() => setIsCloudModalOpen(false)}
       />
 
+      {/* 4. Legal Metrology Rulebook Drawer */}
       <RulebookDrawer
         isOpen={isRulebookOpen}
         onClose={() => setIsRulebookOpen(false)}
@@ -347,12 +410,14 @@ export function App() {
         onOpenLogin={() => setIsLoginOpen(true)}
       />
 
+      {/* 5. Stored Inspections Vault */}
       <InspectionVaultModal
         isOpen={isVaultOpen}
         onClose={() => setIsVaultOpen(false)}
         onSelectReport={handleSelectReportFromDossier}
       />
 
+      {/* 6. Multi-Role Login Modal */}
       <LoginModal
         isOpen={isLoginOpen}
         onClose={() => setIsLoginOpen(false)}

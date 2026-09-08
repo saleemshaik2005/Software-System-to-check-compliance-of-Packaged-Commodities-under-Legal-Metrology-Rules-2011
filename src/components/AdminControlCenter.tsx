@@ -62,13 +62,13 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onConfig
         <div>
           <div className="flex items-center gap-2 text-cyan-300 font-mono text-xs font-bold uppercase tracking-wider mb-1">
             <Settings className="w-4 h-4" />
-            <span>Ministry System Control Center</span>
+            <span>Platform Software & Configuration Control Center</span>
           </div>
           <h1 className="text-2xl font-black tracking-tight">
-            Administrator Enforcement Dashboard
+            Administrator System Management Console
           </h1>
           <p className="text-xs text-blue-200 mt-1 max-w-xl">
-            Live configuration of Legal Metrology compounding penalties, numeral height thresholds, and enforcement drives without modifying code.
+            Live configuration of Legal Metrology compounding penalties, numeral height thresholds, database backup exports, and UI announcements without modifying source code.
           </p>
         </div>
 
