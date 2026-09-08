@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   Scale,
   CheckCircle,
@@ -7,13 +7,17 @@ import {
   Globe,
   Sun,
   Moon,
-  Cloud,
   Menu,
   KeyRound,
   Shield,
   ShoppingBag,
   Sliders,
-  Settings
+  Settings,
+  BookOpen,
+  Archive,
+  PhoneCall,
+  LogOut,
+  X
 } from 'lucide-react';
 import { UserRole, AuthUser } from '../types';
 import { getAdminConfig } from '../services/adminService';
@@ -26,9 +30,11 @@ interface NavbarProps {
   currentUser: AuthUser;
   isDarkMode: boolean;
   setIsDarkMode: (val: boolean) => void;
-  onOpenCloudModal?: () => void;
   onOpenRulebook?: () => void;
+  onOpenVault?: () => void;
+  onOpenGrievance?: () => void;
   onOpenLogin?: () => void;
+  onSignOut: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -39,11 +45,14 @@ export const Navbar: React.FC<NavbarProps> = ({
   currentUser,
   isDarkMode,
   setIsDarkMode,
-  onOpenCloudModal,
   onOpenRulebook,
+  onOpenVault,
+  onOpenGrievance,
   onOpenLogin,
+  onSignOut,
 }) => {
   const adminConfig = getAdminConfig();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   return (
     <header className="sticky top-0 z-40 bg-white border-b border-slate-200 shadow-sm">
@@ -71,16 +80,124 @@ export const Navbar: React.FC<NavbarProps> = ({
 
       {/* Main Navbar */}
       <div className="max-w-7xl mx-auto px-4 py-2.5 flex flex-wrap items-center justify-between gap-4">
-        {/* Left Section: 3-Bars Hamburger Button + Brand Logo */}
+        {/* Left Section: 3-Bars Hamburger Dropdown + Brand Logo */}
         <div className="flex items-center gap-3">
-          {/* Top Left 3-Bars Hamburger Button */}
-          <button
-            onClick={onOpenRulebook}
-            className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 transition-all cursor-pointer border border-slate-200 shadow-2xs flex items-center justify-center"
-            title="Open Legal Metrology Act & Rulebook (3 Bars)"
-          >
-            <Menu className="w-5 h-5 text-[#0A3663]" />
-          </button>
+          {/* Top Left 3-Bars Hamburger Dropdown */}
+          <div className="relative">
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 transition-all cursor-pointer border border-slate-200 shadow-2xs flex items-center justify-center"
+              title="Navigation Menu"
+            >
+              {isMenuOpen ? (
+                <X className="w-5 h-5 text-[#0A3663]" />
+              ) : (
+                <Menu className="w-5 h-5 text-[#0A3663]" />
+              )}
+            </button>
+
+            {/* Standard Dropdown Menu */}
+            {isMenuOpen && (
+              <>
+                <div
+                  className="fixed inset-0 z-40"
+                  onClick={() => setIsMenuOpen(false)}
+                />
+                <div className="absolute left-0 mt-2 w-72 bg-white rounded-2xl shadow-2xl border border-slate-200 py-2 z-50 animate-in fade-in zoom-in-95 duration-150">
+                  {/* Current User Header */}
+                  <div className="px-4 py-2.5 border-b border-slate-100 flex items-center gap-3 bg-slate-50/50">
+                    <div className="w-8 h-8 rounded-full bg-[#0A3663] text-white flex items-center justify-center font-bold text-xs">
+                      {currentUser.name.charAt(0)}
+                    </div>
+                    <div className="overflow-hidden">
+                      <div className="text-xs font-black text-slate-900 truncate">
+                        {currentUser.name}
+                      </div>
+                      <div className="text-[10px] font-bold text-[#00A651] uppercase">
+                        {userRole} • Active Session
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Menu Items */}
+                  <div className="py-1">
+                    <button
+                      onClick={() => {
+                        setIsMenuOpen(false);
+                        onOpenRulebook?.();
+                      }}
+                      className="w-full px-4 py-2.5 text-left text-xs font-bold text-slate-700 hover:bg-slate-50 hover:text-slate-900 flex items-center gap-3 transition-colors cursor-pointer"
+                    >
+                      <BookOpen className="w-4 h-4 text-[#0A3663] shrink-0" />
+                      <div>
+                        <div>Legal Metrology Rulebook</div>
+                        <div className="text-[10px] font-normal text-slate-400">Gazette rules, standard packs & fines</div>
+                      </div>
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        setIsMenuOpen(false);
+                        setCurrentTab('admin');
+                      }}
+                      className="w-full px-4 py-2.5 text-left text-xs font-bold text-slate-700 hover:bg-slate-50 hover:text-slate-900 flex items-center gap-3 transition-colors cursor-pointer"
+                    >
+                      <Settings className="w-4 h-4 text-purple-700 shrink-0" />
+                      <div>
+                        <div>System Settings & Fines</div>
+                        <div className="text-[10px] font-normal text-slate-400">Compounding fines & threshold tuner</div>
+                      </div>
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        setIsMenuOpen(false);
+                        onOpenVault?.();
+                      }}
+                      className="w-full px-4 py-2.5 text-left text-xs font-bold text-slate-700 hover:bg-slate-50 hover:text-slate-900 flex items-center gap-3 transition-colors cursor-pointer"
+                    >
+                      <Archive className="w-4 h-4 text-emerald-600 shrink-0" />
+                      <div>
+                        <div>Stored Inspections Vault</div>
+                        <div className="text-[10px] font-normal text-slate-400">All saved audits & PDF downloads</div>
+                      </div>
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        setIsMenuOpen(false);
+                        onOpenGrievance?.();
+                      }}
+                      className="w-full px-4 py-2.5 text-left text-xs font-bold text-slate-700 hover:bg-slate-50 hover:text-slate-900 flex items-center gap-3 transition-colors cursor-pointer"
+                    >
+                      <PhoneCall className="w-4 h-4 text-amber-600 shrink-0" />
+                      <div>
+                        <div>National Helpline (1915)</div>
+                        <div className="text-[10px] font-normal text-slate-400">Direct consumer care grievance dial</div>
+                      </div>
+                    </button>
+                  </div>
+
+                  {/* Sign Out Action */}
+                  <div className="border-t border-slate-100 pt-1 mt-1">
+                    <button
+                      onClick={() => {
+                        setIsMenuOpen(false);
+                        onSignOut();
+                      }}
+                      className="w-full px-4 py-2.5 text-left text-xs font-bold text-red-600 hover:bg-red-50 flex items-center gap-3 transition-colors cursor-pointer"
+                    >
+                      <LogOut className="w-4 h-4 text-red-500 shrink-0" />
+                      <div>
+                        <div>Sign Out</div>
+                        <div className="text-[10px] font-normal text-red-400">Switch to login page & test accounts</div>
+                      </div>
+                    </button>
+                  </div>
+                </div>
+              </>
+            )}
+          </div>
 
           {/* Logo & Brand */}
           <div
@@ -180,27 +297,14 @@ export const Navbar: React.FC<NavbarProps> = ({
           )}
         </nav>
 
-        {/* Right Section: Cloud DB, User Profile Chip, Theme Toggle */}
+        {/* Right Section: User Profile Chip, Theme Toggle */}
         <div className="flex items-center gap-2">
-          {/* Cloud Database Status */}
-          {onOpenCloudModal && (
-            <button
-              onClick={onOpenCloudModal}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-xl text-xs font-bold text-slate-700 transition-colors cursor-pointer"
-              title="Cloud Database (Firestore) & Image CDN (Cloudinary) - Connected"
-            >
-              <Cloud className="w-3.5 h-3.5 text-[#0A3663]" />
-              <span className="hidden lg:inline text-[11px]">Cloud DB</span>
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            </button>
-          )}
-
           {/* User Account Login / Switch Chip */}
           {onOpenLogin && (
             <button
               onClick={onOpenLogin}
               className="flex items-center gap-2 px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-xl text-xs font-bold transition-all cursor-pointer"
-              title={`Logged in as ${currentUser.name} (${userRole}). Click to switch.`}
+              title={`Logged in as ${currentUser.name} (${userRole}). Click to switch or sign in.`}
             >
               <div className="w-6 h-6 rounded-full bg-[#0A3663] text-white flex items-center justify-center text-xs font-bold">
                 {currentUser.name.charAt(0)}

@@ -1,6 +1,6 @@
-﻿import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Camera, RefreshCw, Upload, Sparkles, AlertCircle, Trash2, CheckCircle2, Bot, Layers, ArrowRight } from 'lucide-react';
-import { extractTextFromImage, parseLabelDeclarations, analyzeMultiViewWithGemini } from '../services/ocrService';
+import { extractTextFromImage, parseLabelDeclarations, analyzeMultiViewWithVisionAI } from '../services/ocrService';
 import { evaluateCompliance } from '../services/complianceEngine';
 import { ComplianceReport } from '../types';
 
@@ -140,21 +140,21 @@ export const LiveCameraScanner: React.FC<LiveCameraScannerProps> = ({
     }
 
     setIsProcessing(true);
-    setStatusMessage('Analyzing packaging labels with Gemini Multimodal AI...');
+    setStatusMessage('Analyzing packaging declarations with Neural Vision Engine...');
 
     try {
-      // 1. Try Gemini Vision with all captured multi-view images
-      const geminiProduct = await analyzeMultiViewWithGemini(imagesToAnalyze);
+      // 1. Try Multimodal Vision AI with all captured multi-view images
+      const visionProduct = await analyzeMultiViewWithVisionAI(imagesToAnalyze);
 
       let extractedProduct;
       let ocrRawText = '';
 
-      if (geminiProduct && geminiProduct.productName) {
+      if (visionProduct && visionProduct.productName) {
         extractedProduct = parseLabelDeclarations('');
-        Object.assign(extractedProduct, geminiProduct);
+        Object.assign(extractedProduct, visionProduct);
       } else {
         // 2. Fallback to Edge Neural OCR on the primary image
-        setStatusMessage('Gemini cloud fallback: Running Edge Neural OCR on packaging...');
+        setStatusMessage('Engaging Edge Neural OCR fallback on packaging...');
         const primaryImage = imagesToAnalyze.front || imagesToAnalyze.back || imagesToAnalyze.side || '';
         ocrRawText = await extractTextFromImage(primaryImage, (msg, prog) => {
           setStatusMessage(`${msg} (${Math.round(prog)}%)`);
@@ -208,7 +208,7 @@ export const LiveCameraScanner: React.FC<LiveCameraScannerProps> = ({
 
         <div className="flex items-center gap-1.5 bg-emerald-50 text-emerald-800 px-3 py-1 rounded-full border border-emerald-200 text-xs font-bold">
           <Bot className="w-3.5 h-3.5 text-[#00A651]" />
-          <span>Gemini Multimodal AI Active</span>
+          <span>Neural Multimodal AI Active</span>
         </div>
       </div>
 
@@ -513,7 +513,7 @@ export const LiveCameraScanner: React.FC<LiveCameraScannerProps> = ({
               className="bg-[#00A651] hover:bg-emerald-600 disabled:opacity-40 text-white font-black text-xs sm:text-sm px-6 py-3 rounded-xl shadow-md transition-all flex items-center gap-2 cursor-pointer disabled:cursor-not-allowed"
             >
               <Sparkles className="w-4 h-4" />
-              <span>Extract & Verify All Declarations (Gemini AI)</span>
+              <span>Extract & Verify All Statutory Declarations</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </div>

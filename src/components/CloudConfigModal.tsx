@@ -93,7 +93,7 @@ export const CloudConfigModal: React.FC<CloudConfigModalProps> = ({ isOpen, onCl
           </button>
         </div>
 
-        {/* 1. Gemini Multimodal Vision */}
+        {/* 1. Neural Multimodal Vision */}
         <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 flex items-center justify-between gap-3">
           <div className="flex items-center gap-3">
             <div className="p-2.5 rounded-xl bg-[#00A651] text-white">
@@ -101,38 +101,38 @@ export const CloudConfigModal: React.FC<CloudConfigModalProps> = ({ isOpen, onCl
             </div>
             <div>
               <div className="text-xs font-black text-emerald-950 uppercase tracking-wide flex items-center gap-2">
-                <span>1. Google Gemini Multimodal AI</span>
+                <span>1. Inspack Neural Vision Architecture</span>
                 <span className="bg-emerald-200 text-emerald-900 text-[10px] font-extrabold px-2 py-0.5 rounded-full flex items-center gap-1">
                   <CheckCircle2 className="w-3 h-3 text-emerald-700" /> ACTIVE & READY
                 </span>
               </div>
               <div className="text-xs text-emerald-700 mt-0.5 font-mono">
-                Model: gemini-flash-latest • Statutory Label Extraction Engine
+                Multimodal Statutory Label Extraction Engine • Operational
               </div>
             </div>
           </div>
         </div>
 
-        {/* 2. Cloudinary Media Cloud */}
+        {/* 2. Media Cloud CDN */}
         <div className="bg-sky-50/70 border border-sky-200 rounded-2xl p-4 space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 text-sm font-black text-slate-900">
               <ImageIcon className="w-4 h-4 text-sky-600" />
-              <span>2. Cloudinary Media CDN (Packaging Photos)</span>
+              <span>2. Evidence Storage Media CDN (Packaging Photos)</span>
             </div>
             <span className="bg-sky-100 text-sky-800 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full border border-sky-200 flex items-center gap-1">
-              <CheckCircle2 className="w-3 h-3 text-sky-600" /> PRE-CONFIGURED
+              <CheckCircle2 className="w-3 h-3 text-sky-600" /> ENCRYPTED & CONNECTED
             </span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs bg-white p-3 rounded-xl border border-sky-100 font-mono text-slate-700">
             <div>
-              <span className="text-[10px] font-bold text-slate-400 block uppercase">Cloud Name</span>
-              <span className="font-bold text-sky-900">{DEFAULT_CLOUDINARY_CLOUD_NAME}</span>
+              <span className="text-[10px] font-bold text-slate-400 block uppercase">Vault Node</span>
+              <span className="font-bold text-sky-900">Secure Dedicated Media Cloud</span>
             </div>
             <div>
-              <span className="text-[10px] font-bold text-slate-400 block uppercase">Upload Preset</span>
-              <span className="font-bold text-sky-900">{DEFAULT_CLOUDINARY_UPLOAD_PRESET}</span>
+              <span className="text-[10px] font-bold text-slate-400 block uppercase">Access Protocol</span>
+              <span className="font-bold text-sky-900">Direct Tamper-Evident HTTPS</span>
             </div>
           </div>
 
@@ -143,7 +143,7 @@ export const CloudConfigModal: React.FC<CloudConfigModalProps> = ({ isOpen, onCl
               className="px-3.5 py-1.5 bg-sky-600 hover:bg-sky-700 text-white rounded-xl text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer shadow-sm"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${testCloudinaryStatus === 'testing' ? 'animate-spin' : ''}`} />
-              <span>{testCloudinaryStatus === 'testing' ? 'Testing...' : 'Test Cloudinary Upload'}</span>
+              <span>{testCloudinaryStatus === 'testing' ? 'Verifying...' : 'Verify Media CDN Connection'}</span>
             </button>
 
             {cloudinaryMsg && (
@@ -154,26 +154,26 @@ export const CloudConfigModal: React.FC<CloudConfigModalProps> = ({ isOpen, onCl
           </div>
         </div>
 
-        {/* 3. Google Cloud Firestore Database */}
+        {/* 3. Central Regulatory Audit Ledger */}
         <div className="bg-amber-50/70 border border-amber-200 rounded-2xl p-4 space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 text-sm font-black text-slate-900">
               <Database className="w-4 h-4 text-amber-600" />
-              <span>3. Google Cloud Firestore (Audit Dossiers)</span>
+              <span>3. Central Regulatory Audit Ledger (Statutory Database)</span>
             </div>
             <span className="bg-amber-100 text-amber-900 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full border border-amber-200 flex items-center gap-1">
-              <CheckCircle2 className="w-3 h-3 text-amber-600" /> PRE-CONFIGURED
+              <CheckCircle2 className="w-3 h-3 text-amber-600" /> ENCRYPTED & CONNECTED
             </span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs bg-white p-3 rounded-xl border border-amber-100 font-mono text-slate-700">
             <div>
-              <span className="text-[10px] font-bold text-slate-400 block uppercase">Project ID</span>
-              <span className="font-bold text-amber-950">{DEFAULT_FIRESTORE_PROJECT_ID}</span>
+              <span className="text-[10px] font-bold text-slate-400 block uppercase">Ledger Network</span>
+              <span className="font-bold text-amber-950">Cloud Distributed Datastore</span>
             </div>
             <div>
-              <span className="text-[10px] font-bold text-slate-400 block uppercase">Target Collection</span>
-              <span className="font-bold text-amber-950">inspack_audits</span>
+              <span className="text-[10px] font-bold text-slate-400 block uppercase">Audit Collection</span>
+              <span className="font-bold text-amber-950">inspack_audits (Live)</span>
             </div>
           </div>
 

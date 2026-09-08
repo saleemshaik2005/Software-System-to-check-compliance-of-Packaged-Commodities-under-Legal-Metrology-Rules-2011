@@ -23,7 +23,7 @@ export interface CloudConfig {
   cloudinaryUploadPreset: string;
   firestoreProjectId: string;
   firestoreApiKey: string;
-  geminiApiKey: string;
+  visionApiKey: string;
   autoSyncToCloud: boolean;
 }
 
@@ -34,7 +34,7 @@ export const DEFAULT_CLOUD_CONFIG: CloudConfig = {
   cloudinaryUploadPreset: DEFAULT_CLOUDINARY_UPLOAD_PRESET,
   firestoreProjectId: DEFAULT_FIRESTORE_PROJECT_ID,
   firestoreApiKey: DEFAULT_FIRESTORE_API_KEY,
-  geminiApiKey: DEFAULT_GEMINI_KEY,
+  visionApiKey: DEFAULT_GEMINI_KEY,
   autoSyncToCloud: true,
 };
 

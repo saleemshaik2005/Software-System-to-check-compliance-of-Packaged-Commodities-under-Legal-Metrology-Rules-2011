@@ -13,11 +13,12 @@ import { ConsumerGrievanceModal } from './components/ConsumerGrievanceModal';
 import { CloudConfigModal } from './components/CloudConfigModal';
 import { RulebookDrawer } from './components/RulebookDrawer';
 import { LoginModal } from './components/LoginModal';
+import { InspectionVaultModal } from './components/InspectionVaultModal';
 import { Footer } from './components/Footer';
 import { DEMO_PRESETS, DemoProductPreset } from './data/demoProducts';
 import { evaluateCompliance } from './services/complianceEngine';
 import { saveScanReport } from './services/dbService';
-import { getCurrentUser, switchRole } from './services/authService';
+import { getCurrentUser, switchRole, logoutUser, TEST_ACCOUNTS } from './services/authService';
 import { ComplianceReport, UserRole, AuthUser } from './types';
 
 export function App() {
@@ -29,6 +30,7 @@ export function App() {
   const [isGrievanceOpen, setIsGrievanceOpen] = useState(false);
   const [isCloudModalOpen, setIsCloudModalOpen] = useState(false);
   const [isRulebookOpen, setIsRulebookOpen] = useState(false);
+  const [isVaultOpen, setIsVaultOpen] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
 
@@ -103,6 +105,13 @@ export function App() {
     }
   };
 
+  const handleSignOut = () => {
+    logoutUser();
+    setCurrentUser(TEST_ACCOUNTS.CITIZEN);
+    setUserRole('CITIZEN');
+    setIsLoginOpen(true);
+  };
+
   const currentImageSrc =
     currentReport.capturedImages?.[activeView] ||
     currentReport.capturedImages?.front ||
@@ -120,9 +129,11 @@ export function App() {
         currentUser={currentUser}
         isDarkMode={isDarkMode}
         setIsDarkMode={setIsDarkMode}
-        onOpenCloudModal={() => setIsCloudModalOpen(true)}
         onOpenRulebook={() => setIsRulebookOpen(true)}
+        onOpenVault={() => setIsVaultOpen(true)}
+        onOpenGrievance={() => setIsGrievanceOpen(true)}
         onOpenLogin={() => setIsLoginOpen(true)}
+        onSignOut={handleSignOut}
       />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 py-6">
@@ -215,15 +226,21 @@ export function App() {
         onClose={() => setIsCloudModalOpen(false)}
       />
 
-      {/* Legal Metrology Rulebook Drawer (3-Bars Menu) */}
+      {/* Legal Metrology Rulebook Reference */}
       <RulebookDrawer
         isOpen={isRulebookOpen}
         onClose={() => setIsRulebookOpen(false)}
         currentUser={currentUser}
         onSwitchRole={handleSwitchRole}
         onOpenAdmin={() => setCurrentTab('admin')}
-        onOpenCloudModal={() => setIsCloudModalOpen(true)}
         onOpenLogin={() => setIsLoginOpen(true)}
+      />
+
+      {/* Stored Regulatory Inspection Vault Modal */}
+      <InspectionVaultModal
+        isOpen={isVaultOpen}
+        onClose={() => setIsVaultOpen(false)}
+        onSelectReport={handleSelectReportFromDossier}
       />
 
       {/* Authentication & 1-Click Test Accounts Modal */}
@@ -232,7 +249,7 @@ export function App() {
         onClose={() => setIsLoginOpen(false)}
         currentUser={currentUser}
         onLoginSuccess={handleLoginSuccess}
-        onLogout={() => handleSwitchRole('CITIZEN')}
+        onLogout={handleSignOut}
       />
 
       <Footer />

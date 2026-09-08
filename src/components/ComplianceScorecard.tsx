@@ -9,8 +9,10 @@ import {
   FileText,
   ShieldAlert,
   MessageSquareWarning,
+  Archive,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import { saveScanReport } from '../services/dbService';
 
 interface ComplianceScorecardProps {
   report: ComplianceReport;
@@ -24,6 +26,8 @@ export const ComplianceScorecard: React.FC<ComplianceScorecardProps> = ({
   const isCompliant = report.overallStatus === 'COMPLIANT';
   const isWarning = report.overallStatus === 'NEEDS_REVIEW';
   const [isGeneratingPdf, setIsGeneratingPdf] = React.useState(false);
+  const [isSaved, setIsSaved] = React.useState(false);
+  const [isSaving, setIsSaving] = React.useState(false);
   const p = report.productInfo;
 
   const handleDownloadPDF = async () => {
@@ -32,6 +36,16 @@ export const ComplianceScorecard: React.FC<ComplianceScorecardProps> = ({
       await generateCompliancePDF(report);
     } finally {
       setIsGeneratingPdf(false);
+    }
+  };
+
+  const handleSaveToDatabase = async () => {
+    try {
+      setIsSaving(true);
+      saveScanReport(report);
+      setIsSaved(true);
+    } finally {
+      setIsSaving(false);
     }
   };
 
@@ -58,7 +72,30 @@ export const ComplianceScorecard: React.FC<ComplianceScorecardProps> = ({
               Legal Metrology Compliance Audit
             </h2>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              onClick={handleSaveToDatabase}
+              disabled={isSaving}
+              className={`flex items-center gap-1.5 text-xs font-bold px-3.5 py-2 rounded-xl shadow-md transition-all cursor-pointer ${
+                isSaved
+                  ? 'bg-blue-900 text-white border border-blue-800'
+                  : 'bg-[#0A3663] hover:bg-blue-950 text-white'
+              }`}
+              title="Store this inspection record in central metrology database and local vault"
+            >
+              {isSaved ? (
+                <>
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                  <span>Stored in Database</span>
+                </>
+              ) : (
+                <>
+                  <Archive className="w-3.5 h-3.5" />
+                  <span>{isSaving ? 'Storing Record...' : 'Store in Database'}</span>
+                </>
+              )}
+            </button>
+
             <button
               onClick={handleDownloadPDF}
               disabled={isGeneratingPdf}

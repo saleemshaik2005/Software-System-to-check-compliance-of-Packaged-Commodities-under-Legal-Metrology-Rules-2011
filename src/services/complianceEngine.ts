@@ -278,7 +278,7 @@ export function evaluateCompliance(
   // 5. Rule 6(1)(e) & Rule 18: Maximum Retail Price (MRP) & Tax Format
   // ==========================================
   const hasPrice = product.mrp > 0;
-  const hasTaxes = product.hasInclAllTaxes;
+  const hasTaxes = Boolean(product.hasInclAllTaxes || /incl|tax/i.test(product.mrpString || ''));
   const isSticker = product.isStickerPrice;
   const isDual = product.isDualPrice;
 

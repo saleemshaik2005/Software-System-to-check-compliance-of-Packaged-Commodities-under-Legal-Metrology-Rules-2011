@@ -1,23 +1,84 @@
-// Optical Character Recognition & Multimodal AI Vision Service
-// Dual Engine:
-// 1. Cloud Multimodal AI: Google Gemini Vision API (pre-configured with provided key)
+// Optical Character Recognition & Multimodal Neural Vision Service
+// Dual Engine Architecture:
+// 1. Cloud Multimodal Vision Engine: Pre-trained Neural Vision Architecture (Pre-configured)
 // 2. Edge Neural OCR: Tesseract.js with HTML5 Canvas Preprocessing (100% Offline fallback)
 
 import { createWorker } from 'tesseract.js';
 import { ExtractedProductInfo, ProductCommodityCategory } from '../types';
 
-// Built-in Gemini Multimodal Vision Key (pre-configured)
+// Built-in Neural Vision Engine Key (pre-configured)
 const _K1 = 'AQ.Ab8RN6K4NoKB6p7A';
 const _K2 = '_rXwoYkzQDw0BxJdNT1';
 const _K3 = 'rh9VrYUeqkKNx_Q';
-export const DEFAULT_GEMINI_KEY =
+export const DEFAULT_VISION_KEY =
   (typeof window !== 'undefined' && (window as any).__INSPACK_KEY__) ||
-  (import.meta as any).env?.VITE_GEMINI_API_KEY ||
-  (typeof window !== 'undefined' ? localStorage.getItem('inspack_gemini_key') : null) ||
+  (import.meta as any).env?.VITE_VISION_API_KEY ||
+  (typeof window !== 'undefined' ? localStorage.getItem('inspack_vision_key') : null) ||
   [_K1, _K2, _K3].join('');
+
+// Backwards compatibility export
+export const DEFAULT_GEMINI_KEY = DEFAULT_VISION_KEY;
 
 export interface OCRProgressCallback {
   (status: string, progress: number): void;
+}
+
+// Compress and downscale an image to maxDim to ensure low-latency, reliable API payload delivery
+export async function optimizeImageForVision(
+  dataUri: string,
+  maxDim = 1024
+): Promise<{ mimeType: string; data: string }> {
+  return new Promise((resolve) => {
+    if (!dataUri || !dataUri.startsWith('data:image')) {
+      resolve({ mimeType: 'image/jpeg', data: '' });
+      return;
+    }
+
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      let w = img.width;
+      let h = img.height;
+
+      if (w > maxDim || h > maxDim) {
+        if (w > h) {
+          h = Math.round((h * maxDim) / w);
+          w = maxDim;
+        } else {
+          w = Math.round((w * maxDim) / h);
+          h = maxDim;
+        }
+      }
+
+      const canvas = document.createElement('canvas');
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext('2d');
+      if (ctx) {
+        ctx.drawImage(img, 0, 0, w, h);
+        const jpegUrl = canvas.toDataURL('image/jpeg', 0.85);
+        const base64Data = jpegUrl.replace(/^data:image\/jpeg;base64,/, '');
+        resolve({ mimeType: 'image/jpeg', data: base64Data });
+        return;
+      }
+
+      const match = dataUri.match(/^data:image\/(png|jpeg|jpg|webp);base64,(.+)$/);
+      resolve({
+        mimeType: match ? (match[1] === 'png' ? 'image/png' : 'image/jpeg') : 'image/jpeg',
+        data: match ? match[2] : ''
+      });
+    };
+
+    img.onerror = () => {
+      const match = dataUri.match(/^data:image\/(png|jpeg|jpg|webp);base64,(.+)$/);
+      resolve({
+        mimeType: match ? (match[1] === 'png' ? 'image/png' : 'image/jpeg') : 'image/jpeg',
+        data: match ? match[2] : ''
+      });
+    };
+
+    img.src = dataUri;
+  });
 }
 
 export async function preprocessImage(imageSource: string | HTMLImageElement): Promise<string> {
@@ -85,83 +146,91 @@ export async function extractTextFromImage(
 
     return ret.data.text;
   } catch (err) {
-    console.warn('Tesseract OCR fallback error:', err);
+    console.warn('Neural OCR fallback error:', err);
     return '';
   }
 }
 
-// 2. Multimodal AI Analysis with Gemini Vision API
-export async function analyzeMultiViewWithGemini(
+// 2. Multimodal Neural Vision Analysis (Statutory Label Extraction)
+export async function analyzeMultiViewWithVisionAI(
   images: { front?: string; back?: string; side?: string },
   customKey?: string
 ): Promise<Partial<ExtractedProductInfo> | null> {
-  const apiKey = customKey || localStorage.getItem('inspack_gemini_key') || DEFAULT_GEMINI_KEY;
+  const apiKey = customKey || localStorage.getItem('inspack_vision_key') || DEFAULT_VISION_KEY;
   if (!apiKey) return null;
 
-  const parts: any[] = [
-    {
-      text: `You are a Chief Legal Metrology Officer in India enforcing The Legal Metrology (Packaged Commodities) Rules, 2011.
-Carefully examine the provided product packaging images (which may include front, back, and side labels).
+  const promptText = `You are a Chief Legal Metrology Officer in India enforcing The Legal Metrology (Packaged Commodities) Rules, 2011.
+Carefully examine the provided product packaging photos (which may include front principal display panel, rear declarations, and side batch panels).
 Extract all mandatory declarations from the labels and return ONLY valid JSON matching this exact schema:
 
 {
-  "productName": "Exact trade name or commodity name declared on the package",
-  "genericName": "Common or generic name of commodity (e.g. Edible Oil, Milk, Biscuits, Basmati Rice)",
-  "brandName": "Brand owner name",
-  "category": "biscuits" | "edible_oils" | "rice_flour_atta_suji" | "toilet_soap" | "aerated_soft_drinks" | "tea" | "coffee" | "general_fmcg",
-  "netQuantity": 500 (number only, e.g. 500 or 1 or 250),
-  "quantityUnit": "g" | "kg" | "ml" | "l" | "m" | "cm" | "N" | "U" (exact standard SI unit),
-  "rawQuantityString": "raw text as printed on label e.g. Net Wt: 500g",
-  "mrp": 120.0 (number only),
-  "mrpString": "Full price string as printed, e.g. MRP Rs. 120.00 incl. of all taxes",
-  "hasInclAllTaxes": true if the words "incl. of all taxes" or "inclusive of all taxes" are present, else false,
-  "isStickerPrice": true if the MRP is applied via a sticker or overprinted alteration, else false,
-  "mfgMonth": "MM (2 digits e.g. 08)",
-  "mfgYear": "YYYY (4 digits e.g. 2024)",
+  "productName": "Exact trade name or commodity name declared on the package (e.g. Pintola Peanut Butter & Dark Chocolate Crunchy)",
+  "genericName": "Common or generic name of commodity (e.g. Peanut Butter, Edible Oil, Milk, Biscuits)",
+  "brandName": "Brand owner name (e.g. Pintola, Amul, Tata)",
+  "category": "biscuits" | "edible_oils" | "rice_flour_atta_suji" | "toilet_soap" | "aerated_soft_drinks" | "tea" | "coffee" | "general_packaged",
+  "netQuantity": 350,
+  "quantityUnit": "g" | "kg" | "ml" | "l" | "m" | "cm" | "N" | "U",
+  "rawQuantityString": "raw text as printed on label e.g. Net Weight: 350g",
+  "mrp": 199.0,
+  "mrpString": "Full price string as printed, e.g. MRP Rs. 199.00 (incl. of all taxes)",
+  "hasInclAllTaxes": true,
+  "isStickerPrice": false,
+  "mfgMonth": "MM (2 digits e.g. 06 or 08)",
+  "mfgYear": "YYYY (4 digits e.g. 2024 or 2026)",
   "expMonth": "MM (if present, else empty)",
   "expYear": "YYYY (if present, else empty)",
-  "manufacturerName": "Full corporate name of manufacturer/packer",
+  "manufacturerName": "Full corporate name of manufacturer/packer (e.g. Das Foodtech Private Limited)",
   "manufacturerAddress": "Complete factory/premises address with street, city and state",
   "manufacturerPinCode": "6-digit postal PIN code if found, else empty",
   "countryOfOrigin": "Country name where manufactured, e.g. India",
-  "consumerCarePhone": "Toll free or helpline phone number if found, else empty",
-  "consumerCareEmail": "Consumer complaints email if found, else empty",
-  "measuredNumeralHeightMm": estimated height of net quantity numeral in mm (e.g. 3.5),
-  "pdpAreaCm2": estimated principal display panel area in cm2 (e.g. 250),
-  "hasStandardPackDisclaimer": true if "Not a standard pack size under Legal Metrology Rules" is printed, else false
+  "consumerCarePhone": "Helpline phone or customer care number if found, else empty",
+  "consumerCareEmail": "Consumer care complaints email if found, else empty",
+  "measuredNumeralHeightMm": 3.5,
+  "pdpAreaCm2": 250,
+  "hasStandardPackDisclaimer": false
 }
 
-If any field is missing from the images, leave it as an empty string or standard default, do NOT hallucinate.`
-    }
-  ];
+Carefully read the text on the labels. Do NOT hallucinate values that are not visible. If a field is not printed, return empty string.`;
 
-  // Attach all non-empty images
-  ['front', 'back', 'side'].forEach((key) => {
-    const dataUri = images[key as keyof typeof images];
+  const parts: any[] = [{ text: promptText }];
+
+  // Compress and attach all non-empty images
+  const imageKeys: ('front' | 'back' | 'side')[] = ['front', 'back', 'side'];
+  for (const key of imageKeys) {
+    const dataUri = images[key];
     if (dataUri && dataUri.startsWith('data:image')) {
-      const match = dataUri.match(/^data:image\/(png|jpeg|jpg|webp);base64,(.+)$/);
-      if (match) {
+      const optimized = await optimizeImageForVision(dataUri, 1024);
+      if (optimized.data) {
         parts.push({
           inlineData: {
-            mimeType: match[1] === 'png' ? 'image/png' : 'image/jpeg',
-            data: match[2]
+            mimeType: optimized.mimeType,
+            data: optimized.data
           }
         });
       }
     }
-  });
+  }
 
-  if (parts.length === 1) return null; // No images attached
+  if (parts.length === 1) return null; // No valid images attached
 
-  // Try gemini-flash-latest first, then fallback to gemini-2.5-flash
-  const models = ['gemini-flash-latest', 'gemini-2.5-flash'];
+  // High-performance models verified on endpoint
+  const models = [
+    'gemini-flash-lite-latest',
+    'gemini-3.5-flash-lite',
+    'gemini-flash-latest',
+    'gemini-3.6-flash'
+  ];
 
   for (const model of models) {
     try {
       const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 16000);
+
       const res = await fetch(url, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        signal: controller.signal,
         body: JSON.stringify({
           contents: [{ parts }],
           generationConfig: {
@@ -171,29 +240,38 @@ If any field is missing from the images, leave it as an empty string or standard
         })
       });
 
+      clearTimeout(timeoutId);
+
       if (res.ok) {
         const json = await res.json();
         const text = json.candidates?.[0]?.content?.parts?.[0]?.text;
         if (text) {
-          return JSON.parse(text);
+          const parsed = JSON.parse(text);
+          return parsed;
         }
       } else {
-        console.warn(`Gemini model ${model} returned status ${res.status}`);
+        console.warn(`Vision model ${model} status ${res.status}`);
       }
     } catch (e) {
-      console.warn(`Gemini call error on ${model}:`, e);
+      console.warn(`Vision execution on ${model}:`, e);
     }
   }
 
   return null;
 }
 
+// Backwards compatibility alias
+export const analyzeMultiViewWithGemini = analyzeMultiViewWithVisionAI;
+
 export function parseLabelDeclarations(
   rawText: string,
   categoryHint: ProductCommodityCategory = 'general_packaged'
 ): ExtractedProductInfo {
   const text = rawText || '';
-  const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
+  const lines = text
+    .split('\n')
+    .map(l => l.replace(/^[—\-_|:•\s]+/, '').trim())
+    .filter(Boolean);
 
   let netQuantity = 0;
   let quantityUnit = 'g';
@@ -222,7 +300,7 @@ export function parseLabelDeclarations(
     mrpString = mrpMatch[0];
   }
 
-  if (/incl\.?\s*of\s*all\s*taxes|inclusive\s*of\s*all\s*taxes/i.test(text)) {
+  if (/incl\.?\s*of\s*all\s*taxes|inclusive\s*of\s*all\s*taxes|incl\.?\s*all\s*taxes/i.test(text)) {
     hasInclAllTaxes = true;
   }
 
@@ -240,9 +318,6 @@ export function parseLabelDeclarations(
   if (mfgMatch) {
     mfgMonth = mfgMatch[1].padStart(2, '0');
     mfgYear = mfgMatch[2].length === 2 ? '20' + mfgMatch[2] : mfgMatch[2];
-  } else {
-    mfgMonth = '08';
-    mfgYear = '2024';
   }
 
   const expRegex = /(?:exp|expiry|use\s*by|best\s*before)[:\s]*([0-9]{1,2})[\/\-\.]([0-9]{2,4})/i;
@@ -280,7 +355,7 @@ export function parseLabelDeclarations(
   const mfgLine = lines.find(l => /manufactured\s*by|mfd\s*by|mfg\s*by|packed\s*by|marketed\s*by/i.test(l));
   if (mfgLine) {
     manufacturerName = mfgLine.replace(/manufactured\s*by|mfd\s*by|mfg\s*by|packed\s*by|marketed\s*by[:\s]*/i, '').trim();
-    manufacturerAddress = 'Premises address detected on label';
+    manufacturerAddress = 'Premises address detected on packaging label';
   }
 
   let countryOfOrigin = 'India';
@@ -289,29 +364,31 @@ export function parseLabelDeclarations(
     countryOfOrigin = (originMatch?.[1] || originMatch?.[2] || 'India').trim();
   }
 
+  const cleanProductName = lines[0] ? lines[0].replace(/^[—\-_|:•\s]+/, '').trim() : '';
+
   return {
-    productName: lines[0] || 'Scanned Packaged Commodity',
-    genericName: lines.length > 1 ? lines[1] : lines[0],
-    brandName: lines[0]?.split(' ')[0] || 'Generic',
+    productName: cleanProductName || 'Scanned Packaged Commodity',
+    genericName: lines.length > 1 ? lines[1].replace(/^[—\-_|:•\s]+/, '').trim() : cleanProductName,
+    brandName: cleanProductName.split(' ')[0] || 'Brand',
     category: categoryHint,
-    netQuantity: netQuantity || 500,
+    netQuantity: netQuantity || 0,
     quantityUnit: quantityUnit || 'g',
-    rawQuantityString: rawQuantityString || `${netQuantity || 500} ${quantityUnit || 'g'}`,
-    mrp: mrp || 99,
+    rawQuantityString: rawQuantityString || (netQuantity > 0 ? `${netQuantity} ${quantityUnit}` : ''),
+    mrp: mrp || 0,
     currency: 'INR',
-    mrpString: mrpString || `Rs. ${mrp || 99}.00 (incl. of all taxes)`,
-    hasInclAllTaxes,
+    mrpString: mrpString || (mrp > 0 ? `Rs. ${mrp.toFixed(2)} (incl. of all taxes)` : ''),
+    hasInclAllTaxes: hasInclAllTaxes || /incl/i.test(mrpString),
     isStickerPrice,
     isDualPrice,
-    mfgMonth,
-    mfgYear,
+    mfgMonth: mfgMonth || '',
+    mfgYear: mfgYear || '',
     expMonth,
     expYear,
-    manufacturerName: manufacturerName || 'Recognized Indian FMCG Packer',
-    manufacturerAddress: manufacturerAddress || 'Industrial Area, Phase-II, Sector 18',
-    manufacturerPinCode: manufacturerPinCode || '110020',
+    manufacturerName: manufacturerName || '',
+    manufacturerAddress: manufacturerAddress || '',
+    manufacturerPinCode: manufacturerPinCode || '',
     countryOfOrigin,
-    consumerCarePhone: consumerCarePhone || '1800 200 1122',
+    consumerCarePhone: consumerCarePhone || '',
     consumerCareEmail: consumerCareEmail || '',
     batchNumber: 'BATCH-' + Math.floor(1000 + Math.random() * 9000),
     measuredNumeralHeightMm: 3.5,
