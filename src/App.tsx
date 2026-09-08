@@ -8,21 +8,28 @@ import { RuleBreakdownCard } from './components/RuleBreakdownCard';
 import { OfficerAnalyticsDashboard } from './components/OfficerAnalyticsDashboard';
 import { EcommerceAuditTab } from './components/EcommerceAuditTab';
 import { ManufacturerSelfAudit } from './components/ManufacturerSelfAudit';
+import { AdminControlCenter } from './components/AdminControlCenter';
 import { ConsumerGrievanceModal } from './components/ConsumerGrievanceModal';
 import { CloudConfigModal } from './components/CloudConfigModal';
+import { RulebookDrawer } from './components/RulebookDrawer';
+import { LoginModal } from './components/LoginModal';
 import { Footer } from './components/Footer';
 import { DEMO_PRESETS, DemoProductPreset } from './data/demoProducts';
 import { evaluateCompliance } from './services/complianceEngine';
 import { saveScanReport } from './services/dbService';
-import { ComplianceReport, UserRole } from './types';
+import { getCurrentUser, switchRole } from './services/authService';
+import { ComplianceReport, UserRole, AuthUser } from './types';
 
 export function App() {
-  const [currentTab, setCurrentTab] = useState<'scanner' | 'analytics' | 'ecommerce' | 'manufacturer'>('scanner');
-  const [userRole, setUserRole] = useState<UserRole>('OFFICER');
+  const [currentUser, setCurrentUser] = useState<AuthUser>(() => getCurrentUser());
+  const [userRole, setUserRole] = useState<UserRole>(() => currentUser.role);
+  const [currentTab, setCurrentTab] = useState<'scanner' | 'analytics' | 'ecommerce' | 'manufacturer' | 'admin'>('scanner');
   const [activePresetId, setActivePresetId] = useState<string>('demo-amul-milk');
   const [activeView, setActiveView] = useState<'front' | 'back' | 'side'>('front');
   const [isGrievanceOpen, setIsGrievanceOpen] = useState(false);
   const [isCloudModalOpen, setIsCloudModalOpen] = useState(false);
+  const [isRulebookOpen, setIsRulebookOpen] = useState(false);
+  const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   // Initialize with the Slide 2 demo (Amul Taaza Milk)
@@ -31,7 +38,12 @@ export function App() {
     const rep = evaluateCompliance(
       initialPreset.productInfo,
       'front',
-      initialPreset.imageVisual
+      initialPreset.imageVisual,
+      {
+        name: currentUser.name,
+        badge: currentUser.badgeNumber || 'LM-ND-4092',
+        location: 'Reliance Smart Bazaar, Connaught Place'
+      }
     );
     rep.id = 'INSP-261001';
     return rep;
@@ -43,7 +55,12 @@ export function App() {
     const rep = evaluateCompliance(
       preset.productInfo,
       'front',
-      preset.imageVisual
+      preset.imageVisual,
+      {
+        name: currentUser.name,
+        badge: currentUser.badgeNumber || 'LM-ND-4092',
+        location: 'Supermarket Hub'
+      }
     );
     rep.id = 'INSP-' + Math.floor(100000 + Math.random() * 900000);
     setCurrentReport(rep);
@@ -61,6 +78,31 @@ export function App() {
     setCurrentTab('scanner');
   };
 
+  const handleSwitchRole = (newRole: UserRole) => {
+    const user = switchRole(newRole);
+    setCurrentUser(user);
+    setUserRole(newRole);
+    if (newRole === 'ADMIN') {
+      setCurrentTab('admin');
+    } else if (newRole === 'MANUFACTURER') {
+      setCurrentTab('manufacturer');
+    } else {
+      setCurrentTab('scanner');
+    }
+  };
+
+  const handleLoginSuccess = (user: AuthUser) => {
+    setCurrentUser(user);
+    setUserRole(user.role);
+    if (user.role === 'ADMIN') {
+      setCurrentTab('admin');
+    } else if (user.role === 'MANUFACTURER') {
+      setCurrentTab('manufacturer');
+    } else {
+      setCurrentTab('scanner');
+    }
+  };
+
   const currentImageSrc =
     currentReport.capturedImages?.[activeView] ||
     currentReport.capturedImages?.front ||
@@ -74,10 +116,13 @@ export function App() {
         currentTab={currentTab}
         setCurrentTab={setCurrentTab}
         userRole={userRole}
-        setUserRole={setUserRole}
+        setUserRole={handleSwitchRole}
+        currentUser={currentUser}
         isDarkMode={isDarkMode}
         setIsDarkMode={setIsDarkMode}
         onOpenCloudModal={() => setIsCloudModalOpen(true)}
+        onOpenRulebook={() => setIsRulebookOpen(true)}
+        onOpenLogin={() => setIsLoginOpen(true)}
       />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 py-6">
@@ -150,6 +195,11 @@ export function App() {
         {currentTab === 'manufacturer' && (
           <ManufacturerSelfAudit onLoadAudit={handleSelectReportFromDossier} />
         )}
+
+        {/* Tab 5: Administrator Control Center */}
+        {currentTab === 'admin' && (
+          <AdminControlCenter />
+        )}
       </main>
 
       {/* Consumer Grievance Modal */}
@@ -159,10 +209,30 @@ export function App() {
         report={currentReport}
       />
 
-      {/* Cloud Database & CDN Config Modal */}
+      {/* Cloud Database & CDN Status Modal */}
       <CloudConfigModal
         isOpen={isCloudModalOpen}
         onClose={() => setIsCloudModalOpen(false)}
+      />
+
+      {/* Legal Metrology Rulebook Drawer (3-Bars Menu) */}
+      <RulebookDrawer
+        isOpen={isRulebookOpen}
+        onClose={() => setIsRulebookOpen(false)}
+        currentUser={currentUser}
+        onSwitchRole={handleSwitchRole}
+        onOpenAdmin={() => setCurrentTab('admin')}
+        onOpenCloudModal={() => setIsCloudModalOpen(true)}
+        onOpenLogin={() => setIsLoginOpen(true)}
+      />
+
+      {/* Authentication & 1-Click Test Accounts Modal */}
+      <LoginModal
+        isOpen={isLoginOpen}
+        onClose={() => setIsLoginOpen(false)}
+        currentUser={currentUser}
+        onLoginSuccess={handleLoginSuccess}
+        onLogout={() => handleSwitchRole('CITIZEN')}
       />
 
       <Footer />

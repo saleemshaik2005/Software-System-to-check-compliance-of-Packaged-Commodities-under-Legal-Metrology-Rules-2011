@@ -1,9 +1,10 @@
-﻿// Compliance Evaluation Engine
+// Compliance Evaluation Engine
 // Enforces The Legal Metrology (Packaged Commodities) Rules, 2011
 
 import { ExtractedProductInfo, ComplianceReport, RuleEvaluation, BoundingBox } from '../types';
 import { isStandardPackSize } from '../data/standardPackSizes';
 import { calculateMPE } from '../data/mpeLimits';
+import { getAdminConfig } from './adminService';
 
 export function evaluateCompliance(
   product: ExtractedProductInfo,
@@ -680,8 +681,9 @@ export function evaluateCompliance(
   });
   score = Math.max(0, Math.min(100, Math.round(score)));
 
+  const adminCfg = getAdminConfig();
   let overallStatus: 'COMPLIANT' | 'NON_COMPLIANT' | 'NEEDS_REVIEW' = 'COMPLIANT';
-  if (failedRules.length > 0 || score < 70) {
+  if (failedRules.length > 0 || score < adminCfg.passScoreThreshold) {
     overallStatus = 'NON_COMPLIANT';
   } else if (warningRules.length > 0 || score < 90) {
     overallStatus = 'NEEDS_REVIEW';

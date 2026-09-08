@@ -28,7 +28,30 @@ export type ProductCommodityCategory =
 
 export type ComplianceStatus = 'COMPLIANT' | 'NON_COMPLIANT' | 'NEEDS_REVIEW';
 export type RuleStatus = 'PASS' | 'FAIL' | 'WARNING' | 'EXEMPT';
-export type UserRole = 'OFFICER' | 'CITIZEN' | 'MANUFACTURER';
+export type UserRole = 'OFFICER' | 'CITIZEN' | 'MANUFACTURER' | 'ADMIN';
+
+export interface AuthUser {
+  id: string;
+  name: string;
+  email: string;
+  role: UserRole;
+  badgeNumber?: string;
+  organization?: string;
+  avatarUrl?: string;
+}
+
+export interface AdminSystemConfig {
+  fineFirstOffense: number;
+  fineSecondOffense: number;
+  fineManufacturerViolation: number;
+  minNumeralHeightSmall: number;
+  minNumeralHeightMedium: number;
+  minNumeralHeightLarge: number;
+  passScoreThreshold: number;
+  strictSecondSchedule: boolean;
+  specialDriveBanner: string;
+  enableCloudSync: boolean;
+}
 
 export interface BoundingBox {
   id: string;
