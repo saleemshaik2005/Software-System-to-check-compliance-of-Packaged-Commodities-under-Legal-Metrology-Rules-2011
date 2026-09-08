@@ -21,6 +21,7 @@ export function App() {
   const [activePresetId, setActivePresetId] = useState<string>('demo-amul-milk');
   const [activeView, setActiveView] = useState<'front' | 'back' | 'side'>('front');
   const [isGrievanceOpen, setIsGrievanceOpen] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
 
   // Initialize with the Slide 2 demo (Amul Taaza Milk)
   const [currentReport, setCurrentReport] = useState<ComplianceReport>(() => {
@@ -34,7 +35,6 @@ export function App() {
     return rep;
   });
 
-  // Handle demo preset selection
   const handleSelectPreset = (preset: DemoProductPreset) => {
     setActivePresetId(preset.id);
     setActiveView('front');
@@ -48,14 +48,12 @@ export function App() {
     saveScanReport(rep);
   };
 
-  // Handle live camera or upload completion
   const handleScanComplete = (report: ComplianceReport) => {
     setActivePresetId('');
     setCurrentReport(report);
     saveScanReport(report);
   };
 
-  // Switch report from analytics or ecommerce
   const handleSelectReportFromDossier = (report: ComplianceReport) => {
     setCurrentReport(report);
     setCurrentTab('scanner');
@@ -67,12 +65,16 @@ export function App() {
     DEMO_PRESETS[0].imageVisual.front;
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col font-sans selection:bg-emerald-500 selection:text-slate-950">
+    <div className={`min-h-screen flex flex-col font-sans selection:bg-[#00A651] selection:text-white ${
+      isDarkMode ? 'dark bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-900'
+    }`}>
       <Navbar
         currentTab={currentTab}
         setCurrentTab={setCurrentTab}
         userRole={userRole}
         setUserRole={setUserRole}
+        isDarkMode={isDarkMode}
+        setIsDarkMode={setIsDarkMode}
       />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 py-6">
@@ -105,11 +107,11 @@ export function App() {
                   availableImages={currentReport.capturedImages}
                 />
 
-                {/* Additional Regulatory Context Banner */}
-                <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 text-xs text-slate-400 space-y-2">
-                  <div className="font-bold text-white uppercase tracking-wider text-[11px] flex items-center justify-between">
+                {/* Statutory Regulatory Context Card */}
+                <div className="bg-white border border-slate-200 rounded-2xl p-4 text-xs text-slate-600 shadow-sm space-y-2">
+                  <div className="font-black text-slate-900 uppercase tracking-wider text-[11px] flex items-center justify-between">
                     <span>Inspection Protocol Reference</span>
-                    <span className="text-emerald-400 font-mono">Fifth Schedule Sampling</span>
+                    <span className="text-[#00A651] font-mono font-bold">Fifth Schedule Sampling</span>
                   </div>
                   <p className="leading-relaxed">
                     Inspection conducted under Section 15 of Legal Metrology Act, 2009. Sample size determined per Fifth Schedule Table (32 samples for lot &lt; 4000; 80 samples for lot &gt; 4000). Tare weight deducted per Sixth Schedule Part-II.

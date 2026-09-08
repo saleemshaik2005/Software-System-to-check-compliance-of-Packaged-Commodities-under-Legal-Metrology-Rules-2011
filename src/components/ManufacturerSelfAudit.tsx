@@ -1,8 +1,7 @@
 ﻿import React, { useState } from 'react';
-import { Building2, CheckCircle2, AlertOctagon, RefreshCw, Layers, ShieldAlert, FileText, ArrowRight } from 'lucide-react';
-import { ProductCommodityCategory, ExtractedProductInfo, ComplianceReport } from '../types';
+import { Building2, CheckCircle2, ArrowRight } from 'lucide-react';
+import { ExtractedProductInfo, ComplianceReport } from '../types';
 import { evaluateCompliance } from '../services/complianceEngine';
-import { STANDARD_PACK_RULES } from '../data/standardPackSizes';
 
 interface ManufacturerSelfAuditProps {
   onLoadAudit: (report: ComplianceReport) => void;
@@ -59,37 +58,35 @@ export const ManufacturerSelfAudit: React.FC<ManufacturerSelfAuditProps> = ({ on
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="bg-slate-900 border border-slate-800 p-6 rounded-2xl shadow-xl">
+      <div className="bg-white border border-slate-200 p-6 rounded-2xl shadow-sm">
         <div className="max-w-3xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-950 text-amber-300 border border-amber-800 text-xs font-bold mb-3">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-50 text-amber-800 border border-amber-200 text-xs font-bold mb-3">
             <Building2 className="w-3.5 h-3.5" />
             <span>FMCG Brand & Packer Pre-Printing Simulator</span>
           </div>
-          <h2 className="text-xl font-black text-white tracking-tight">
+          <h2 className="text-xl font-black text-slate-900 tracking-tight">
             Manufacturer Pre-Pack Packaging Label Simulator
           </h2>
-          <p className="text-xs sm:text-sm text-slate-400 mt-1 leading-relaxed">
+          <p className="text-xs sm:text-sm text-slate-600 mt-1 leading-relaxed">
             Test your artwork and packaging declarations before ordering batch printing or packaging runs. Avoid costly product recalls, stock seizures under Rule 20, and compounding fines.
           </p>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Form Inputs */}
-        <div className="lg:col-span-7 bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-xl space-y-4">
-          <h3 className="text-sm font-bold text-white mb-2 flex items-center justify-between">
+        <div className="lg:col-span-7 bg-white border border-slate-200 p-5 rounded-2xl shadow-sm space-y-4">
+          <h3 className="text-sm font-black text-slate-900 mb-2 flex items-center justify-between">
             <span>Packaging Specifications</span>
-            <span className="text-xs text-slate-500 font-normal">Real-time Rule Checking</span>
+            <span className="text-xs text-slate-500 font-semibold">Real-time Rule Checking</span>
           </h3>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
             <div>
-              <label className="block text-slate-400 mb-1 font-semibold">Commodity Category</label>
+              <label className="block text-slate-600 mb-1 font-bold">Commodity Category</label>
               <select
                 value={formData.category}
                 onChange={(e) => handleChange('category', e.target.value)}
-                className="w-full bg-slate-950 border border-slate-800 text-white p-2.5 rounded-xl focus:border-amber-500 focus:outline-none"
+                className="w-full bg-slate-50 border border-slate-300 text-slate-900 p-2.5 rounded-xl focus:border-amber-500 focus:outline-none"
               >
                 <option value="general_fmcg">General FMCG</option>
                 <option value="biscuits">Biscuits (Item #3)</option>
@@ -103,28 +100,28 @@ export const ManufacturerSelfAudit: React.FC<ManufacturerSelfAuditProps> = ({ on
             </div>
 
             <div>
-              <label className="block text-slate-400 mb-1 font-semibold">Product Name</label>
+              <label className="block text-slate-600 mb-1 font-bold">Product Name</label>
               <input
                 type="text"
                 value={formData.productName}
                 onChange={(e) => handleChange('productName', e.target.value)}
-                className="w-full bg-slate-950 border border-slate-800 text-white p-2.5 rounded-xl focus:border-amber-500 focus:outline-none"
+                className="w-full bg-slate-50 border border-slate-300 text-slate-900 p-2.5 rounded-xl focus:border-amber-500 focus:outline-none"
               />
             </div>
 
             <div>
-              <label className="block text-slate-400 mb-1 font-semibold">Net Quantity</label>
+              <label className="block text-slate-600 mb-1 font-bold">Net Quantity</label>
               <div className="flex gap-2">
                 <input
                   type="number"
                   value={formData.netQuantity}
                   onChange={(e) => handleChange('netQuantity', parseFloat(e.target.value) || 0)}
-                  className="w-full bg-slate-950 border border-slate-800 text-white p-2.5 rounded-xl focus:border-amber-500 focus:outline-none"
+                  className="w-full bg-slate-50 border border-slate-300 text-slate-900 p-2.5 rounded-xl focus:border-amber-500 focus:outline-none"
                 />
                 <select
                   value={formData.quantityUnit}
                   onChange={(e) => handleChange('quantityUnit', e.target.value)}
-                  className="bg-slate-950 border border-slate-800 text-white p-2.5 rounded-xl focus:border-amber-500 focus:outline-none"
+                  className="bg-slate-50 border border-slate-300 text-slate-900 p-2.5 rounded-xl focus:border-amber-500 focus:outline-none"
                 >
                   <option value="g">g</option>
                   <option value="kg">kg</option>
@@ -139,132 +136,131 @@ export const ManufacturerSelfAudit: React.FC<ManufacturerSelfAuditProps> = ({ on
             </div>
 
             <div>
-              <label className="block text-slate-400 mb-1 font-semibold">Maximum Retail Price (₹)</label>
+              <label className="block text-slate-600 mb-1 font-bold">Maximum Retail Price (₹)</label>
               <input
                 type="number"
                 value={formData.mrp}
                 onChange={(e) => handleChange('mrp', parseFloat(e.target.value) || 0)}
-                className="w-full bg-slate-950 border border-slate-800 text-white p-2.5 rounded-xl focus:border-amber-500 focus:outline-none"
+                className="w-full bg-slate-50 border border-slate-300 text-slate-900 p-2.5 rounded-xl focus:border-amber-500 focus:outline-none"
               />
             </div>
 
-            <div className="sm:col-span-2 flex items-center gap-4 bg-slate-950 p-2.5 rounded-xl border border-slate-800">
-              <label className="flex items-center gap-2 cursor-pointer">
+            <div className="sm:col-span-2 flex items-center gap-4 bg-slate-50 p-2.5 rounded-xl border border-slate-200">
+              <label className="flex items-center gap-2 cursor-pointer font-semibold text-slate-700">
                 <input
                   type="checkbox"
                   checked={formData.hasInclAllTaxes}
                   onChange={(e) => handleChange('hasInclAllTaxes', e.target.checked)}
-                  className="rounded text-amber-500 focus:ring-amber-500"
+                  className="rounded text-amber-600 focus:ring-amber-500"
                 />
-                <span className="text-slate-300">Include "incl. of all taxes" clause</span>
+                <span>Include "incl. of all taxes" clause</span>
               </label>
 
-              <label className="flex items-center gap-2 cursor-pointer">
+              <label className="flex items-center gap-2 cursor-pointer font-semibold text-slate-700">
                 <input
                   type="checkbox"
                   checked={formData.isStickerPrice}
                   onChange={(e) => handleChange('isStickerPrice', e.target.checked)}
-                  className="rounded text-red-500 focus:ring-red-500"
+                  className="rounded text-red-600 focus:ring-red-500"
                 />
-                <span className="text-slate-300">Apply price change via Sticker (Test Rule 18 violation)</span>
+                <span>Apply price change via Sticker (Rule 18 violation)</span>
               </label>
             </div>
 
             <div className="sm:col-span-2">
-              <label className="block text-slate-400 mb-1 font-semibold">Manufacturer Name</label>
+              <label className="block text-slate-600 mb-1 font-bold">Manufacturer Name</label>
               <input
                 type="text"
                 value={formData.manufacturerName}
                 onChange={(e) => handleChange('manufacturerName', e.target.value)}
-                className="w-full bg-slate-950 border border-slate-800 text-white p-2.5 rounded-xl focus:border-amber-500 focus:outline-none"
+                className="w-full bg-slate-50 border border-slate-300 text-slate-900 p-2.5 rounded-xl focus:border-amber-500 focus:outline-none"
               />
             </div>
 
             <div>
-              <label className="block text-slate-400 mb-1 font-semibold">Factory Address</label>
+              <label className="block text-slate-600 mb-1 font-bold">Factory Address</label>
               <input
                 type="text"
                 value={formData.manufacturerAddress}
                 onChange={(e) => handleChange('manufacturerAddress', e.target.value)}
-                className="w-full bg-slate-950 border border-slate-800 text-white p-2.5 rounded-xl focus:border-amber-500 focus:outline-none"
+                className="w-full bg-slate-50 border border-slate-300 text-slate-900 p-2.5 rounded-xl focus:border-amber-500 focus:outline-none"
               />
             </div>
 
             <div>
-              <label className="block text-slate-400 mb-1 font-semibold">Postal PIN Code (Rule 10)</label>
+              <label className="block text-slate-600 mb-1 font-bold">Postal PIN Code (Rule 10)</label>
               <input
                 type="text"
                 maxLength={6}
                 value={formData.manufacturerPinCode}
                 onChange={(e) => handleChange('manufacturerPinCode', e.target.value)}
                 placeholder="e.g. 110001"
-                className="w-full bg-slate-950 border border-slate-800 text-white p-2.5 rounded-xl focus:border-amber-500 focus:outline-none"
+                className="w-full bg-slate-50 border border-slate-300 text-slate-900 p-2.5 rounded-xl focus:border-amber-500 focus:outline-none"
               />
             </div>
 
             <div>
-              <label className="block text-slate-400 mb-1 font-semibold">Customer Care Phone</label>
+              <label className="block text-slate-600 mb-1 font-bold">Customer Care Phone</label>
               <input
                 type="text"
                 value={formData.consumerCarePhone}
                 onChange={(e) => handleChange('consumerCarePhone', e.target.value)}
-                className="w-full bg-slate-950 border border-slate-800 text-white p-2.5 rounded-xl focus:border-amber-500 focus:outline-none"
+                className="w-full bg-slate-50 border border-slate-300 text-slate-900 p-2.5 rounded-xl focus:border-amber-500 focus:outline-none"
               />
             </div>
 
             <div>
-              <label className="block text-slate-400 mb-1 font-semibold">Customer Care Email</label>
+              <label className="block text-slate-600 mb-1 font-bold">Customer Care Email</label>
               <input
                 type="email"
                 value={formData.consumerCareEmail}
                 onChange={(e) => handleChange('consumerCareEmail', e.target.value)}
-                className="w-full bg-slate-950 border border-slate-800 text-white p-2.5 rounded-xl focus:border-amber-500 focus:outline-none"
+                className="w-full bg-slate-50 border border-slate-300 text-slate-900 p-2.5 rounded-xl focus:border-amber-500 focus:outline-none"
               />
             </div>
 
             <div>
-              <label className="block text-slate-400 mb-1 font-semibold">Printed Numeral Height (mm)</label>
+              <label className="block text-slate-600 mb-1 font-bold">Printed Numeral Height (mm)</label>
               <input
                 type="number"
                 step="0.1"
                 value={formData.measuredNumeralHeightMm}
                 onChange={(e) => handleChange('measuredNumeralHeightMm', parseFloat(e.target.value) || 0)}
-                className="w-full bg-slate-950 border border-slate-800 text-white p-2.5 rounded-xl focus:border-amber-500 focus:outline-none"
+                className="w-full bg-slate-50 border border-slate-300 text-slate-900 p-2.5 rounded-xl focus:border-amber-500 focus:outline-none"
               />
             </div>
           </div>
         </div>
 
         {/* Live Simulation Card */}
-        <div className="lg:col-span-5 bg-slate-900 border border-slate-800 p-5 rounded-2xl shadow-xl flex flex-col justify-between">
+        <div className="lg:col-span-5 bg-white border border-slate-200 p-5 rounded-2xl shadow-sm flex flex-col justify-between">
           <div>
-            <div className="flex items-center justify-between mb-3 border-b border-slate-800 pb-3">
-              <h3 className="text-sm font-bold text-white">
+            <div className="flex items-center justify-between mb-3 border-b border-slate-200 pb-3">
+              <h3 className="text-sm font-black text-slate-900">
                 Pre-Audit Certification Verdict
               </h3>
               <span
-                className={`text-xs font-black px-2.5 py-1 rounded-full uppercase ${
+                className={`text-xs font-black px-3 py-1 rounded-full uppercase ${
                   isPass
-                    ? 'bg-emerald-950 text-emerald-300 border border-emerald-800'
-                    : 'bg-red-950 text-red-300 border border-red-800'
+                    ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+                    : 'bg-red-100 text-red-800 border border-red-300'
                 }`}
               >
                 {activeReport.overallStatus} ({activeReport.score}%)
               </span>
             </div>
 
-            {/* Virtual Simulated Label Mockup */}
-            <div className="bg-amber-50 text-slate-950 p-4 rounded-xl shadow-inner border border-amber-200 font-sans space-y-2 select-none mb-4">
+            <div className="bg-amber-50/70 text-slate-950 p-4 rounded-xl shadow-xs border border-amber-200 font-sans space-y-2 select-none mb-4">
               <div className="border-b border-amber-300 pb-1 flex justify-between items-start">
                 <div>
                   <h4 className="font-black text-sm uppercase tracking-wide text-slate-900">
                     {formData.productName || 'PRODUCT NAME'}
                   </h4>
-                  <p className="text-[10px] text-slate-600 uppercase font-semibold">
+                  <p className="text-[10px] text-slate-600 uppercase font-bold">
                     {formData.genericName}
                   </p>
                 </div>
-                <span className="text-[9px] bg-emerald-700 text-white px-1.5 py-0.5 rounded font-bold">
+                <span className="text-[9px] bg-[#00A651] text-white px-1.5 py-0.5 rounded font-bold">
                   {formData.countryOfOrigin || 'India'}
                 </span>
               </div>
@@ -272,13 +268,13 @@ export const ManufacturerSelfAudit: React.FC<ManufacturerSelfAuditProps> = ({ on
               <div className="grid grid-cols-2 gap-2 text-[11px] py-1 border-b border-amber-300">
                 <div>
                   <span className="text-[9px] text-slate-500 block uppercase font-bold">Net Quantity</span>
-                  <span className="font-extrabold text-slate-900 text-xs">
+                  <span className="font-black text-slate-900 text-xs">
                     {formData.netQuantity} {formData.quantityUnit}
                   </span>
                 </div>
                 <div>
                   <span className="text-[9px] text-slate-500 block uppercase font-bold">Max Retail Price</span>
-                  <span className="font-extrabold text-slate-900 text-xs">
+                  <span className="font-black text-slate-900 text-xs">
                     Rs. {formData.mrp.toFixed(2)}
                   </span>
                   <span className="text-[9px] text-slate-600 block">
@@ -301,32 +297,31 @@ export const ManufacturerSelfAudit: React.FC<ManufacturerSelfAuditProps> = ({ on
               </div>
             </div>
 
-            {/* Issues Summary */}
             <div className="space-y-2 text-xs">
               {activeReport.evaluations
                 .filter((e) => e.status !== 'PASS')
                 .map((err, i) => (
                   <div
                     key={i}
-                    className="p-2 rounded-lg bg-red-950/40 border border-red-900/60 text-red-300 text-[11px]"
+                    className="p-2.5 rounded-lg bg-red-50 border border-red-200 text-red-900 text-[11px] font-semibold"
                   >
                     <strong>{err.ruleNumber}:</strong> {err.ruleTitle}
                   </div>
                 ))}
 
               {activeReport.evaluations.filter((e) => e.status !== 'PASS').length === 0 && (
-                <div className="p-3 rounded-lg bg-emerald-950/40 border border-emerald-900/60 text-emerald-300 text-xs flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                <div className="p-3 rounded-lg bg-emerald-50 border border-emerald-300 text-emerald-900 text-xs flex items-center gap-2 font-semibold">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
                   <span>Packaging specifications conform to all Legal Metrology Rules, 2011!</span>
                 </div>
               )}
             </div>
           </div>
 
-          <div className="mt-4 pt-3 border-t border-slate-800">
+          <div className="mt-4 pt-3 border-t border-slate-200">
             <button
               onClick={handleTestNow}
-              className="w-full bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold py-2.5 px-4 rounded-xl shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer"
+              className="w-full bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold py-2.5 px-4 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
             >
               <span>View Full Inspector Dossier & Form A</span>
               <ArrowRight className="w-4 h-4" />

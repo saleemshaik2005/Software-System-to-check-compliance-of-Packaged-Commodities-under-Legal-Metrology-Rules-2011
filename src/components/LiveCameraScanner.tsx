@@ -1,6 +1,6 @@
 ﻿import React, { useRef, useState, useEffect } from 'react';
-import { Camera, RefreshCw, Upload, Sparkles, AlertCircle, Zap, Image as ImageIcon } from 'lucide-react';
-import { extractTextFromImage, parseLabelDeclarations } from '../services/ocrService';
+import { Camera, RefreshCw, Upload, Sparkles, AlertCircle, KeyRound, Bot } from 'lucide-react';
+import { extractTextFromImage, parseLabelDeclarations, analyzeLabelWithGemini } from '../services/ocrService';
 import { evaluateCompliance } from '../services/complianceEngine';
 import { ComplianceReport } from '../types';
 
@@ -20,8 +20,9 @@ export const LiveCameraScanner: React.FC<LiveCameraScannerProps> = ({
   const [isProcessing, setIsProcessing] = useState(false);
   const [statusMessage, setStatusMessage] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
+  const [geminiApiKey, setGeminiApiKey] = useState(() => localStorage.getItem('inspack_gemini_key') || '');
+  const [showKeyModal, setShowKeyModal] = useState(false);
 
-  // Start Camera
   const startCamera = async () => {
     setErrorMsg('');
     try {
@@ -50,7 +51,6 @@ export const LiveCameraScanner: React.FC<LiveCameraScannerProps> = ({
     }
   };
 
-  // Stop Camera
   const stopCamera = () => {
     if (videoRef.current && videoRef.current.srcObject) {
       const stream = videoRef.current.srcObject as MediaStream;
@@ -71,7 +71,6 @@ export const LiveCameraScanner: React.FC<LiveCameraScannerProps> = ({
     setTimeout(startCamera, 200);
   };
 
-  // Capture image from video
   const capturePhoto = async () => {
     if (!videoRef.current || !canvasRef.current) return;
     const video = videoRef.current;
@@ -89,7 +88,6 @@ export const LiveCameraScanner: React.FC<LiveCameraScannerProps> = ({
     processImage(dataUrl);
   };
 
-  // Handle uploaded file
   const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
@@ -104,18 +102,32 @@ export const LiveCameraScanner: React.FC<LiveCameraScannerProps> = ({
     reader.readAsDataURL(file);
   };
 
-  // Run OCR & Compliance Evaluation
   const processImage = async (dataUrl: string) => {
     setIsProcessing(true);
     setStatusMessage('Scanning Principal Display Panel (PDP)...');
 
     try {
-      const ocrText = await extractTextFromImage(dataUrl, (status, progress) => {
-        setStatusMessage(`${status} (${Math.round(progress)}%)`);
-      });
+      let extractedProduct;
+      let ocrText = '';
+
+      if (geminiApiKey.trim()) {
+        setStatusMessage('Analyzing with Gemini 1.5 Flash Vision AI...');
+        const geminiResult = await analyzeLabelWithGemini(dataUrl, geminiApiKey);
+        if (geminiResult && geminiResult.productName) {
+          extractedProduct = parseLabelDeclarations('');
+          Object.assign(extractedProduct, geminiResult);
+        }
+      }
+
+      if (!extractedProduct) {
+        setStatusMessage('Analyzing with Edge Neural OCR Engine...');
+        ocrText = await extractTextFromImage(dataUrl, (status, progress) => {
+          setStatusMessage(`${status} (${Math.round(progress)}%)`);
+        });
+        extractedProduct = parseLabelDeclarations(ocrText);
+      }
 
       setStatusMessage('Validating declarations against LMPC Rules 2011...');
-      const extractedProduct = parseLabelDeclarations(ocrText);
       const report = evaluateCompliance(
         extractedProduct,
         activeView,
@@ -132,19 +144,69 @@ export const LiveCameraScanner: React.FC<LiveCameraScannerProps> = ({
     }
   };
 
+  const handleSaveKey = (key: string) => {
+    setGeminiApiKey(key);
+    localStorage.setItem('inspack_gemini_key', key);
+    setShowKeyModal(false);
+  };
+
   return (
-    <div className="bg-slate-900 border border-slate-800 rounded-2xl p-4 shadow-xl mb-6">
+    <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm mb-6">
       <canvas ref={canvasRef} className="hidden" />
+
+      {/* Header bar with AI mode */}
+      <div className="flex items-center justify-between gap-2 mb-3 pb-2 border-b border-slate-100">
+        <div className="flex items-center gap-2">
+          <Bot className="w-4 h-4 text-[#00A651]" />
+          <span className="text-xs font-bold text-slate-800">
+            Vision AI Engine: {geminiApiKey ? 'Gemini 1.5 Flash + Neural OCR' : 'Edge Neural OCR (100% Offline)'}
+          </span>
+        </div>
+        <button
+          onClick={() => setShowKeyModal(!showKeyModal)}
+          className="text-[11px] text-[#0A3663] font-bold hover:underline flex items-center gap-1 cursor-pointer"
+        >
+          <KeyRound className="w-3 h-3" />
+          <span>{geminiApiKey ? 'API Key Active' : 'Set Gemini AI Key (Optional)'}</span>
+        </button>
+      </div>
+
+      {showKeyModal && (
+        <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-xl text-xs space-y-2">
+          <div className="font-bold text-slate-900">Optional Google Gemini Vision API Key</div>
+          <p className="text-slate-600 text-[11px]">
+            Inspack already runs 100% offline using built-in Tesseract Neural OCR. If you want next-level multimodal reasoning, enter a free Gemini API key from Google AI Studio.
+          </p>
+          <div className="flex gap-2">
+            <input
+              type="password"
+              placeholder="Paste AI Studio API key..."
+              defaultValue={geminiApiKey}
+              id="gemini-key-input"
+              className="flex-1 bg-white border border-slate-300 px-3 py-1.5 rounded-lg text-xs"
+            />
+            <button
+              onClick={() => {
+                const el = document.getElementById('gemini-key-input') as HTMLInputElement;
+                handleSaveKey(el.value);
+              }}
+              className="bg-[#0A3663] text-white px-3 py-1.5 rounded-lg font-bold"
+            >
+              Save Key
+            </button>
+          </div>
+        </div>
+      )}
 
       {/* Processing Loader */}
       {isProcessing && (
         <div className="py-8 flex flex-col items-center justify-center gap-3">
           <div className="relative">
-            <RefreshCw className="w-10 h-10 text-emerald-400 animate-spin" />
-            <Sparkles className="w-4 h-4 text-cyan-400 absolute top-0 right-0 animate-ping" />
+            <RefreshCw className="w-10 h-10 text-[#00A651] animate-spin" />
+            <Sparkles className="w-4 h-4 text-blue-600 absolute top-0 right-0 animate-ping" />
           </div>
-          <p className="text-sm font-bold text-white tracking-wide">{statusMessage}</p>
-          <p className="text-xs text-slate-400">
+          <p className="text-sm font-bold text-slate-900 tracking-wide">{statusMessage}</p>
+          <p className="text-xs text-slate-500">
             Checking Rule 6 declarations, MRP formatting, SI units, and Second Schedule sizes
           </p>
         </div>
@@ -190,7 +252,7 @@ export const LiveCameraScanner: React.FC<LiveCameraScannerProps> = ({
 
                 <button
                   onClick={capturePhoto}
-                  className="p-4 bg-emerald-500 hover:bg-emerald-400 text-slate-950 rounded-full font-bold shadow-xl ring-4 ring-emerald-500/30 transition-all transform active:scale-95"
+                  className="p-4 bg-emerald-500 hover:bg-emerald-400 text-slate-950 rounded-full font-bold shadow-xl ring-4 ring-emerald-500/30 transition-all transform active:scale-95 cursor-pointer"
                   title="Capture Label"
                 >
                   <Camera className="w-7 h-7" />
@@ -198,7 +260,7 @@ export const LiveCameraScanner: React.FC<LiveCameraScannerProps> = ({
 
                 <button
                   onClick={stopCamera}
-                  className="px-3 py-2 bg-slate-900/80 hover:bg-slate-800 text-slate-300 text-xs rounded-full backdrop-blur-md"
+                  className="px-3 py-2 bg-slate-900/80 hover:bg-slate-800 text-slate-300 text-xs rounded-full backdrop-blur-md cursor-pointer"
                 >
                   Close
                 </button>
@@ -208,8 +270,8 @@ export const LiveCameraScanner: React.FC<LiveCameraScannerProps> = ({
             /* Idle Trigger Cards */
             <div>
               {errorMsg && (
-                <div className="mb-3 p-3 bg-amber-950/40 border border-amber-800/80 rounded-xl text-xs text-amber-300 flex items-center gap-2">
-                  <AlertCircle className="w-4 h-4 shrink-0 text-amber-400" />
+                <div className="mb-3 p-3 bg-amber-50 border border-amber-300 rounded-xl text-xs text-amber-800 flex items-center gap-2">
+                  <AlertCircle className="w-4 h-4 shrink-0 text-amber-600" />
                   <span>{errorMsg}</span>
                 </div>
               )}
@@ -218,37 +280,37 @@ export const LiveCameraScanner: React.FC<LiveCameraScannerProps> = ({
                 {/* Live Camera Scanner Button */}
                 <button
                   onClick={startCamera}
-                  className="p-4 bg-slate-950/80 hover:bg-slate-800/80 border border-slate-800 hover:border-emerald-500/50 rounded-xl flex items-center gap-3 transition-all cursor-pointer group text-left"
+                  className="p-4 bg-slate-50 hover:bg-emerald-50/50 border border-slate-200 hover:border-emerald-500 rounded-xl flex items-center gap-3 transition-all cursor-pointer group text-left shadow-2xs"
                 >
-                  <div className="p-3 bg-emerald-950/60 text-emerald-400 rounded-xl group-hover:bg-emerald-500 group-hover:text-slate-950 transition-colors">
+                  <div className="p-3 bg-emerald-100 text-[#00A651] rounded-xl group-hover:bg-[#00A651] group-hover:text-white transition-colors">
                     <Camera className="w-6 h-6" />
                   </div>
                   <div>
-                    <h4 className="text-sm font-bold text-white group-hover:text-emerald-300">
+                    <h4 className="text-sm font-black text-slate-900 group-hover:text-[#00A651]">
                       Live Label Scanner
                     </h4>
-                    <p className="text-xs text-slate-400">
+                    <p className="text-xs text-slate-500">
                       Use smartphone or webcam to scan live packaging
                     </p>
                   </div>
                 </button>
 
                 {/* Upload Image Button */}
-                <label className="p-4 bg-slate-950/80 hover:bg-slate-800/80 border border-slate-800 hover:border-cyan-500/50 rounded-xl flex items-center gap-3 transition-all cursor-pointer group text-left">
+                <label className="p-4 bg-slate-50 hover:bg-blue-50/50 border border-slate-200 hover:border-[#0A3663] rounded-xl flex items-center gap-3 transition-all cursor-pointer group text-left shadow-2xs">
                   <input
                     type="file"
                     accept="image/*"
                     onChange={handleFileUpload}
                     className="hidden"
                   />
-                  <div className="p-3 bg-cyan-950/60 text-cyan-400 rounded-xl group-hover:bg-cyan-500 group-hover:text-slate-950 transition-colors">
+                  <div className="p-3 bg-blue-100 text-[#0A3663] rounded-xl group-hover:bg-[#0A3663] group-hover:text-white transition-colors">
                     <Upload className="w-6 h-6" />
                   </div>
                   <div>
-                    <h4 className="text-sm font-bold text-white group-hover:text-cyan-300">
+                    <h4 className="text-sm font-black text-slate-900 group-hover:text-[#0A3663]">
                       Upload Package Photo
                     </h4>
-                    <p className="text-xs text-slate-400">
+                    <p className="text-xs text-slate-500">
                       Drag & drop front/back package label (PNG, JPG)
                     </p>
                   </div>

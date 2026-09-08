@@ -1,5 +1,7 @@
-﻿// Optical Character Recognition & Entity Extraction Service
-// Client-side execution with Tesseract.js and HTML5 Canvas Preprocessing
+﻿// Optical Character Recognition & Multimodal AI Vision Service
+// Dual Engine:
+// 1. On-Device Edge Neural OCR (Tesseract.js + Canvas CV Preprocessing) - Works 100% Offline
+// 2. Cloud Multimodal AI (Google Gemini 1.5 Flash Vision) - High-level semantic reasoning
 
 import { createWorker } from 'tesseract.js';
 import { ExtractedProductInfo, ProductCommodityCategory } from '../types';
@@ -9,7 +11,7 @@ export interface OCRProgressCallback {
 }
 
 export async function preprocessImage(imageSource: string | HTMLImageElement): Promise<string> {
-  return new Promise((resolve, reject) => {
+  return new Promise((resolve) => {
     const img = new Image();
     img.crossOrigin = 'anonymous';
     img.onload = () => {
@@ -20,15 +22,12 @@ export async function preprocessImage(imageSource: string | HTMLImageElement): P
         return;
       }
 
-      // Upscale if small to improve OCR accuracy
       const scale = Math.max(1, Math.min(2.5, 1800 / Math.max(img.width, img.height)));
       canvas.width = Math.round(img.width * scale);
       canvas.height = Math.round(img.height * scale);
 
-      // Draw original image
       ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
 
-      // Contrast Enhancement & Grayscale
       const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
       const data = imgData.data;
 
@@ -36,13 +35,9 @@ export async function preprocessImage(imageSource: string | HTMLImageElement): P
         const r = data[i];
         const g = data[i + 1];
         const b = data[i + 2];
-        // Luminance grayscale
         let gray = 0.299 * r + 0.587 * g + 0.114 * b;
-
-        // High-contrast stretching
         gray = (gray - 128) * 1.35 + 128;
         gray = Math.max(0, Math.min(255, gray));
-
         data[i] = gray;
         data[i + 1] = gray;
         data[i + 2] = gray;
@@ -60,6 +55,7 @@ export async function preprocessImage(imageSource: string | HTMLImageElement): P
   });
 }
 
+// 1. Edge Neural OCR with Tesseract
 export async function extractTextFromImage(
   imageUri: string,
   onProgress?: OCRProgressCallback
@@ -68,7 +64,7 @@ export async function extractTextFromImage(
     if (onProgress) onProgress('Preprocessing image for OCR...', 10);
     const preprocessedUri = await preprocessImage(imageUri);
 
-    if (onProgress) onProgress('Loading OCR Worker...', 25);
+    if (onProgress) onProgress('Loading Neural OCR Engine...', 25);
     const worker = await createWorker('eng');
 
     if (onProgress) onProgress('Recognizing label text and declarations...', 60);
@@ -84,6 +80,68 @@ export async function extractTextFromImage(
   }
 }
 
+// 2. Optional Gemini Multimodal AI Vision
+export async function analyzeLabelWithGemini(
+  base64Image: string,
+  apiKey: string
+): Promise<Partial<ExtractedProductInfo> | null> {
+  try {
+    const cleanBase64 = base64Image.replace(/^data:image\/(png|jpeg|jpg);base64,/, '');
+    const prompt = `You are an expert Legal Metrology (Packaged Commodities) Rules, 2011 inspection officer in India.
+Analyze this product package label image and extract these statutory fields in strict JSON format:
+{
+  "productName": "string",
+  "genericName": "string",
+  "brandName": "string",
+  "netQuantity": number,
+  "quantityUnit": "g" | "kg" | "ml" | "l" | "m" | "cm" | "N",
+  "mrp": number,
+  "mrpString": "string (e.g. MRP Rs. 70.00 incl. of all taxes)",
+  "hasInclAllTaxes": boolean,
+  "isStickerPrice": boolean,
+  "mfgMonth": "MM",
+  "mfgYear": "YYYY",
+  "manufacturerName": "string",
+  "manufacturerAddress": "string",
+  "manufacturerPinCode": "string (6 digit PIN)",
+  "countryOfOrigin": "string",
+  "consumerCarePhone": "string",
+  "consumerCareEmail": "string"
+}`;
+
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [
+          {
+            parts: [
+              { text: prompt },
+              { inlineData: { mimeType: 'image/jpeg', data: cleanBase64 } }
+            ]
+          }
+        ],
+        generationConfig: { responseMimeType: 'application/json' }
+      })
+    });
+
+    if (!res.ok) {
+      console.warn('Gemini API response error:', res.statusText);
+      return null;
+    }
+
+    const data = await res.json();
+    const jsonText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (jsonText) {
+      return JSON.parse(jsonText);
+    }
+    return null;
+  } catch (err) {
+    console.warn('Gemini AI Vision call failed:', err);
+    return null;
+  }
+}
+
 export function parseLabelDeclarations(
   rawText: string,
   categoryHint: ProductCommodityCategory = 'general_packaged'
@@ -91,7 +149,6 @@ export function parseLabelDeclarations(
   const text = rawText || '';
   const lines = text.split('\n').map(l => l.trim()).filter(Boolean);
 
-  // 1. Net Quantity & Unit
   let netQuantity = 0;
   let quantityUnit = 'g';
   let rawQuantityString = '';
@@ -106,7 +163,6 @@ export function parseLabelDeclarations(
     rawQuantityString = qtyMatch[0];
   }
 
-  // 2. MRP & Pricing
   let mrp = 0;
   let mrpString = '';
   let hasInclAllTaxes = false;
@@ -128,7 +184,6 @@ export function parseLabelDeclarations(
     isStickerPrice = true;
   }
 
-  // 3. Manufacturing Date & Expiry
   let mfgMonth = '';
   let mfgYear = '';
   let expMonth = '';
@@ -140,7 +195,6 @@ export function parseLabelDeclarations(
     mfgMonth = mfgMatch[1].padStart(2, '0');
     mfgYear = mfgMatch[2].length === 2 ? '20' + mfgMatch[2] : mfgMatch[2];
   } else {
-    // Current year fallback if not found
     mfgMonth = '08';
     mfgYear = '2024';
   }
@@ -152,7 +206,6 @@ export function parseLabelDeclarations(
     expYear = expMatch[2].length === 2 ? '20' + expMatch[2] : expMatch[2];
   }
 
-  // 4. Contact & Consumer Care
   let consumerCarePhone = '';
   let consumerCareEmail = '';
 
@@ -168,7 +221,6 @@ export function parseLabelDeclarations(
     consumerCareEmail = emailMatch[1];
   }
 
-  // 5. Manufacturer Details & PIN Code
   let manufacturerName = '';
   let manufacturerAddress = '';
   let manufacturerPinCode = '';
@@ -185,7 +237,6 @@ export function parseLabelDeclarations(
     manufacturerAddress = 'Premises address detected on label';
   }
 
-  // 6. Country of origin
   let countryOfOrigin = 'India';
   if (/made\s*in\s*([a-zA-Z]+)|country\s*of\s*origin[:\s]*([a-zA-Z]+)/i.test(text)) {
     const originMatch = text.match(/made\s*in\s*([a-zA-Z]+)|country\s*of\s*origin[:\s]*([a-zA-Z]+)/i);
