@@ -1,0 +1,17 @@
+﻿{
+  "short_name": "Inspack",
+  "name": "Inspack - Legal Metrology Compliance Inspection System",
+  "description": "AI-Powered Legal Metrology (Packaged Commodities) Rules, 2011 Compliance System for Ministry of Consumer Affairs, Food & Public Distribution",
+  "icons": [
+    {
+      "src": "/logos/inspack-logo.jpg",
+      "type": "image/jpeg",
+      "sizes": "192x192 512x512"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#020617",
+  "theme_color": "#020617",
+  "display": "standalone",
+  "orientation": "portrait"
+}
