@@ -1,4 +1,4 @@
-﻿import React, { useState } from 'react';
+import React, { useState } from 'react';
 import { Navbar } from './components/Navbar';
 import { DemoPresetSelector } from './components/DemoPresetSelector';
 import { LiveCameraScanner } from './components/LiveCameraScanner';
@@ -9,6 +9,7 @@ import { OfficerAnalyticsDashboard } from './components/OfficerAnalyticsDashboar
 import { EcommerceAuditTab } from './components/EcommerceAuditTab';
 import { ManufacturerSelfAudit } from './components/ManufacturerSelfAudit';
 import { ConsumerGrievanceModal } from './components/ConsumerGrievanceModal';
+import { CloudConfigModal } from './components/CloudConfigModal';
 import { Footer } from './components/Footer';
 import { DEMO_PRESETS, DemoProductPreset } from './data/demoProducts';
 import { evaluateCompliance } from './services/complianceEngine';
@@ -21,6 +22,7 @@ export function App() {
   const [activePresetId, setActivePresetId] = useState<string>('demo-amul-milk');
   const [activeView, setActiveView] = useState<'front' | 'back' | 'side'>('front');
   const [isGrievanceOpen, setIsGrievanceOpen] = useState(false);
+  const [isCloudModalOpen, setIsCloudModalOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
 
   // Initialize with the Slide 2 demo (Amul Taaza Milk)
@@ -75,6 +77,7 @@ export function App() {
         setUserRole={setUserRole}
         isDarkMode={isDarkMode}
         setIsDarkMode={setIsDarkMode}
+        onOpenCloudModal={() => setIsCloudModalOpen(true)}
       />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 py-6">
@@ -93,6 +96,7 @@ export function App() {
             <LiveCameraScanner
               onScanComplete={handleScanComplete}
               activeView={activeView}
+              setActiveView={setActiveView}
             />
 
             {/* Two Column Layout: Evidence Visualizer (Left) and Scorecard/Breakdown (Right) */}
@@ -153,6 +157,12 @@ export function App() {
         isOpen={isGrievanceOpen}
         onClose={() => setIsGrievanceOpen(false)}
         report={currentReport}
+      />
+
+      {/* Cloud Database & CDN Config Modal */}
+      <CloudConfigModal
+        isOpen={isCloudModalOpen}
+        onClose={() => setIsCloudModalOpen(false)}
       />
 
       <Footer />

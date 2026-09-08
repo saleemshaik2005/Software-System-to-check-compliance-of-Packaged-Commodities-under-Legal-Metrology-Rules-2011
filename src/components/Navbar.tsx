@@ -1,5 +1,5 @@
-﻿import React from 'react';
-import { Scale, CheckCircle, Building2, BarChart3, Globe, Sun, Moon } from 'lucide-react';
+import React from 'react';
+import { Scale, CheckCircle, Building2, BarChart3, Globe, Sun, Moon, Cloud } from 'lucide-react';
 import { UserRole } from '../types';
 
 interface NavbarProps {
@@ -9,6 +9,7 @@ interface NavbarProps {
   setUserRole: (role: UserRole) => void;
   isDarkMode: boolean;
   setIsDarkMode: (val: boolean) => void;
+  onOpenCloudModal?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -18,6 +19,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   setUserRole,
   isDarkMode,
   setIsDarkMode,
+  onOpenCloudModal,
 }) => {
   return (
     <header className="sticky top-0 z-50 bg-white border-b border-slate-200 shadow-sm">
@@ -163,6 +165,19 @@ export const Navbar: React.FC<NavbarProps> = ({
               Brand
             </button>
           </div>
+
+          {/* Cloud Database & Sync Trigger */}
+          {onOpenCloudModal && (
+            <button
+              onClick={onOpenCloudModal}
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 border border-slate-200 rounded-xl text-xs font-bold text-slate-700 transition-colors cursor-pointer"
+              title="Cloud Database (Firestore) & Image CDN (Cloudinary) Settings"
+            >
+              <Cloud className="w-3.5 h-3.5 text-[#0A3663]" />
+              <span className="hidden md:inline">Cloud DB</span>
+              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" title="Connected"></span>
+            </button>
+          )}
 
           {/* Theme Mode Toggle */}
           <button

@@ -1,9 +1,11 @@
-﻿// Local-First Offline Storage Service for Inspack
+// Local-First Offline Storage Service for Inspack
 // Persists inspection history, violation records & officer logs
+// Seamlessly syncs with Google Cloud Firestore & Cloudinary when configured
 
 import { ComplianceReport } from '../types';
 import { DEMO_PRESETS } from '../data/demoProducts';
 import { evaluateCompliance } from './complianceEngine';
+import { getCloudConfig, saveReportToFirestore, uploadToCloudinary } from './cloudService';
 
 const STORAGE_KEY = 'inspack_inspection_history_v1';
 
@@ -41,9 +43,49 @@ export function saveScanReport(report: ComplianceReport): void {
     const existing = getScanReports();
     const updated = [report, ...existing.filter(r => r.id !== report.id)];
     localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+
+    // Optional background cloud sync if Firestore is configured
+    const cfg = getCloudConfig();
+    if (cfg.firestoreProjectId) {
+      saveReportToFirestore(report).catch(err => {
+        console.warn('Background Firestore sync note:', err);
+      });
+    }
   } catch (err) {
     console.warn('Failed to save report:', err);
   }
+}
+
+export async function uploadReportImagesAndSync(report: ComplianceReport): Promise<ComplianceReport> {
+  const cfg = getCloudConfig();
+  if (!cfg.cloudinaryCloudName || !cfg.cloudinaryUploadPreset) {
+    return report;
+  }
+
+  const updatedImages = { ...report.capturedImages };
+
+  const slots = ['front', 'back', 'side'] as const;
+  for (const slot of slots) {
+    const imgData = updatedImages[slot];
+    if (imgData && imgData.startsWith('data:image')) {
+      try {
+        const uploadRes = await uploadToCloudinary(imgData);
+        if (uploadRes.success && uploadRes.url) {
+          updatedImages[slot] = uploadRes.url;
+        }
+      } catch (e) {
+        console.warn(`Failed to upload ${slot} to Cloudinary:`, e);
+      }
+    }
+  }
+
+  const updatedReport: ComplianceReport = {
+    ...report,
+    capturedImages: updatedImages
+  };
+
+  saveScanReport(updatedReport);
+  return updatedReport;
 }
 
 export function getScanReportById(id: string): ComplianceReport | null {

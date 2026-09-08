@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { ComplianceReport } from '../types';
 import { generateCompliancePDF } from '../services/pdfReportGenerator';
 import {
@@ -23,10 +23,16 @@ export const ComplianceScorecard: React.FC<ComplianceScorecardProps> = ({
 }) => {
   const isCompliant = report.overallStatus === 'COMPLIANT';
   const isWarning = report.overallStatus === 'NEEDS_REVIEW';
+  const [isGeneratingPdf, setIsGeneratingPdf] = React.useState(false);
   const p = report.productInfo;
 
-  const handleDownloadPDF = () => {
-    generateCompliancePDF(report);
+  const handleDownloadPDF = async () => {
+    try {
+      setIsGeneratingPdf(true);
+      await generateCompliancePDF(report);
+    } finally {
+      setIsGeneratingPdf(false);
+    }
   };
 
   const handleCelebrate = () => {
@@ -55,11 +61,12 @@ export const ComplianceScorecard: React.FC<ComplianceScorecardProps> = ({
           <div className="flex items-center gap-2">
             <button
               onClick={handleDownloadPDF}
-              className="flex items-center gap-1.5 bg-[#00A651] hover:bg-emerald-600 text-white text-xs font-bold px-3 py-2 rounded-xl shadow-md transition-all cursor-pointer"
-              title="Download Seventh Schedule Form A/B Official Data Sheet"
+              disabled={isGeneratingPdf}
+              className="flex items-center gap-1.5 bg-[#00A651] hover:bg-emerald-600 disabled:bg-slate-400 text-white text-xs font-bold px-3.5 py-2 rounded-xl shadow-md transition-all cursor-pointer"
+              title="Download Seventh Schedule Form A/B Official Data Sheet with Photographic Evidence"
             >
-              <Download className="w-3.5 h-3.5" />
-              <span>Download Form {report.formType === 'Form A' ? 'A' : 'B'} PDF</span>
+              <Download className={`w-3.5 h-3.5 ${isGeneratingPdf ? 'animate-bounce' : ''}`} />
+              <span>{isGeneratingPdf ? 'Generating Official PDF...' : `Download Form ${report.formType === 'Form A' ? 'A' : 'B'} PDF`}</span>
             </button>
           </div>
         </div>
