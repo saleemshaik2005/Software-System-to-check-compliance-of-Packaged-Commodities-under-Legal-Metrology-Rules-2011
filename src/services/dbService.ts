@@ -1,11 +1,11 @@
 // Local-First Offline Storage Service for Inspack
 // Persists inspection history, violation records & officer logs
-// Seamlessly syncs with Google Cloud Firestore & Cloudinary when configured
+// Seamlessly syncs with Google Cloud Firestore & Cloudinary automatically
 
 import { ComplianceReport } from '../types';
 import { DEMO_PRESETS } from '../data/demoProducts';
 import { evaluateCompliance } from './complianceEngine';
-import { getCloudConfig, saveReportToFirestore, uploadToCloudinary } from './cloudService';
+import { saveReportToFirestore, uploadToCloudinary } from './cloudService';
 
 const STORAGE_KEY = 'inspack_inspection_history_v1';
 
@@ -38,18 +38,27 @@ export function getScanReports(): ComplianceReport[] {
   }
 }
 
-export function saveScanReport(report: ComplianceReport): void {
+export function saveScanReport(report: ComplianceReport, skipCloudSync = false): void {
   try {
     const existing = getScanReports();
     const updated = [report, ...existing.filter(r => r.id !== report.id)];
     localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
 
-    // Optional background cloud sync if Firestore is configured
-    const cfg = getCloudConfig();
-    if (cfg.firestoreProjectId) {
+    if (!skipCloudSync) {
+      // 1. Sync structured audit report to Google Cloud Firestore
       saveReportToFirestore(report).catch(err => {
         console.warn('Background Firestore sync note:', err);
       });
+
+      // 2. Upload any local base64 images to Cloudinary CDN in the background
+      const hasBase64Images = ['front', 'back', 'side'].some(
+        s => report.capturedImages?.[s as 'front' | 'back' | 'side']?.startsWith('data:image')
+      );
+      if (hasBase64Images) {
+        uploadReportImagesAndSync(report).catch(err => {
+          console.warn('Background Cloudinary upload note:', err);
+        });
+      }
     }
   } catch (err) {
     console.warn('Failed to save report:', err);
@@ -57,11 +66,6 @@ export function saveScanReport(report: ComplianceReport): void {
 }
 
 export async function uploadReportImagesAndSync(report: ComplianceReport): Promise<ComplianceReport> {
-  const cfg = getCloudConfig();
-  if (!cfg.cloudinaryCloudName || !cfg.cloudinaryUploadPreset) {
-    return report;
-  }
-
   const updatedImages = { ...report.capturedImages };
 
   const slots = ['front', 'back', 'side'] as const;
@@ -84,7 +88,7 @@ export async function uploadReportImagesAndSync(report: ComplianceReport): Promi
     capturedImages: updatedImages
   };
 
-  saveScanReport(updatedReport);
+  saveScanReport(updatedReport, true);
   return updatedReport;
 }
 
