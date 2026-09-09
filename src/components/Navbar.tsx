@@ -106,11 +106,15 @@ export const Navbar: React.FC<NavbarProps> = ({
           </span>
         </div>
         <div className="flex items-center gap-3">
+          <div className="hidden sm:flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-950/80 border border-emerald-700/60 text-emerald-400 font-medium text-[10px]" title="Google Cloud Firestore & Cloudinary CDN Real-Time Sync Active">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span>Cloud Database: Synced</span>
+          </div>
           <div className="flex items-center gap-1 text-emerald-300 font-semibold">
             <CheckCircle className="w-3 h-3" />
             <span>LMPC Rules 2011</span>
           </div>
-          <span className="text-blue-400">|</span>
+          <span className="text-zinc-600">|</span>
           <div className="text-cyan-300 font-mono font-bold">Team: Neural Knights</div>
         </div>
       </div>

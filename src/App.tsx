@@ -20,7 +20,7 @@ import { InspectionVaultModal } from './components/InspectionVaultModal';
 import { Footer } from './components/Footer';
 import { DEMO_PRESETS, DemoProductPreset } from './data/demoProducts';
 import { evaluateCompliance } from './services/complianceEngine';
-import { saveScanReport, getScanReports, DB_CHANGE_EVENT } from './services/dbService';
+import { saveScanReport, getScanReports, syncWithCloudDatabase, DB_CHANGE_EVENT } from './services/dbService';
 import { getCurrentUser, switchRole, logoutUser } from './services/authService';
 import { ComplianceReport, UserRole, AuthUser, ActiveTab } from './types';
 import { Camera, Archive, CheckCircle, AlertTriangle, ArrowRight, ShieldCheck, Sparkles, Building2, Radio } from 'lucide-react';
@@ -83,6 +83,28 @@ export function App() {
     rep.id = 'INSP-261001';
     return rep;
   });
+
+  // Real-Time Two-Way Google Cloud Firestore Synchronization across all devices
+  useEffect(() => {
+    // 1. Initial hydration from Firestore on mount
+    syncWithCloudDatabase();
+
+    // 2. Refresh from Firestore whenever user returns to or focuses the window
+    const handleFocus = () => {
+      syncWithCloudDatabase();
+    };
+    window.addEventListener('focus', handleFocus);
+
+    // 3. Periodic cloud poll every 12 seconds
+    const interval = setInterval(() => {
+      syncWithCloudDatabase();
+    }, 12000);
+
+    return () => {
+      window.removeEventListener('focus', handleFocus);
+      clearInterval(interval);
+    };
+  }, []);
 
   // Listen to DB changes (deletes & uploads) across all tabs and components
   useEffect(() => {

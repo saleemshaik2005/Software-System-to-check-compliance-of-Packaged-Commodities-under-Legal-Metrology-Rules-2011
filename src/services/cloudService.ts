@@ -2,7 +2,7 @@
 // Pre-configured with live credentials:
 // 1. Cloudinary Direct Unsigned Media Storage: dq17ske9m / 'SIH 2026 project'
 // 2. Google Cloud Firestore REST API: sih-2026-project-229ad
-// 3. Resilient Local-First IndexedDB / LocalStorage Fallback
+// 3. Two-way Real-Time Cloud Synchronization across all devices
 
 import { ComplianceReport } from '../types';
 import { DEFAULT_GEMINI_KEY } from './ocrService';
@@ -178,32 +178,25 @@ export async function saveReportToFirestore(
   }
 
   try {
-    const sanitizedReport = {
-      ...report,
-      capturedImages: {
-        front: report.capturedImages?.front?.startsWith('http') ? report.capturedImages.front : 'STORED_LOCALLY',
-        back: report.capturedImages?.back?.startsWith('http') ? report.capturedImages.back : 'STORED_LOCALLY',
-        side: report.capturedImages?.side?.startsWith('http') ? report.capturedImages.side : 'STORED_LOCALLY',
-      }
-    };
-
     const firestoreBody = {
       fields: {
-        id: toFirestoreValue(sanitizedReport.id),
-        scanTimestamp: toFirestoreValue(sanitizedReport.scanTimestamp),
-        inspectorName: toFirestoreValue(sanitizedReport.inspectorName || 'Legal Metrology Inspector'),
-        inspectorBadgeNumber: toFirestoreValue(sanitizedReport.inspectorBadgeNumber || 'LM-ND-4092'),
-        location: toFirestoreValue(sanitizedReport.location || 'Supermarket Hub'),
-        score: toFirestoreValue(sanitizedReport.score),
-        overallStatus: toFirestoreValue(sanitizedReport.overallStatus),
-        violationsCount: toFirestoreValue(sanitizedReport.violationsCount),
-        warningsCount: toFirestoreValue(sanitizedReport.warningsCount),
-        passedCount: toFirestoreValue(sanitizedReport.passedCount),
-        totalCompoundingFine: toFirestoreValue(sanitizedReport.totalCompoundingFine),
-        formType: toFirestoreValue(sanitizedReport.formType),
-        summaryRemarks: toFirestoreValue(sanitizedReport.summaryRemarks),
-        productInfo: toFirestoreValue(sanitizedReport.productInfo),
-        evaluations: toFirestoreValue(sanitizedReport.evaluations),
+        id: toFirestoreValue(report.id),
+        scanTimestamp: toFirestoreValue(report.scanTimestamp),
+        inspectorName: toFirestoreValue(report.inspectorName || 'Legal Metrology Inspector'),
+        inspectorBadgeNumber: toFirestoreValue(report.inspectorBadgeNumber || 'LM-ND-4092'),
+        location: toFirestoreValue(report.location || 'Supermarket Hub'),
+        score: toFirestoreValue(report.score),
+        overallStatus: toFirestoreValue(report.overallStatus),
+        violationsCount: toFirestoreValue(report.violationsCount),
+        warningsCount: toFirestoreValue(report.warningsCount),
+        passedCount: toFirestoreValue(report.passedCount),
+        totalCompoundingFine: toFirestoreValue(report.totalCompoundingFine),
+        formType: toFirestoreValue(report.formType),
+        summaryRemarks: toFirestoreValue(report.summaryRemarks),
+        productInfo: toFirestoreValue(report.productInfo),
+        evaluations: toFirestoreValue(report.evaluations),
+        capturedImages: toFirestoreValue(report.capturedImages || {}),
+        boundingBoxes: toFirestoreValue(report.boundingBoxes || []),
         syncedAt: toFirestoreValue(new Date().toISOString()),
       }
     };
@@ -244,6 +237,37 @@ export async function saveReportToFirestore(
       success: false,
       error: err.message || 'Network error syncing with Firestore.'
     };
+  }
+}
+
+/**
+ * Delete a report from Google Cloud Firestore
+ */
+export async function deleteReportFromFirestore(
+  reportId: string,
+  customProjectId?: string,
+  customApiKey?: string
+): Promise<{ success: boolean; error?: string }> {
+  const cfg = getCloudConfig();
+  const projectId = (customProjectId || cfg.firestoreProjectId || DEFAULT_FIRESTORE_PROJECT_ID).trim();
+  const apiKey = (customApiKey || cfg.firestoreApiKey || DEFAULT_FIRESTORE_API_KEY).trim();
+
+  if (!projectId) return { success: false, error: 'Firestore Project ID not configured.' };
+
+  try {
+    let url = `https://firestore.googleapis.com/v1/projects/${projectId}/databases/(default)/documents/inspack_audits/${reportId}`;
+    if (apiKey) {
+      url += `?key=${apiKey}`;
+    }
+
+    const res = await fetch(url, { method: 'DELETE' });
+    if (res.ok) {
+      return { success: true };
+    }
+    const errData = await res.json().catch(() => ({}));
+    return { success: false, error: errData.error?.message || `HTTP ${res.status}` };
+  } catch (err: any) {
+    return { success: false, error: err.message };
   }
 }
 

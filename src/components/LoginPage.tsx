@@ -134,13 +134,18 @@ export const LoginPage: React.FC<LoginPageProps> = ({
       {/* Main Header / Branding */}
       <header className="max-w-6xl w-full mx-auto px-4 pt-6 pb-2 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-[#00A651] to-emerald-700 text-white flex items-center justify-center shadow-md">
-            <Scale className="w-5 h-5" />
-          </div>
+          <img
+            src="/logos/inspack-logo.jpg"
+            alt="Inspack Logo"
+            className="h-11 w-auto object-contain rounded-xl shadow-xs border border-zinc-200 dark:border-zinc-800"
+            onError={(e) => {
+              e.currentTarget.style.display = 'none';
+            }}
+          />
           <div>
             <div className="flex items-center gap-2">
               <span className="text-2xl font-black text-zinc-900 dark:text-white tracking-tight">
-                inspack
+                in<span className="text-[#00A651]">spack</span>
               </span>
               <span className="px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-[#00A651]/15 text-[#00A651] border border-[#00A651]/30">
                 Official Portal
