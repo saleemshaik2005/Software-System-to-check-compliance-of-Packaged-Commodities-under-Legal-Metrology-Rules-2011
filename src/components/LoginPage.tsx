@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { AuthUser, UserRole } from '../types';
+import { AuthUser, UserRole, Language } from '../types';
+import { getTranslation, SUPPORTED_LANGUAGES, setStoredLanguage } from '../services/i18nService';
 import { TEST_ACCOUNTS, loginWithEmail } from '../services/authService';
 import {
   Scale,
@@ -12,6 +13,7 @@ import {
   ArrowRight,
   Sun,
   Moon,
+  Globe,
   CheckCircle,
   ExternalLink
 } from 'lucide-react';
@@ -20,12 +22,16 @@ interface LoginPageProps {
   onLoginSuccess: (user: AuthUser) => void;
   isDarkMode: boolean;
   setIsDarkMode: (val: boolean) => void;
+  currentLang?: Language;
+  onLanguageChange?: (lang: Language) => void;
 }
 
 export const LoginPage: React.FC<LoginPageProps> = ({
   onLoginSuccess,
   isDarkMode,
   setIsDarkMode,
+  currentLang = 'en',
+  onLanguageChange,
 }) => {
   const [selectedRole, setSelectedRole] = useState<UserRole>('OFFICER');
   const [nameInput, setNameInput] = useState('Legal Metrology Inspector');
@@ -157,14 +163,38 @@ export const LoginPage: React.FC<LoginPageProps> = ({
           </div>
         </div>
 
-        {/* Theme Toggle */}
-        <button
-          onClick={() => setIsDarkMode(!isDarkMode)}
-          className="p-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer shadow-xs"
-          title={isDarkMode ? 'Switch to Light Mode' : 'Switch to Matte Black Dark Mode'}
-        >
-          {isDarkMode ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-zinc-700" />}
-        </button>
+        <div className="flex items-center gap-2">
+          {/* Language Selector Pill */}
+          <div className="flex items-center rounded-xl bg-white dark:bg-zinc-900 p-1 border border-zinc-200 dark:border-zinc-800 text-xs font-bold shadow-xs">
+            <Globe className="w-3.5 h-3.5 text-cyan-500 ml-1.5 mr-1" />
+            {SUPPORTED_LANGUAGES.map((opt) => (
+              <button
+                key={opt.code}
+                type="button"
+                onClick={() => {
+                  setStoredLanguage(opt.code);
+                  onLanguageChange?.(opt.code);
+                }}
+                className={`px-2 py-1 rounded-lg transition-all cursor-pointer text-[11px] ${
+                  currentLang === opt.code
+                    ? 'bg-[#00A651] text-white shadow-xs font-black'
+                    : 'text-zinc-600 dark:text-zinc-400 hover:text-zinc-900 dark:hover:text-white'
+                }`}
+              >
+                {opt.nativeLabel}
+              </button>
+            ))}
+          </div>
+
+          {/* Theme Toggle */}
+          <button
+            onClick={() => setIsDarkMode(!isDarkMode)}
+            className="p-2.5 rounded-xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors cursor-pointer shadow-xs"
+            title={isDarkMode ? 'Switch to Light Mode' : 'Switch to Matte Black Dark Mode'}
+          >
+            {isDarkMode ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-zinc-700" />}
+          </button>
+        </div>
       </header>
 
       {/* Center Body: Login Card & Test Rooms */}

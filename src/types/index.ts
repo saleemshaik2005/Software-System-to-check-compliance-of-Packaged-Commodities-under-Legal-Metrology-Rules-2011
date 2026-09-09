@@ -30,6 +30,7 @@ export type ComplianceStatus = 'COMPLIANT' | 'NON_COMPLIANT' | 'NEEDS_REVIEW';
 export type RuleStatus = 'PASS' | 'FAIL' | 'WARNING' | 'EXEMPT';
 export type UserRole = 'OFFICER' | 'CITIZEN' | 'MANUFACTURER' | 'SURVEILLANCE' | 'ADMIN';
 export type ActiveTab = 'scanner' | 'upload' | 'analytics' | 'ecommerce' | 'manufacturer' | 'surveillance' | 'admin' | 'rulebook';
+export type Language = 'en' | 'hi' | 'te';
 
 export interface FoodAdditiveInfo {
   name: string;
@@ -213,4 +214,48 @@ export interface MPEThreshold {
   maxQty: number;
   percent?: number;
   absoluteGramOrMl?: number;
+}
+
+export interface CustomRuleDefinition {
+  id: string;
+  ruleNumber: string;
+  ruleTitle: string;
+  section: string;
+  compoundingFine: number;
+  description: string;
+  requiredStandard: string;
+  category: string;
+  enabled: boolean;
+  isAmended?: boolean;
+  amendmentRef?: string;
+}
+
+export interface GazetteAmendmentNotification {
+  id: string;
+  gazetteNumber: string;
+  notificationDate: string;
+  ministry: string;
+  title: string;
+  summary: string;
+  effectiveDate: string;
+  rulesAmended: {
+    ruleNumber: string;
+    priorText: string;
+    amendedText: string;
+    revisedFine?: number;
+  }[];
+}
+
+export interface MultiProductGroup {
+  id: string;
+  productTitle: string;
+  brandName?: string;
+  category?: ProductCommodityCategory;
+  images: {
+    front?: string;
+    back?: string;
+    side?: string;
+  };
+  detectedProductInfo?: ExtractedProductInfo;
+  status?: ComplianceStatus;
 }

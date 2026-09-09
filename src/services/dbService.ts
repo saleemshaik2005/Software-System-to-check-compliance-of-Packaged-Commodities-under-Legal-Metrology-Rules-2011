@@ -16,10 +16,33 @@ const STORAGE_KEY = 'inspack_inspection_history_v2';
 const LEGACY_STORAGE_KEY = 'inspack_inspection_history_v1';
 
 export const DB_CHANGE_EVENT = 'inspack_db_changed';
+export const SYNC_STATUS_EVENT = 'inspack_sync_status';
+
+// Zero-latency cross-tab synchronization channel
+const SYNC_CHANNEL = typeof window !== 'undefined' && 'BroadcastChannel' in window
+  ? new BroadcastChannel('inspack_realtime_sync')
+  : null;
+
+if (SYNC_CHANNEL) {
+  SYNC_CHANNEL.onmessage = (event) => {
+    if (event.data?.type === 'DB_CHANGE') {
+      window.dispatchEvent(new CustomEvent(DB_CHANGE_EVENT, { detail: { deletedId: event.data?.deletedId } }));
+    } else if (event.data?.type === 'SYNC_REQUEST') {
+      syncWithCloudDatabase();
+    }
+  };
+}
 
 export function notifyDbChange(deletedId?: string): void {
   if (typeof window !== 'undefined') {
     window.dispatchEvent(new CustomEvent(DB_CHANGE_EVENT, { detail: { deletedId } }));
+    SYNC_CHANNEL?.postMessage({ type: 'DB_CHANGE', deletedId });
+  }
+}
+
+export function notifySyncStatus(isSyncing: boolean, lastSynced?: Date): void {
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent(SYNC_STATUS_EVENT, { detail: { isSyncing, lastSynced: lastSynced || new Date() } }));
   }
 }
 
@@ -70,9 +93,11 @@ export function getScanReports(): ComplianceReport[] {
  * Fetches all audits created across all devices and merges them in real time
  */
 export async function syncWithCloudDatabase(): Promise<ComplianceReport[]> {
+  notifySyncStatus(true);
   try {
     const cloudReports = await fetchReportsFromFirestore();
     if (!cloudReports || cloudReports.length === 0) {
+      notifySyncStatus(false, new Date());
       return getScanReports();
     }
 
@@ -111,11 +136,21 @@ export async function syncWithCloudDatabase(): Promise<ComplianceReport[]> {
 
     localStorage.setItem(STORAGE_KEY, JSON.stringify(merged));
     notifyDbChange();
+    notifySyncStatus(false, new Date());
     return merged;
   } catch (err) {
     console.warn('Cloud sync note:', err);
+    notifySyncStatus(false, new Date());
     return getScanReports();
   }
+}
+
+/**
+ * Trigger immediate manual cloud sync across all devices
+ */
+export async function triggerImmediateCloudSync(): Promise<ComplianceReport[]> {
+  SYNC_CHANNEL?.postMessage({ type: 'SYNC_REQUEST' });
+  return syncWithCloudDatabase();
 }
 
 /**

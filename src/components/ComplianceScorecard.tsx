@@ -1,5 +1,6 @@
 import React from 'react';
-import { ComplianceReport } from '../types';
+import { ComplianceReport, Language } from '../types';
+import { getTranslation, translateProductText, formatNetQuantityVernacular } from '../services/i18nService';
 import { generateCompliancePDF } from '../services/pdfReportGenerator';
 import {
   CheckCircle2,
@@ -21,12 +22,14 @@ interface ComplianceScorecardProps {
   report: ComplianceReport;
   onOpenGrievanceModal?: () => void;
   onPreviewPDF?: () => void;
+  currentLang?: Language;
 }
 
 export const ComplianceScorecard: React.FC<ComplianceScorecardProps> = ({
   report,
   onOpenGrievanceModal,
   onPreviewPDF,
+  currentLang = 'en',
 }) => {
   const isCompliant = report.overallStatus === 'COMPLIANT';
   const isWarning = report.overallStatus === 'NEEDS_REVIEW';
@@ -236,42 +239,47 @@ export const ComplianceScorecard: React.FC<ComplianceScorecardProps> = ({
 
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 text-xs">
             <div className="bg-white dark:bg-zinc-800 p-2 rounded-lg border border-slate-200 dark:border-zinc-700">
-              <span className="text-[10px] text-slate-500 block font-semibold">Product / Generic</span>
-              <span className="font-bold text-slate-900 truncate block" title={p.productName}>
-                {p.productName}
+              <span className="text-[10px] text-slate-500 dark:text-zinc-400 block font-semibold">{getTranslation('stat_product_name', currentLang)}</span>
+              <span className="font-bold text-slate-900 dark:text-zinc-100 truncate block" title={p.productName}>
+                {currentLang !== 'en' ? translateProductText(p.productName, currentLang) : p.productName}
+              </span>
+              {currentLang !== 'en' && (
+                <span className="text-[9px] text-slate-400 block truncate font-normal">EN: {p.productName}</span>
+              )}
+            </div>
+
+            <div className="bg-white dark:bg-zinc-800 p-2 rounded-lg border border-slate-200 dark:border-zinc-700">
+              <span className="text-[10px] text-slate-500 dark:text-zinc-400 block font-semibold">{getTranslation('stat_net_qty', currentLang)}</span>
+              <span className="font-black text-[#0A3663] dark:text-blue-400 truncate block">
+                {currentLang !== 'en'
+                  ? formatNetQuantityVernacular(p.netQuantity, p.quantityUnit, currentLang)
+                  : (p.rawQuantityString || `${p.netQuantity} ${p.quantityUnit}`)}
               </span>
             </div>
 
             <div className="bg-white dark:bg-zinc-800 p-2 rounded-lg border border-slate-200 dark:border-zinc-700">
-              <span className="text-[10px] text-slate-500 block font-semibold">Net Quantity</span>
-              <span className="font-black text-[#0A3663] truncate block">
-                {p.netQuantity} {p.quantityUnit}
-              </span>
-            </div>
-
-            <div className="bg-white dark:bg-zinc-800 p-2 rounded-lg border border-slate-200 dark:border-zinc-700">
-              <span className="text-[10px] text-slate-500 block font-semibold">Maximum Retail Price</span>
-              <span className={`font-bold truncate block ${p.isStickerPrice ? 'text-red-600' : 'text-emerald-700'}`}>
+              <span className="text-[10px] text-slate-500 dark:text-zinc-400 block font-semibold">{getTranslation('stat_mrp', currentLang)}</span>
+              <span className={`font-bold truncate block ${p.isStickerPrice ? 'text-red-600' : 'text-emerald-700 dark:text-emerald-400'}`}>
                 {p.mrpString}
               </span>
             </div>
 
             <div className="bg-white dark:bg-zinc-800 p-2 rounded-lg border border-slate-200 dark:border-zinc-700">
-              <span className="text-[10px] text-slate-500 block font-semibold">Mfg / Packing Date</span>
-              <span className="font-bold text-slate-900 truncate block">
+              <span className="text-[10px] text-slate-500 dark:text-zinc-400 block font-semibold">{getTranslation('stat_mfg_date', currentLang)}</span>
+              <span className="font-bold text-slate-900 dark:text-zinc-100 truncate block">
                 {p.mfgMonth}/{p.mfgYear}
               </span>
             </div>
 
             <div className="bg-white dark:bg-zinc-800 p-2 rounded-lg border border-slate-200 dark:border-zinc-700">
-              <span className="text-[10px] text-slate-500 block font-semibold">Origin / Importer</span>
-              <span className="font-bold text-slate-900 truncate block">
-                {p.countryOfOrigin || 'India'}
+              <span className="text-[10px] text-slate-500 dark:text-zinc-400 block font-semibold">{getTranslation('stat_origin', currentLang)}</span>
+              <span className="font-bold text-slate-900 dark:text-zinc-100 truncate block">
+                {currentLang !== 'en' ? translateProductText(p.countryOfOrigin || 'India', currentLang) : (p.countryOfOrigin || 'India')}
               </span>
             </div>
 
             <div className="bg-white dark:bg-zinc-800 p-2 rounded-lg border border-slate-200 dark:border-zinc-700">
-              <span className="text-[10px] text-slate-500 block font-semibold">Consumer Care Helpline</span>
+              <span className="text-[10px] text-slate-500 dark:text-zinc-400 block font-semibold">{getTranslation('stat_consumer_care', currentLang)}</span>
               <span className="font-bold text-slate-900 dark:text-zinc-100 truncate block">
                 {p.consumerCarePhone || 'Missing Helpline'}
               </span>

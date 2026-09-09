@@ -25,6 +25,24 @@ interface EcommerceAuditTabProps {
   onAuditSelected: (report: ComplianceReport) => void;
 }
 
+export const generateDigitalPdpSvg = (title: string, platform = 'E-Commerce Marketplace') => {
+  const cleanTitle = (title || 'E-Commerce Packaged Product').slice(0, 36).replace(/&/g, '&amp;');
+  const cleanPlatform = (platform || 'Digital PDP').slice(0, 28).replace(/&/g, '&amp;');
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="400" viewBox="0 0 600 400" fill="none">
+    <rect width="600" height="400" fill="#09090b"/>
+    <rect x="20" y="20" width="560" height="360" rx="20" fill="#18181b" stroke="#27272a" stroke-width="2"/>
+    <circle cx="300" cy="130" r="48" fill="#00A651" fill-opacity="0.12" stroke="#00A651" stroke-width="2"/>
+    <path d="M285 125h30v26c0 8-7 14-15 14s-15-6-15-14v-26z" stroke="#00A651" stroke-width="2.5" fill="none"/>
+    <path d="M292 125v-8c0-5 3.5-9 8-9s8 4 8 9v8" stroke="#00A651" stroke-width="2.5" stroke-linecap="round"/>
+    <text x="300" y="215" text-anchor="middle" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="bold">${cleanTitle}</text>
+    <text x="300" y="245" text-anchor="middle" fill="#A1A1AA" font-family="system-ui, -apple-system, sans-serif" font-size="13">${cleanPlatform} • Digital Listing Audit</text>
+    <rect x="180" y="275" width="240" height="28" rx="8" fill="#00A651" fill-opacity="0.15" stroke="#00A651" stroke-width="1"/>
+    <text x="300" y="294" text-anchor="middle" fill="#4ADE80" font-family="system-ui, -apple-system, sans-serif" font-size="10" font-weight="bold">RULE 10 PRE-SALE SPECIFICATION AUDIT</text>
+    <text x="300" y="340" text-anchor="middle" fill="#71717A" font-family="system-ui, -apple-system, sans-serif" font-size="11">Legal Metrology (Packaged Commodities) Rules, 2011</text>
+  </svg>`;
+  return `data:image/svg+xml;utf8,${encodeURIComponent(svg)}`;
+};
+
 export const EcommerceAuditTab: React.FC<EcommerceAuditTabProps> = ({ onAuditSelected }) => {
   const [activeMode, setActiveMode] = useState<'url' | 'paste'>('url');
   const [urlInput, setUrlInput] = useState('');
@@ -42,7 +60,7 @@ export const EcommerceAuditTab: React.FC<EcommerceAuditTabProps> = ({ onAuditSel
       issue: 'Rule 6(10) Violation: Missing Indian Importer Name & FSSAI/LMPC registration on digital listing specs',
       status: 'VIOLATION' as const,
       fine: '₹25,000',
-      image: 'https://images.unsplash.com/photo-1549007994-cb92caebd54b?w=600&auto=format&fit=crop&q=80',
+      image: generateDigitalPdpSvg('Lindt Excellence 85% Cocoa Dark Chocolate (100g)', 'Amazon.in'),
       productInfo: {
         productName: 'Lindt Excellence 85% Cocoa Dark Chocolate 100g',
         genericName: 'Imported Dark Chocolate Bar',
@@ -77,7 +95,7 @@ export const EcommerceAuditTab: React.FC<EcommerceAuditTabProps> = ({ onAuditSel
       issue: 'Full statutory compliance: Standard pack size Item #13, clear manufacturer & Unit Sale Price (USP) displayed',
       status: 'COMPLIANT' as const,
       fine: 'Nil',
-      image: 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=600&auto=format&fit=crop&q=80',
+      image: generateDigitalPdpSvg('Aashirvaad Shudh Chakki Atta (5 kg)', 'Blinkit Instant Grocery'),
       productInfo: {
         productName: 'Aashirvaad Shudh Chakki Whole Wheat Atta 5kg',
         genericName: 'Whole Wheat Atta',
@@ -110,7 +128,7 @@ export const EcommerceAuditTab: React.FC<EcommerceAuditTabProps> = ({ onAuditSel
       issue: 'Rule 6(11) Non-Compliance: Missing mandatory Unit Sale Price (₹/L) & dual pricing alert',
       status: 'VIOLATION' as const,
       fine: '₹20,000',
-      image: 'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=600&auto=format&fit=crop&q=80',
+      image: generateDigitalPdpSvg('Fortune Sunlite Refined Sunflower Oil (1 L)', 'Zepto Dark Store'),
       productInfo: {
         productName: 'Fortune Sunlite Refined Sunflower Oil 1L Pouch',
         genericName: 'Refined Edible Sunflower Oil',
@@ -143,7 +161,7 @@ export const EcommerceAuditTab: React.FC<EcommerceAuditTabProps> = ({ onAuditSel
       issue: 'Rule 6(1)(e) Infraction: Missing consumer care email & non-standard declaration format',
       status: 'VIOLATION' as const,
       fine: '₹15,000',
-      image: 'https://images.unsplash.com/photo-1541781774459-bb2af2f05b55?w=600&auto=format&fit=crop&q=80',
+      image: generateDigitalPdpSvg('Hershey’s Chocolate Syrup (623 g)', 'Swiggy Instamart'),
       productInfo: {
         productName: 'Hershey’s Chocolate Flavored Syrup 623g',
         genericName: 'Chocolate Syrup',
@@ -176,7 +194,7 @@ export const EcommerceAuditTab: React.FC<EcommerceAuditTabProps> = ({ onAuditSel
       issue: 'Second Schedule Non-Compliance: 175g is non-standard pack size without mandatory packaging disclaimer',
       status: 'VIOLATION' as const,
       fine: '₹25,000',
-      image: 'https://images.unsplash.com/photo-1558961363-fa8fdf82db35?w=600&auto=format&fit=crop&q=80',
+      image: generateDigitalPdpSvg('Sunfeast Farmlite Digestive Biscuits (175 g)', 'Flipkart Quick'),
       productInfo: {
         productName: 'Sunfeast Farmlite Digestive High Fiber Biscuits (175g)',
         genericName: 'Digestive Biscuits',
@@ -262,20 +280,11 @@ export const EcommerceAuditTab: React.FC<EcommerceAuditTabProps> = ({ onAuditSel
       const productInfo = result.productInfo;
       const digital = result.digitalCompliance;
 
-      // Select high quality category image
-      let categoryImage = 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=800&auto=format&fit=crop&q=80';
+      // Verified PDP Image: use Pintola if peanut butter, or generate clean digital specification card (NO generic stock photos)
       const pLower = productInfo.productName.toLowerCase();
-      if (pLower.includes('butter') || pLower.includes('peanut')) {
-        categoryImage = '/demo/pintola-front.png';
-      } else if (pLower.includes('tea') || pLower.includes('coffee') || pLower.includes('chai')) {
-        categoryImage = 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=800&auto=format&fit=crop&q=80';
-      } else if (pLower.includes('atta') || pLower.includes('flour') || pLower.includes('rice')) {
-        categoryImage = 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=800&auto=format&fit=crop&q=80';
-      } else if (pLower.includes('oil') || pLower.includes('ghee')) {
-        categoryImage = 'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=800&auto=format&fit=crop&q=80';
-      } else if (pLower.includes('chocolate') || pLower.includes('biscuit') || pLower.includes('cookie')) {
-        categoryImage = 'https://images.unsplash.com/photo-1549007994-cb92caebd54b?w=800&auto=format&fit=crop&q=80';
-      }
+      const categoryImage = (pLower.includes('butter') || pLower.includes('peanut') || pLower.includes('pintola'))
+        ? '/demo/pintola-front.png'
+        : generateDigitalPdpSvg(productInfo.productName, platform);
 
       const report = evaluateCompliance(
         productInfo,
@@ -333,7 +342,7 @@ export const EcommerceAuditTab: React.FC<EcommerceAuditTabProps> = ({ onAuditSel
       const report = evaluateCompliance(
         parsedInfo,
         'front',
-        { front: 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop&q=80' },
+        { front: generateDigitalPdpSvg(parsedInfo.productName || 'Listing Specification Text', 'Digital Specification') },
         {
           name: 'Legal Metrology Inspector',
           badge: 'LM-ECOM-TEXT-01',

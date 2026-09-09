@@ -1,7 +1,15 @@
-import React, { useState } from 'react';
-import { AdminSystemConfig } from '../types';
+import React, { useState, useEffect, useRef } from 'react';
+import { AdminSystemConfig, CustomRuleDefinition, GazetteAmendmentNotification } from '../types';
 import { getAdminConfig, saveAdminConfig, resetAdminConfig } from '../services/adminService';
 import { getScanReports } from '../services/dbService';
+import {
+  getCustomRules,
+  saveCustomRule,
+  resetCustomRules,
+  parseGazetteAmendment,
+  applyGazetteAmendment,
+  getAppliedAmendments
+} from '../services/customRulesService';
 import {
   Settings,
   ShieldAlert,
@@ -14,7 +22,15 @@ import {
   RefreshCw,
   Download,
   AlertTriangle,
-  RotateCcw
+  RotateCcw,
+  Upload,
+  FileText,
+  Edit3,
+  Save,
+  Check,
+  Layers,
+  ArrowRight,
+  BookOpen
 } from 'lucide-react';
 
 interface AdminControlCenterProps {
@@ -24,7 +40,21 @@ interface AdminControlCenterProps {
 export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onConfigChanged }) => {
   const [config, setConfig] = useState<AdminSystemConfig>(getAdminConfig());
   const [saveSuccess, setSaveSuccess] = useState(false);
-  const [activeSubTab, setActiveSubTab] = useState<'rules' | 'banner' | 'database' | 'officers'>('rules');
+  const [activeSubTab, setActiveSubTab] = useState<'rules' | 'amendment' | 'banner' | 'database' | 'officers'>('rules');
+
+  // Custom Statutory Rules
+  const [rulesList, setRulesList] = useState<CustomRuleDefinition[]>(() => getCustomRules());
+  const [editingRuleId, setEditingRuleId] = useState<string | null>(null);
+  const [ruleDraft, setRuleDraft] = useState<CustomRuleDefinition | null>(null);
+
+  // Gazette Amendment Uploader state
+  const gazetteFileRef = useRef<HTMLInputElement>(null);
+  const [gazetteFileName, setGazetteFileName] = useState('');
+  const [gazetteRawText, setGazetteRawText] = useState('');
+  const [parsedAmendment, setParsedAmendment] = useState<GazetteAmendmentNotification | null>(null);
+  const [appliedAmendments, setAppliedAmendments] = useState<GazetteAmendmentNotification[]>(() => getAppliedAmendments());
+  const [isParsingGazette, setIsParsingGazette] = useState(false);
+  const [amendmentSuccess, setAmendmentSuccess] = useState(false);
 
   const handleSave = () => {
     const saved = saveAdminConfig(config);
@@ -38,10 +68,63 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onConfig
     if (window.confirm('Reset all parameters back to official Gazette defaults?')) {
       const def = resetAdminConfig();
       setConfig(def);
+      const defRules = resetCustomRules();
+      setRulesList(defRules);
       if (onConfigChanged) onConfigChanged(def);
       setSaveSuccess(true);
       setTimeout(() => setSaveSuccess(false), 2000);
     }
+  };
+
+  const handleEditRule = (rule: CustomRuleDefinition) => {
+    setEditingRuleId(rule.id);
+    setRuleDraft({ ...rule });
+  };
+
+  const handleSaveRuleDraft = () => {
+    if (!ruleDraft) return;
+    saveCustomRule(ruleDraft);
+    setRulesList(getCustomRules());
+    setEditingRuleId(null);
+    setRuleDraft(null);
+    setSaveSuccess(true);
+    setTimeout(() => setSaveSuccess(false), 2000);
+  };
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setGazetteFileName(file.name);
+    setIsParsingGazette(true);
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const text = (event.target?.result as string) || '';
+      setGazetteRawText(text);
+      const parsed = parseGazetteAmendment(file.name, text);
+      setParsedAmendment(parsed);
+      setIsParsingGazette(false);
+    };
+    reader.readAsText(file);
+  };
+
+  const handleParseManualText = () => {
+    if (!gazetteRawText.trim()) return;
+    setIsParsingGazette(true);
+    setTimeout(() => {
+      const parsed = parseGazetteAmendment(gazetteFileName || 'Gazette_Notification_2026.pdf', gazetteRawText);
+      setParsedAmendment(parsed);
+      setIsParsingGazette(false);
+    }, 400);
+  };
+
+  const handleApplyGazette = () => {
+    if (!parsedAmendment) return;
+    applyGazetteAmendment(parsedAmendment);
+    setRulesList(getCustomRules());
+    setAppliedAmendments(getAppliedAmendments());
+    setAmendmentSuccess(true);
+    setTimeout(() => setAmendmentSuccess(false), 3500);
   };
 
   const handleExportAudits = () => {
@@ -68,7 +151,7 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onConfig
             Administrator System Management Console
           </h1>
           <p className="text-xs text-blue-200 mt-1 max-w-xl">
-            Live configuration of Legal Metrology compounding penalties, numeral height thresholds, database backup exports, and UI announcements without modifying source code.
+            Live management of Legal Metrology compounding penalties, statutory rule parameters, gazette amendment PDF ingestion, and UI announcements without modifying source code.
           </p>
         </div>
 
@@ -95,31 +178,52 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onConfig
         <div className="p-4 bg-emerald-50 border border-emerald-200 rounded-2xl text-xs text-emerald-900 font-bold flex items-center justify-between animate-in fade-in duration-150">
           <div className="flex items-center gap-2">
             <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-            <span>All system parameters updated successfully! Real-time compliance scoring updated.</span>
+            <span>All system parameters and custom rules updated successfully! Real-time compliance scoring updated.</span>
           </div>
-          <span className="text-[10px] font-mono text-emerald-700">Persisted locally & in active session</span>
+          <span className="text-[10px] font-mono text-emerald-700">Persisted locally & across all active sessions</span>
+        </div>
+      )}
+
+      {amendmentSuccess && (
+        <div className="p-4 bg-purple-50 border border-purple-200 rounded-2xl text-xs text-purple-900 font-bold flex items-center justify-between animate-in fade-in duration-150">
+          <div className="flex items-center gap-2">
+            <BookOpen className="w-4 h-4 text-purple-600" />
+            <span>Official Gazette Amendment successfully adopted and applied to the Inspack evaluation engine!</span>
+          </div>
+          <span className="text-[10px] font-mono text-purple-700">Enforcement Active</span>
         </div>
       )}
 
       {/* Sub Tabs */}
-      <div className="flex border-b border-slate-200 dark:border-zinc-800 bg-white rounded-2xl p-1.5 shadow-xs gap-1 text-xs font-bold">
+      <div className="flex border-b border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 rounded-2xl p-1.5 shadow-xs gap-1 text-xs font-bold overflow-x-auto">
         <button
           onClick={() => setActiveSubTab('rules')}
-          className={`flex items-center gap-1.5 px-4 py-2 rounded-xl transition-all cursor-pointer ${
+          className={`flex items-center gap-1.5 px-4 py-2 rounded-xl transition-all cursor-pointer shrink-0 ${
             activeSubTab === 'rules'
               ? 'bg-[#0A3663] text-white shadow-xs'
-              : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+              : 'text-slate-600 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-zinc-800'
           }`}
         >
           <Sliders className="w-3.5 h-3.5" />
-          <span>Fines & Rule Thresholds</span>
+          <span>Statutory Rules & Fines</span>
+        </button>
+        <button
+          onClick={() => setActiveSubTab('amendment')}
+          className={`flex items-center gap-1.5 px-4 py-2 rounded-xl transition-all cursor-pointer shrink-0 ${
+            activeSubTab === 'amendment'
+              ? 'bg-purple-700 text-white shadow-xs'
+              : 'text-slate-600 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-zinc-800'
+          }`}
+        >
+          <BookOpen className="w-3.5 h-3.5 text-purple-400" />
+          <span>Gazette Amendment PDF Upload</span>
         </button>
         <button
           onClick={() => setActiveSubTab('banner')}
-          className={`flex items-center gap-1.5 px-4 py-2 rounded-xl transition-all cursor-pointer ${
+          className={`flex items-center gap-1.5 px-4 py-2 rounded-xl transition-all cursor-pointer shrink-0 ${
             activeSubTab === 'banner'
               ? 'bg-[#0A3663] text-white shadow-xs'
-              : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+              : 'text-slate-600 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-zinc-800'
           }`}
         >
           <Megaphone className="w-3.5 h-3.5" />
@@ -127,10 +231,10 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onConfig
         </button>
         <button
           onClick={() => setActiveSubTab('database')}
-          className={`flex items-center gap-1.5 px-4 py-2 rounded-xl transition-all cursor-pointer ${
+          className={`flex items-center gap-1.5 px-4 py-2 rounded-xl transition-all cursor-pointer shrink-0 ${
             activeSubTab === 'database'
               ? 'bg-[#0A3663] text-white shadow-xs'
-              : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+              : 'text-slate-600 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-zinc-800'
           }`}
         >
           <Database className="w-3.5 h-3.5" />
@@ -138,10 +242,10 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onConfig
         </button>
         <button
           onClick={() => setActiveSubTab('officers')}
-          className={`flex items-center gap-1.5 px-4 py-2 rounded-xl transition-all cursor-pointer ${
+          className={`flex items-center gap-1.5 px-4 py-2 rounded-xl transition-all cursor-pointer shrink-0 ${
             activeSubTab === 'officers'
               ? 'bg-[#0A3663] text-white shadow-xs'
-              : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900'
+              : 'text-slate-600 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-zinc-800'
           }`}
         >
           <Users className="w-3.5 h-3.5" />
@@ -149,125 +253,298 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onConfig
         </button>
       </div>
 
-      {/* Tab 1: Fines & Rule Thresholds */}
+      {/* Tab 1: Statutory Rules & Fines */}
       {activeSubTab === 'rules' && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Compounding Fines */}
+        <div className="space-y-6">
+          {/* Statutory Rule Registry Table with Inline Edit */}
           <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-3xl p-5 shadow-xs space-y-4">
-            <div className="flex items-center gap-2 text-sm font-black text-slate-900 dark:text-zinc-100 border-b border-slate-100 dark:border-zinc-800 pb-3">
-              <IndianRupee className="w-4 h-4 text-emerald-600" />
-              <span>Rule 32 Compounding Penalties (INR)</span>
+            <div className="flex items-center justify-between border-b border-slate-100 dark:border-zinc-800 pb-3 flex-wrap gap-2">
+              <div>
+                <div className="flex items-center gap-2 text-sm font-black text-slate-900 dark:text-zinc-100">
+                  <ShieldAlert className="w-4 h-4 text-emerald-600" />
+                  <span>Statutory Rule Registry & Compounding Penalties Editor</span>
+                </div>
+                <p className="text-xs text-slate-500 dark:text-zinc-400 mt-0.5">
+                  Click the edit icon on any rule to customize the compounding fine (INR), statutory legal section, or rule title.
+                </p>
+              </div>
+
+              <span className="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 text-xs font-bold">
+                {rulesList.length} Active Rules
+              </span>
             </div>
 
-            <div className="space-y-3 text-xs">
-              <div>
-                <label className="block font-bold text-slate-700 mb-1">
-                  First Offence Penalty (Rule 32(1))
-                </label>
-                <input
-                  type="number"
-                  value={config.fineFirstOffense}
-                  onChange={(e) => setConfig({ ...config, fineFirstOffense: Number(e.target.value) })}
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-mono text-xs font-bold text-slate-900 focus:ring-2 focus:ring-[#00A651]"
-                />
-                <span className="text-[10px] text-slate-500 mt-0.5 block">
-                  Statutory gazette default: ₹2,000 per violation
-                </span>
-              </div>
+            <div className="space-y-3">
+              {rulesList.map((rule) => {
+                const isCurrentEditing = editingRuleId === rule.id;
 
-              <div>
-                <label className="block font-bold text-slate-700 mb-1">
-                  Subsequent Offence Penalty (Rule 32(2))
-                </label>
-                <input
-                  type="number"
-                  value={config.fineSecondOffense}
-                  onChange={(e) => setConfig({ ...config, fineSecondOffense: Number(e.target.value) })}
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-mono text-xs font-bold text-slate-900 focus:ring-2 focus:ring-[#00A651]"
-                />
-                <span className="text-[10px] text-slate-500 mt-0.5 block">
-                  Statutory gazette default: ₹5,000 per repeat violation
-                </span>
-              </div>
+                if (isCurrentEditing && ruleDraft) {
+                  return (
+                    <div key={rule.id} className="p-4 rounded-2xl border-2 border-emerald-500 bg-emerald-50/20 dark:bg-emerald-950/20 space-y-3 text-xs">
+                      <div className="flex items-center justify-between font-bold text-slate-900 dark:text-zinc-100">
+                        <span className="text-xs font-black text-emerald-700 dark:text-emerald-400">
+                          Editing Rule: {ruleDraft.ruleNumber}
+                        </span>
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => {
+                              setEditingRuleId(null);
+                              setRuleDraft(null);
+                            }}
+                            className="px-2.5 py-1 rounded-lg bg-slate-200 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 text-xs font-bold"
+                          >
+                            Cancel
+                          </button>
+                          <button
+                            onClick={handleSaveRuleDraft}
+                            className="px-3.5 py-1 rounded-lg bg-[#00A651] text-white text-xs font-bold flex items-center gap-1"
+                          >
+                            <Save className="w-3.5 h-3.5" />
+                            <span>Save Rule</span>
+                          </button>
+                        </div>
+                      </div>
 
-              <div>
-                <label className="block font-bold text-slate-700 mb-1">
-                  Manufacturer / Packer Defect Fine
-                </label>
-                <input
-                  type="number"
-                  value={config.fineManufacturerViolation}
-                  onChange={(e) => setConfig({ ...config, fineManufacturerViolation: Number(e.target.value) })}
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-mono text-xs font-bold text-slate-900 focus:ring-2 focus:ring-[#00A651]"
-                />
-                <span className="text-[10px] text-slate-500 mt-0.5 block">
-                  For missing postal address, PIN code, or country of origin
-                </span>
-              </div>
-            </div>
-          </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                        <div className="sm:col-span-2">
+                          <label className="block font-bold mb-1">Rule Title</label>
+                          <input
+                            type="text"
+                            value={ruleDraft.ruleTitle}
+                            onChange={(e) => setRuleDraft({ ...ruleDraft, ruleTitle: e.target.value })}
+                            className="w-full px-3 py-1.5 rounded-xl border border-slate-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 font-semibold"
+                          />
+                        </div>
 
-          {/* Numeral Height & Scoring Thresholds */}
-          <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-3xl p-5 shadow-xs space-y-4">
-            <div className="flex items-center gap-2 text-sm font-black text-slate-900 dark:text-zinc-100 border-b border-slate-100 dark:border-zinc-800 pb-3">
-              <Sliders className="w-4 h-4 text-blue-600" />
-              <span>Table I Numeral Heights & Score Thresholds</span>
-            </div>
+                        <div>
+                          <label className="block font-bold mb-1">Compounding Fine (₹ INR)</label>
+                          <input
+                            type="number"
+                            value={ruleDraft.compoundingFine}
+                            onChange={(e) => setRuleDraft({ ...ruleDraft, compoundingFine: Number(e.target.value) })}
+                            className="w-full px-3 py-1.5 rounded-xl border border-slate-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 font-mono font-bold text-emerald-700"
+                          />
+                        </div>
 
-            <div className="space-y-3 text-xs">
-              <div>
-                <label className="block font-bold text-slate-700 mb-1">
-                  Compliance Pass Threshold (0–100 Score)
-                </label>
-                <input
-                  type="number"
-                  min="50"
-                  max="100"
-                  value={config.passScoreThreshold}
-                  onChange={(e) => setConfig({ ...config, passScoreThreshold: Number(e.target.value) })}
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-mono text-xs font-bold text-slate-900 focus:ring-2 focus:ring-[#00A651]"
-                />
-                <span className="text-[10px] text-slate-500 mt-0.5 block">
-                  Packages scoring below this are flagged as Non-Compliant
-                </span>
-              </div>
+                        <div>
+                          <label className="block font-bold mb-1">Legal Section Reference</label>
+                          <input
+                            type="text"
+                            value={ruleDraft.section}
+                            onChange={(e) => setRuleDraft({ ...ruleDraft, section: e.target.value })}
+                            className="w-full px-3 py-1.5 rounded-xl border border-slate-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 font-mono"
+                          />
+                        </div>
 
-              <div>
-                <label className="block font-bold text-slate-700 mb-1">
-                  Minimum Numeral Height for Medium PDP (mm)
-                </label>
-                <input
-                  type="number"
-                  step="0.5"
-                  value={config.minNumeralHeightMedium}
-                  onChange={(e) => setConfig({ ...config, minNumeralHeightMedium: Number(e.target.value) })}
-                  className="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl font-mono text-xs font-bold text-slate-900 focus:ring-2 focus:ring-[#00A651]"
-                />
-                <span className="text-[10px] text-slate-500 mt-0.5 block">
-                  Rule 7 Table-I mandates 4.0mm for net weight 200g–1kg
-                </span>
-              </div>
+                        <div className="sm:col-span-2">
+                          <label className="block font-bold mb-1">Statutory Standard Description</label>
+                          <input
+                            type="text"
+                            value={ruleDraft.description}
+                            onChange={(e) => setRuleDraft({ ...ruleDraft, description: e.target.value })}
+                            className="w-full px-3 py-1.5 rounded-xl border border-slate-300 dark:border-zinc-700 bg-white dark:bg-zinc-900"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  );
+                }
 
-              <div className="pt-2">
-                <label className="flex items-center gap-2 cursor-pointer font-bold text-slate-800">
-                  <input
-                    type="checkbox"
-                    checked={config.strictSecondSchedule}
-                    onChange={(e) => setConfig({ ...config, strictSecondSchedule: e.target.checked })}
-                    className="w-4 h-4 text-[#00A651] rounded"
-                  />
-                  <span>Strict Second Schedule Pack Size Enforcement</span>
-                </label>
-                <span className="text-[10px] text-slate-500 ml-6 block">
-                  Enforce strict standard packaging sizes for Biscuits, Edible Oils, Tea, Soaps, Atta
-                </span>
-              </div>
+                return (
+                  <div
+                    key={rule.id}
+                    className="p-3.5 rounded-2xl border border-slate-200 dark:border-zinc-800 bg-slate-50/70 dark:bg-zinc-950 flex flex-wrap items-center justify-between gap-3 text-xs transition-colors hover:border-slate-300 dark:hover:border-zinc-700"
+                  >
+                    <div className="flex-1 min-w-[240px]">
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono font-bold text-[#0A3663] dark:text-blue-400">
+                          {rule.ruleNumber}
+                        </span>
+                        <span className="text-slate-400">•</span>
+                        <span className="font-bold text-slate-900 dark:text-zinc-100">
+                          {rule.ruleTitle}
+                        </span>
+                        {rule.isAmended && (
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-100 text-purple-800 dark:bg-purple-950 dark:text-purple-300">
+                            Amended ({rule.amendmentRef || '2026'})
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-[11px] text-slate-500 dark:text-zinc-400 mt-1">
+                        {rule.description}
+                      </p>
+                      <span className="text-[10px] font-mono text-slate-400 mt-0.5 block">
+                        Statutory Penal Provision: {rule.section}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-4">
+                      <div className="text-right">
+                        <span className="text-[10px] text-slate-400 block uppercase font-bold">Compounding Fine</span>
+                        <span className="font-mono font-black text-sm text-emerald-700 dark:text-emerald-400">
+                          ₹{rule.compoundingFine.toLocaleString('en-IN')}
+                        </span>
+                      </div>
+
+                      <button
+                        onClick={() => handleEditRule(rule)}
+                        className="p-2 rounded-xl bg-white dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 hover:bg-slate-100 dark:hover:bg-zinc-700 text-slate-700 dark:text-zinc-300 transition-colors cursor-pointer"
+                        title="Edit rule parameters"
+                      >
+                        <Edit3 className="w-3.5 h-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
         </div>
       )}
 
-      {/* Tab 2: Banner Announcement */}
+      {/* Tab 2: Gazette Amendment PDF / Document Upload */}
+      {activeSubTab === 'amendment' && (
+        <div className="space-y-6">
+          <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-3xl p-6 shadow-xs space-y-6">
+            <div className="border-b border-slate-100 dark:border-zinc-800 pb-4">
+              <div className="flex items-center gap-2 text-sm font-black text-purple-700 dark:text-purple-400 mb-1">
+                <BookOpen className="w-4 h-4" />
+                <span>Official Gazette Notification Amendment Uploader</span>
+              </div>
+              <p className="text-xs text-slate-600 dark:text-zinc-400 max-w-2xl">
+                Upload new Gazette Notifications (GSR circulars) or legislative amendments enacted by the Ministry. The platform's AI parser reads the amendment clauses, identifies revised compounding fines or new statutory rules, and updates the compliance engine automatically.
+              </p>
+            </div>
+
+            {/* Dropzone */}
+            <div className="p-6 rounded-2xl border-2 border-dashed border-purple-300 dark:border-purple-800 bg-purple-50/40 dark:bg-zinc-950 text-center hover:border-purple-500 transition-colors">
+              <input
+                ref={gazetteFileRef}
+                type="file"
+                accept=".pdf,.txt,.doc,.docx"
+                className="hidden"
+                onChange={handleFileUpload}
+              />
+
+              <div className="flex flex-col items-center justify-center space-y-3">
+                <div className="w-12 h-12 rounded-2xl bg-purple-100 dark:bg-purple-950 text-purple-600 flex items-center justify-center">
+                  <Upload className="w-6 h-6" />
+                </div>
+                <div>
+                  <h4 className="text-sm font-bold text-slate-900 dark:text-zinc-100">
+                    {gazetteFileName ? gazetteFileName : 'Upload Gazette Notification PDF or Document'}
+                  </h4>
+                  <p className="text-xs text-slate-500 dark:text-zinc-400 mt-0.5">
+                    Supports .pdf, .txt, .doc (e.g. GSR_782_E_Legal_Metrology_Amendment_2026.pdf)
+                  </p>
+                </div>
+                <div className="flex gap-2 pt-2">
+                  <button
+                    type="button"
+                    onClick={() => gazetteFileRef.current?.click()}
+                    className="px-4 py-2 rounded-xl bg-purple-700 hover:bg-purple-600 text-white text-xs font-bold transition-all cursor-pointer shadow-sm"
+                  >
+                    Select Gazette PDF
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setGazetteFileName('GSR_782_E_Legal_Metrology_Amendment_2026.pdf');
+                      const sampleText = 'MINISTRY OF CONSUMER AFFAIRS, FOOD AND PUBLIC DISTRIBUTION\nNOTIFICATION\nNew Delhi, September 2026\nG.S.R. 782(E).—In exercise of the powers conferred by section 52 read with section 18 of the Legal Metrology Act, 2009, the Central Government hereby amends the Legal Metrology (Packaged Commodities) Rules, 2011.\n1. Short title and commencement: These rules may be called the Legal Metrology (Packaged Commodities) Amendment Rules, 2026.\n2. Enhanced compounding penalties under Section 36 for packaging non-declaration increased to Rs. 50,000 for corporations.\n3. Rule 10 Digital Commerce: Mandatory pre-sale display of Unit Sale Price, Expiry Date and Country of Origin on all quick-commerce platforms and dark stores before checkout.';
+                      setGazetteRawText(sampleText);
+                      const parsed = parseGazetteAmendment('GSR_782_E_Legal_Metrology_Amendment_2026.pdf', sampleText);
+                      setParsedAmendment(parsed);
+                    }}
+                    className="px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-zinc-800 hover:bg-slate-200 dark:hover:bg-zinc-700 text-slate-700 dark:text-zinc-300 text-xs font-bold transition-all cursor-pointer"
+                  >
+                    Load Sample 2026 Gazette
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Manual Gazette Notification Textarea */}
+            <div className="space-y-2">
+              <label className="block text-xs font-bold text-slate-700 dark:text-zinc-300">
+                Or Paste Gazette Notification Text:
+              </label>
+              <textarea
+                rows={4}
+                value={gazetteRawText}
+                onChange={(e) => setGazetteRawText(e.target.value)}
+                placeholder="Paste Gazette Notification GSR text here..."
+                className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50 dark:bg-zinc-950 text-xs font-mono text-slate-800 dark:text-zinc-200 focus:ring-2 focus:ring-purple-600"
+              />
+              <div className="flex justify-end">
+                <button
+                  type="button"
+                  onClick={handleParseManualText}
+                  disabled={!gazetteRawText.trim() || isParsingGazette}
+                  className="px-4 py-1.5 rounded-xl bg-[#0A3663] text-white text-xs font-bold hover:bg-blue-900 disabled:opacity-50 cursor-pointer"
+                >
+                  {isParsingGazette ? 'Analyzing Notification...' : 'Parse & Extract Rules'}
+                </button>
+              </div>
+            </div>
+
+            {/* Parsed Gazette Notification Impact Diff */}
+            {parsedAmendment && (
+              <div className="p-5 rounded-2xl border border-purple-200 dark:border-purple-800 bg-purple-50/30 dark:bg-purple-950/20 space-y-4 animate-in fade-in">
+                <div className="flex items-center justify-between border-b border-purple-200 dark:border-purple-800 pb-3">
+                  <div>
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-purple-600 dark:text-purple-400">
+                      Gazette Notification Extracted
+                    </span>
+                    <h3 className="text-base font-black text-slate-900 dark:text-zinc-100">
+                      {parsedAmendment.gazetteNumber} • {parsedAmendment.title}
+                    </h3>
+                    <p className="text-xs text-slate-500 dark:text-zinc-400">
+                      {parsedAmendment.ministry} • Enacted: {parsedAmendment.effectiveDate}
+                    </p>
+                  </div>
+
+                  <button
+                    onClick={handleApplyGazette}
+                    className="px-4 py-2 rounded-xl bg-[#00A651] hover:bg-emerald-600 text-white text-xs font-bold transition-all cursor-pointer shadow-md flex items-center gap-1.5"
+                  >
+                    <Check className="w-4 h-4" />
+                    <span>Adopt & Enforce Gazette Amendment</span>
+                  </button>
+                </div>
+
+                {/* Rules Amended Diff Table */}
+                <div className="space-y-2">
+                  <span className="text-xs font-bold text-slate-700 dark:text-zinc-300 block">
+                    Statutory Rule & Penalty Amendments to be Applied:
+                  </span>
+
+                  <div className="space-y-2">
+                    {parsedAmendment.rulesAmended.map((r, i) => (
+                      <div key={i} className="p-3 bg-white dark:bg-zinc-900 rounded-xl border border-slate-200 dark:border-zinc-800 text-xs grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div>
+                          <span className="font-bold text-red-600 block mb-0.5">Prior Standard:</span>
+                          <p className="text-slate-600 dark:text-zinc-400 line-through">{r.priorText}</p>
+                        </div>
+                        <div>
+                          <span className="font-bold text-emerald-600 block mb-0.5">New Gazette Standard ({r.ruleNumber}):</span>
+                          <p className="text-slate-900 dark:text-zinc-100 font-semibold">{r.amendedText}</p>
+                          {r.revisedFine && (
+                            <span className="inline-block mt-1 font-mono font-bold text-purple-700 dark:text-purple-400">
+                              Revised Penalty: ₹{r.revisedFine.toLocaleString('en-IN')}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Tab 3: Banner Announcement */}
       {activeSubTab === 'banner' && (
         <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-3xl p-5 shadow-xs space-y-4">
           <div className="flex items-center gap-2 text-sm font-black text-slate-900 dark:text-zinc-100 border-b border-slate-100 dark:border-zinc-800 pb-3">
@@ -301,7 +578,7 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onConfig
         </div>
       )}
 
-      {/* Tab 3: Cloud Database & Export */}
+      {/* Tab 4: Cloud Database & Export */}
       {activeSubTab === 'database' && (
         <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-3xl p-5 shadow-xs space-y-4">
           <div className="flex items-center justify-between border-b border-slate-100 dark:border-zinc-800 pb-3">
@@ -339,7 +616,7 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onConfig
         </div>
       )}
 
-      {/* Tab 4: Field Inspectors */}
+      {/* Tab 5: Field Inspectors */}
       {activeSubTab === 'officers' && (
         <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-3xl p-5 shadow-xs space-y-4">
           <div className="flex items-center justify-between border-b border-slate-100 dark:border-zinc-800 pb-3">
@@ -355,7 +632,7 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onConfig
               { name: 'Insp. Sunita Deshmukh', badge: 'LM-MH-8812', zone: 'Mumbai Port & Dark Stores', status: 'ACTIVE ON FIELD' },
               { name: 'Insp. Arvind Swaminathan', badge: 'LM-TN-3104', zone: 'Chennai Industrial Area', status: 'ACTIVE ON FIELD' },
             ].map((o) => (
-              <div key={o.badge} className="p-3 border border-slate-200 rounded-xl flex items-center justify-between bg-slate-50 text-xs">
+              <div key={o.badge} className="p-3 border border-slate-200 dark:border-zinc-800 rounded-xl flex items-center justify-between bg-slate-50 dark:bg-zinc-950 text-xs">
                 <div>
                   <span className="font-black text-slate-900 dark:text-zinc-100 block">{o.name}</span>
                   <span className="text-slate-500 text-[11px]">Badge: {o.badge} • Jurisdiction: {o.zone}</span>

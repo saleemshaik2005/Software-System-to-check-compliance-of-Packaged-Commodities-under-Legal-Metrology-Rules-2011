@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Scale,
+  RefreshCw,
   CheckCircle,
   Building2,
   BarChart3,
@@ -22,7 +23,9 @@ import {
   Radio,
   X
 } from 'lucide-react';
-import { UserRole, AuthUser, ActiveTab } from '../types';
+import { UserRole, AuthUser, ActiveTab, Language } from '../types';
+import { getTranslation, SUPPORTED_LANGUAGES, setStoredLanguage } from '../services/i18nService';
+import { triggerImmediateCloudSync, SYNC_STATUS_EVENT } from '../services/dbService';
 import { getAdminConfig } from '../services/adminService';
 
 interface NavbarProps {
@@ -38,6 +41,8 @@ interface NavbarProps {
   onOpenGrievance?: () => void;
   onOpenLogin?: () => void;
   onSignOut: () => void;
+  currentLang?: Language;
+  onLanguageChange?: (lang: Language) => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -53,24 +58,46 @@ export const Navbar: React.FC<NavbarProps> = ({
   onOpenGrievance,
   onOpenLogin,
   onSignOut,
+  currentLang = 'en',
+  onLanguageChange,
 }) => {
   const adminConfig = getAdminConfig();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false);
+  const [lastSyncedTime, setLastSyncedTime] = useState<string>('Just now');
+
+  // Real-time Cloud Sync Listener
+  useEffect(() => {
+    const handleSyncStatus = (e: Event) => {
+      const customEvent = e as CustomEvent<{ isSyncing: boolean; lastSynced: Date }>;
+      setIsSyncing(customEvent.detail?.isSyncing ?? false);
+      if (customEvent.detail?.lastSynced) {
+        setLastSyncedTime(new Date(customEvent.detail.lastSynced).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }));
+      }
+    };
+    window.addEventListener(SYNC_STATUS_EVENT, handleSyncStatus);
+    return () => window.removeEventListener(SYNC_STATUS_EVENT, handleSyncStatus);
+  }, []);
+
+  const handleManualSync = async () => {
+    setIsSyncing(true);
+    await triggerImmediateCloudSync();
+  };
 
   const getRoleSubtitle = () => {
     switch (userRole) {
       case 'MANUFACTURER':
-        return 'Brand Packaging Pre-Compliance Portal';
+        return getTranslation('role_manufacturer_sub', currentLang);
       case 'CITIZEN':
-        return 'Consumer Protection • Fair Pack & Pricing';
+        return getTranslation('role_citizen_sub', currentLang);
       case 'OFFICER':
-        return 'Legal Metrology Enforcement Field Station';
+        return getTranslation('role_officer_sub', currentLang);
       case 'SURVEILLANCE':
-        return 'National Legal Metrology Directorate';
+        return getTranslation('role_surveillance_sub', currentLang);
       case 'ADMIN':
-        return 'Platform Administration Console';
+        return getTranslation('role_admin_sub', currentLang);
       default:
-        return 'Inspect Packages • Ensure Compliance';
+        return getTranslation('rule_title', currentLang);
     }
   };
 
@@ -105,17 +132,47 @@ export const Navbar: React.FC<NavbarProps> = ({
             {adminConfig.specialDriveBanner || 'Ministry of Consumer Affairs, Food & Public Distribution'}
           </span>
         </div>
-        <div className="flex items-center gap-3">
-          <div className="hidden sm:flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-950/80 border border-emerald-700/60 text-emerald-400 font-medium text-[10px]" title="Google Cloud Firestore & Cloudinary CDN Real-Time Sync Active">
-            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span>Cloud Database: Synced</span>
+        <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
+          {/* Real-time Cloud Sync Trigger */}
+          <button
+            onClick={handleManualSync}
+            disabled={isSyncing}
+            className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-950/90 border border-emerald-600/70 text-emerald-400 hover:bg-emerald-900 font-bold text-[10px] transition-all cursor-pointer shadow-xs"
+            title={`Click to immediately synchronize with Google Cloud Firestore. Last Synced: ${lastSyncedTime}`}
+          >
+            <RefreshCw className={`w-3 h-3 text-emerald-400 ${isSyncing ? 'animate-spin' : ''}`} />
+            <span>{isSyncing ? getTranslation('syncing', currentLang) : getTranslation('sync_now', currentLang)}</span>
+            <span className="text-[9px] text-emerald-300/80 font-normal">({lastSyncedTime})</span>
+          </button>
+
+          {/* Language Switcher Pill */}
+          <div className="flex items-center rounded-lg bg-zinc-800 p-0.5 border border-zinc-700 text-[10px] font-bold">
+            <Globe className="w-3 h-3 text-cyan-400 ml-1 mr-1" />
+            {SUPPORTED_LANGUAGES.map((opt) => (
+              <button
+                key={opt.code}
+                onClick={() => {
+                  setStoredLanguage(opt.code);
+                  onLanguageChange?.(opt.code);
+                }}
+                className={`px-1.5 py-0.5 rounded-md transition-all cursor-pointer ${
+                  currentLang === opt.code
+                    ? 'bg-[#00A651] text-white shadow-xs font-black'
+                    : 'text-zinc-400 hover:text-white'
+                }`}
+                title={opt.nativeLabel}
+              >
+                {opt.code === 'en' ? 'EN' : opt.code === 'hi' ? 'हिन्दी' : 'తెలుగు'}
+              </button>
+            ))}
           </div>
-          <div className="flex items-center gap-1 text-emerald-300 font-semibold">
+
+          <div className="hidden lg:flex items-center gap-1 text-emerald-300 font-semibold">
             <CheckCircle className="w-3 h-3" />
             <span>LMPC Rules 2011</span>
           </div>
-          <span className="text-zinc-600">|</span>
-          <div className="text-cyan-300 font-mono font-bold">Team: Neural Knights</div>
+          <span className="hidden lg:inline text-zinc-600">|</span>
+          <div className="hidden lg:block text-cyan-300 font-mono font-bold">Team: Neural Knights</div>
         </div>
       </div>
 
@@ -504,7 +561,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 }`}
               >
                 <Building2 className="w-3.5 h-3.5" />
-                <span>Artwork Pre-Check Simulator</span>
+                <span>{getTranslation('tab_artwork_precheck', currentLang)}</span>
               </button>
 
               <button
@@ -516,7 +573,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 }`}
               >
                 <CheckCircle className="w-3.5 h-3.5" />
-                <span>Pre-Compliance Audit Sheet</span>
+                <span>{getTranslation('tab_precompliance', currentLang)}</span>
               </button>
             </>
           )}
@@ -533,7 +590,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 }`}
               >
                 <Camera className="w-3.5 h-3.5" />
-                <span>Scan / Snap Package</span>
+                <span>{getTranslation('tab_scan_package', currentLang)}</span>
               </button>
 
               <button
@@ -545,7 +602,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 }`}
               >
                 <Scale className="w-3.5 h-3.5" />
-                <span>Fair Pack & MRP Report</span>
+                <span>{getTranslation('tab_fair_pack', currentLang)}</span>
               </button>
 
               <button
@@ -610,7 +667,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 }`}
               >
                 <Globe className="w-3.5 h-3.5" />
-                <span>E-Commerce Audit</span>
+                <span>{getTranslation('tab_ecommerce', currentLang)}</span>
               </button>
             </>
           )}
@@ -668,7 +725,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 }`}
               >
                 <Settings className="w-3.5 h-3.5" />
-                <span>Platform Control Center</span>
+                <span>{getTranslation('tab_admin', currentLang)}</span>
               </button>
 
               <button
@@ -708,7 +765,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             title="View full 43-page Legal Metrology Rules 2011 Gazette"
           >
             <BookOpen className="w-3.5 h-3.5 text-amber-500" />
-            <span>LMPC Rulebook</span>
+            <span>{getTranslation('tab_rulebook', currentLang)}</span>
           </button>
         </nav>
 

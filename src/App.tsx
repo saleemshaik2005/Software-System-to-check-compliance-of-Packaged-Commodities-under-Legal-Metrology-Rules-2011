@@ -23,7 +23,8 @@ import { DEMO_PRESETS, DemoProductPreset } from './data/demoProducts';
 import { evaluateCompliance } from './services/complianceEngine';
 import { saveScanReport, getScanReports, syncWithCloudDatabase, DB_CHANGE_EVENT } from './services/dbService';
 import { getCurrentUser, switchRole, logoutUser } from './services/authService';
-import { ComplianceReport, UserRole, AuthUser, ActiveTab } from './types';
+import { ComplianceReport, UserRole, AuthUser, ActiveTab, Language } from './types';
+import { getStoredLanguage, setStoredLanguage, LANG_CHANGE_EVENT } from './services/i18nService';
 import { Camera, Archive, CheckCircle, AlertTriangle, ArrowRight, ShieldCheck, Sparkles, Building2, Radio } from 'lucide-react';
 
 export function App() {
@@ -62,6 +63,19 @@ export function App() {
   const [isVaultOpen, setIsVaultOpen] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [currentLang, setCurrentLang] = useState<Language>(() => getStoredLanguage());
+
+  // Listen for language change events
+  useEffect(() => {
+    const handleLang = (e: Event) => {
+      const ce = e as CustomEvent<{ lang: Language }>;
+      if (ce.detail?.lang) {
+        setCurrentLang(ce.detail.lang);
+      }
+    };
+    window.addEventListener(LANG_CHANGE_EVENT, handleLang);
+    return () => window.removeEventListener(LANG_CHANGE_EVENT, handleLang);
+  }, []);
 
   // Sync dark mode class with root html element
   useEffect(() => {
@@ -96,10 +110,10 @@ export function App() {
     };
     window.addEventListener('focus', handleFocus);
 
-    // 3. Periodic cloud poll every 12 seconds
+    // 3. Ultra-Fast Periodic cloud poll every 3.5 seconds (Real-time synchronization across all devices)
     const interval = setInterval(() => {
       syncWithCloudDatabase();
-    }, 12000);
+    }, 3500);
 
     return () => {
       window.removeEventListener('focus', handleFocus);
@@ -179,6 +193,8 @@ export function App() {
         onLoginSuccess={handleLoginSuccess}
         isDarkMode={isDarkMode}
         setIsDarkMode={setIsDarkMode}
+        currentLang={currentLang}
+        onLanguageChange={setStoredLanguage}
       />
     );
   }
@@ -436,6 +452,7 @@ export function App() {
         isOpen={isPDFPreviewOpen}
         onClose={() => setIsPDFPreviewOpen(false)}
         report={currentReport}
+        onUpdateReport={(updated) => setCurrentReport(updated)}
       />
 
       {/* 2. Consumer Grievance / NCH 1915 Modal */}

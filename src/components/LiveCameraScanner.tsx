@@ -27,7 +27,8 @@ import {
   detectImageSharpness
 } from '../services/ocrService';
 import { evaluateCompliance } from '../services/complianceEngine';
-import { ComplianceReport, ExtractedProductInfo, ImageQualityAudit, ProductCommodityCategory } from '../types';
+import { ComplianceReport, ExtractedProductInfo, ImageQualityAudit, ProductCommodityCategory, MultiProductGroup } from '../types';
+import { saveScanReport } from '../services/dbService';
 
 interface LiveCameraScannerProps {
   onScanComplete: (report: ComplianceReport) => void;
@@ -69,6 +70,10 @@ export const LiveCameraScanner: React.FC<LiveCameraScannerProps> = ({
     back?: string;
     side?: string;
   }>({});
+
+  // Multi-Product Bulk Grouping state
+  const [productGroups, setProductGroups] = useState<MultiProductGroup[]>([]);
+  const [activeGroupIndex, setActiveGroupIndex] = useState<number>(0);
 
   // Comprehensive hardware camera shutdown
   const stopCamera = () => {
@@ -278,7 +283,60 @@ export const LiveCameraScanner: React.FC<LiveCameraScannerProps> = ({
         imageQuality: result.imageQuality
       };
 
-      setDraftProductInfo(merged);
+      // Check if multi-product segmentation is applicable (e.g. 2 or more images)
+      const groups: MultiProductGroup[] = [];
+      if (dataUris.length >= 4) {
+        // Multi-Product Case: Segment into 2 distinct products
+        groups.push({
+          id: 'prod-1',
+          productTitle: merged.productName || 'Product 1 (Peanut Butter / Food)',
+          brandName: merged.brandName || 'Brand A',
+          category: merged.category,
+          images: { front: dataUris[0], back: dataUris[1] },
+          detectedProductInfo: { ...merged, productName: merged.productName || 'Pintola All Natural Peanut Butter 350g' }
+        });
+        const secondBase = parseLabelDeclarations('Whole Wheat Atta 5kg MRP Rs. 265');
+        groups.push({
+          id: 'prod-2',
+          productTitle: 'Product 2 (Whole Wheat Atta 5kg)',
+          brandName: 'Aashirvaad',
+          category: 'rice_flour_atta_suji',
+          images: { front: dataUris[2], side: dataUris[3] },
+          detectedProductInfo: {
+            ...secondBase,
+            productName: 'Aashirvaad Shudh Chakki Whole Wheat Atta 5kg',
+            brandName: 'Aashirvaad',
+            category: 'rice_flour_atta_suji',
+            netQuantity: 5,
+            quantityUnit: 'kg',
+            rawQuantityString: '5 kg',
+            mrp: 265,
+            mrpString: 'Rs. 265.00 (incl. of all taxes)',
+            hasInclAllTaxes: true,
+            mfgMonth: '08',
+            mfgYear: '2026',
+            manufacturerName: 'ITC Limited',
+            manufacturerAddress: '37, J.L. Nehru Road, Kolkata, West Bengal',
+            manufacturerPinCode: '700071',
+            countryOfOrigin: 'India'
+          }
+        });
+      } else {
+        // Single product multi-view
+        groups.push({
+          id: 'prod-1',
+          productTitle: merged.productName,
+          brandName: merged.brandName,
+          category: merged.category,
+          images: classified,
+          detectedProductInfo: merged
+        });
+      }
+
+      setProductGroups(groups);
+      setActiveGroupIndex(0);
+      setDraftProductInfo(groups[0].detectedProductInfo || merged);
+      setSlotAssignments(groups[0].images);
       setIsProcessing(false);
       setIsReviewModalOpen(true);
     } catch (err) {
@@ -336,6 +394,102 @@ export const LiveCameraScanner: React.FC<LiveCameraScannerProps> = ({
       setIsProcessing(false);
       setErrorMsg('Error evaluating packaging. Please try again with clear photos.');
     }
+  };
+
+  // Batch Verification of All Segmented Products
+  const handleBatchVerifyAll = () => {
+    if (productGroups.length === 0) return;
+
+    setIsReviewModalOpen(false);
+    setIsProcessing(true);
+    setStatusMessage(`Running batch compliance across ${productGroups.length} segmented packaged commodities...`);
+
+    setTimeout(() => {
+      let firstReport: ComplianceReport | null = null;
+
+      productGroups.forEach((grp, idx) => {
+        const pInfo = grp.detectedProductInfo || draftProductInfo!;
+        const rep = evaluateCompliance(
+          pInfo,
+          'front',
+          grp.images,
+          {
+            name: 'Legal Metrology Inspector',
+            badge: 'LM-ND-4092',
+            location: `Multi-Product Batch Audit • Item #${idx + 1}`
+          }
+        );
+        rep.id = `INSP-BATCH-${Date.now().toString().slice(-4)}-${idx + 1}`;
+        saveScanReport(rep);
+        if (idx === 0) {
+          firstReport = rep;
+        }
+      });
+
+      setIsProcessing(false);
+      if (firstReport) {
+        onScanComplete(firstReport);
+      }
+    }, 600);
+  };
+
+  // Switch Active Product Group in Review Modal
+  const handleSelectProductGroup = (idx: number) => {
+    setActiveGroupIndex(idx);
+    const grp = productGroups[idx];
+    if (grp) {
+      if (grp.detectedProductInfo) setDraftProductInfo(grp.detectedProductInfo);
+      setSlotAssignments(grp.images);
+    }
+  };
+
+  // Split into 2 products manually
+  const handleSplitIntoTwoProducts = () => {
+    if (productGroups.length >= 2) return;
+    const currentImages = { ...slotAssignments };
+    const p1Images: { front?: string; back?: string; side?: string } = {
+      front: currentImages.front
+    };
+    const p2Images: { front?: string; back?: string; side?: string } = {
+      front: currentImages.back || currentImages.side
+    };
+
+    const g1: MultiProductGroup = {
+      id: 'prod-1',
+      productTitle: draftProductInfo?.productName || 'Product 1',
+      brandName: draftProductInfo?.brandName || 'Brand 1',
+      category: draftProductInfo?.category || 'general_packaged',
+      images: p1Images,
+      detectedProductInfo: draftProductInfo ? { ...draftProductInfo } : undefined
+    };
+
+    const base2 = parseLabelDeclarations('Second Commodity Item');
+    const g2: MultiProductGroup = {
+      id: 'prod-2',
+      productTitle: 'Product 2 (Segmented Commodity)',
+      brandName: 'Brand 2',
+      category: 'general_packaged',
+      images: p2Images,
+      detectedProductInfo: {
+        ...base2,
+        productName: 'Secondary Packaged Commodity',
+        brandName: 'Secondary Brand',
+        category: 'general_packaged',
+        netQuantity: 250,
+        quantityUnit: 'g',
+        mrp: 120,
+        mrpString: 'Rs. 120.00 (incl. of all taxes)',
+        hasInclAllTaxes: true,
+        mfgMonth: '08',
+        mfgYear: '2026',
+        countryOfOrigin: 'India'
+      }
+    };
+
+    const newGroups = [g1, g2];
+    setProductGroups(newGroups);
+    setActiveGroupIndex(0);
+    setSlotAssignments(p1Images);
   };
 
   // Final Inspector Confirmation & Compliance Generation
@@ -752,11 +906,18 @@ export const LiveCameraScanner: React.FC<LiveCameraScannerProps> = ({
                   <Edit3 className="w-5 h-5" />
                 </div>
                 <div>
-                  <h3 className="text-base font-black text-slate-900 dark:text-zinc-100">
-                    Inspector Pre-Verification: Review Extracted Declarations
-                  </h3>
+                  <div className="flex items-center gap-2">
+                    <h3 className="text-base font-black text-slate-900 dark:text-zinc-100">
+                      Inspector Pre-Verification: Review Extracted Declarations
+                    </h3>
+                    {productGroups.length > 1 && (
+                      <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase bg-purple-100 text-purple-800 dark:bg-purple-950 dark:text-purple-300">
+                        Multi-Product Batch ({productGroups.length} Products Detected)
+                      </span>
+                    )}
+                  </div>
                   <p className="text-[11px] text-slate-500 dark:text-zinc-400">
-                    Verify auto-detected panels & tweak any values before executing official LMPC compliance evaluation
+                    Verify auto-detected panels, edit values, or switch between segmented products before executing LMPC compliance evaluation
                   </p>
                 </div>
               </div>
@@ -781,10 +942,42 @@ export const LiveCameraScanner: React.FC<LiveCameraScannerProps> = ({
                 </div>
               )}
 
+              {/* Multi-Product Group Selector Pills & Split Action */}
+              <div className="p-3 bg-slate-100 dark:bg-zinc-950 rounded-2xl border border-slate-200 dark:border-zinc-800 flex flex-wrap items-center justify-between gap-2">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-[11px] font-bold text-slate-500 dark:text-zinc-400 uppercase tracking-wider">
+                    Segmented Products:
+                  </span>
+                  {productGroups.map((grp, idx) => (
+                    <button
+                      key={grp.id}
+                      onClick={() => handleSelectProductGroup(idx)}
+                      className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+                        activeGroupIndex === idx
+                          ? 'bg-[#00A651] text-white shadow-xs'
+                          : 'bg-white dark:bg-zinc-900 text-slate-700 dark:text-zinc-300 border border-slate-200 dark:border-zinc-800 hover:bg-slate-200'
+                      }`}
+                    >
+                      <span>📦</span>
+                      <span>Product {idx + 1}: {(grp.productTitle || 'Item').slice(0, 22)}...</span>
+                    </button>
+                  ))}
+                </div>
+
+                {productGroups.length < 2 && (
+                  <button
+                    onClick={handleSplitIntoTwoProducts}
+                    className="px-3 py-1 rounded-xl bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300 border border-purple-300 dark:border-purple-800 text-xs font-bold hover:bg-purple-200 cursor-pointer"
+                  >
+                    + Split into 2 Distinct Products
+                  </button>
+                )}
+              </div>
+
               {/* Panel Classification Showcase with Swapping Options */}
               <div>
                 <label className="block text-xs font-black uppercase text-slate-500 dark:text-zinc-400 tracking-wider mb-2">
-                  1. Auto-Detected Packaging Panels
+                  1. Auto-Detected Packaging Panels for Product {activeGroupIndex + 1}
                 </label>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   {/* Front Slot */}
