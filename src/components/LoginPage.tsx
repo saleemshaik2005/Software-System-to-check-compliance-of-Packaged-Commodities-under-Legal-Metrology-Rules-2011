@@ -60,56 +60,56 @@ export const LoginPage: React.FC<LoginPageProps> = ({
     onLoginSuccess(user);
   };
 
-  const testRooms = [
+    const testRooms = [
     {
       role: 'OFFICER' as UserRole,
-      title: 'Legal Metrology Inspector',
-      badge: 'Enforcement Field Station',
+      title: getTranslation('login_room_officer_title', currentLang),
+      badge: getTranslation('login_room_officer_badge', currentLang),
       badgeColor: 'bg-emerald-100 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border-emerald-300 dark:border-emerald-800',
       icon: ShieldCheck,
       iconColor: 'text-emerald-600 dark:text-emerald-400',
-      desc: 'Conduct statutory packaging inspections, calculate Fourth/Fifth Schedule MPE sampling, and issue Form B seizure & compounding notices under LM Act 2009.',
-      targetPage: 'Inspector Dashboard'
+      desc: getTranslation('login_room_officer_desc', currentLang),
+      targetPage: currentLang === 'hi' ? 'निरीक्षक कार्यक्षेत्र' : currentLang === 'te' ? 'ఇన్‌స్పెక్టర్ డాష్‌బోర్డ్' : 'Inspector Dashboard'
     },
     {
       role: 'CITIZEN' as UserRole,
-      title: 'Consumer / Citizen',
-      badge: 'Public Verification',
+      title: getTranslation('login_room_citizen_title', currentLang),
+      badge: getTranslation('login_room_citizen_badge', currentLang),
       badgeColor: 'bg-blue-100 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300 border-blue-300 dark:border-blue-800',
       icon: ShoppingBag,
       iconColor: 'text-blue-600 dark:text-blue-400',
-      desc: 'Instant camera photo upload, verify printed MRP & net weight against statutory regulations, and file 1-click consumer grievances directly to NCH 1915.',
-      targetPage: 'Package Scanner & Check Studio'
+      desc: getTranslation('login_room_citizen_desc', currentLang),
+      targetPage: currentLang === 'hi' ? 'उपभोक्ता जांच केंद्र' : currentLang === 'te' ? 'వినియోగదారుల చెక్ స్టూడియో' : 'Package Scanner Studio'
     },
     {
       role: 'MANUFACTURER' as UserRole,
-      title: 'Brand Manufacturer',
-      badge: 'Pre-Printing QA Simulator',
+      title: getTranslation('login_room_mfg_title', currentLang),
+      badge: getTranslation('login_room_mfg_badge', currentLang),
       badgeColor: 'bg-amber-100 dark:bg-amber-950/60 text-amber-800 dark:text-amber-300 border-amber-300 dark:border-amber-800',
       icon: Building2,
       iconColor: 'text-amber-600 dark:text-amber-400',
-      desc: 'Pre-market packaging artwork compliance simulator. Validate mandatory declarations, font heights (Table I), and Second Schedule standard pack sizes.',
-      targetPage: 'Artwork Pre-Check Simulator'
+      desc: getTranslation('login_room_mfg_desc', currentLang),
+      targetPage: currentLang === 'hi' ? 'आर्टवर्क सिम्युलेटर' : currentLang === 'te' ? 'ఆర్ట్‌వర్క్ సిమ్యులేటర్' : 'Artwork Pre-Check Simulator'
     },
     {
       role: 'SURVEILLANCE' as UserRole,
-      title: 'National Surveillance Director',
-      badge: 'Ministry Directorate',
+      title: getTranslation('login_room_surv_title', currentLang),
+      badge: getTranslation('login_room_surv_badge', currentLang),
       badgeColor: 'bg-purple-100 dark:bg-purple-950/60 text-purple-800 dark:text-purple-300 border-purple-300 dark:border-purple-800',
       icon: Radio,
       iconColor: 'text-purple-600 dark:text-purple-400',
-      desc: 'Pan-India compliance intelligence, dark store sweeps (Blinkit, Zepto, Swiggy Instamart), regional violation heatmaps, and high-risk brand profiling.',
-      targetPage: 'National Surveillance Hub'
+      desc: getTranslation('login_room_surv_desc', currentLang),
+      targetPage: currentLang === 'hi' ? 'राष्ट्रीय निगरानी हब' : currentLang === 'te' ? 'జాతీయ నిఘా హబ్' : 'National Surveillance Hub'
     },
     {
       role: 'ADMIN' as UserRole,
-      title: 'System Administrator',
-      badge: 'Platform Engineering',
+      title: getTranslation('login_room_admin_title', currentLang),
+      badge: getTranslation('login_room_admin_badge', currentLang),
       badgeColor: 'bg-zinc-200 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 border-zinc-300 dark:border-zinc-700',
       icon: Sliders,
       iconColor: 'text-zinc-700 dark:text-zinc-300',
-      desc: 'Central configuration console: edit PCR 2011 rule parameters, manage multi-cloud synchronization (Firestore/Cloudinary), and inspect audit trail logs.',
-      targetPage: 'Platform Control Center'
+      desc: getTranslation('login_room_admin_desc', currentLang),
+      targetPage: currentLang === 'hi' ? 'प्रशासन नियंत्रण केंद्र' : currentLang === 'te' ? 'అడ్మిన్ కంట్రోల్ సెంటర్' : 'Platform Control Center'
     }
   ];
 
@@ -206,10 +206,10 @@ export const LoginPage: React.FC<LoginPageProps> = ({
               <Lock className="w-6 h-6" />
             </div>
             <h1 className="text-2xl font-black text-zinc-900 dark:text-zinc-100 tracking-tight">
-              Portal Sign In
+              {getTranslation('login_portal_sign_in', currentLang)}
             </h1>
             <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
-              Select your regulatory jurisdiction or sign in with official credentials
+              {getTranslation('login_select_role', currentLang)}
             </p>
           </div>
 
@@ -217,16 +217,16 @@ export const LoginPage: React.FC<LoginPageProps> = ({
             {/* Role Selection Tabs */}
             <div>
               <label className="block text-xs font-bold text-zinc-700 dark:text-zinc-300 mb-1.5">
-                Authorized Role / Jurisdiction
+                {getTranslation('login_role_label', currentLang)}
               </label>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-1.5 bg-zinc-100 dark:bg-zinc-950 p-1.5 rounded-2xl border border-zinc-200 dark:border-zinc-800 text-xs">
                 {(['OFFICER', 'CITIZEN', 'MANUFACTURER', 'SURVEILLANCE', 'ADMIN'] as UserRole[]).map((r) => {
                   const labels: Record<UserRole, string> = {
-                    OFFICER: 'Inspector',
-                    CITIZEN: 'Consumer',
-                    MANUFACTURER: 'Brand Mfg',
-                    SURVEILLANCE: 'Surveillance',
-                    ADMIN: 'Admin'
+                    OFFICER: getTranslation('login_role_officer', currentLang),
+                    CITIZEN: getTranslation('login_role_citizen', currentLang),
+                    MANUFACTURER: getTranslation('login_role_manufacturer', currentLang),
+                    SURVEILLANCE: getTranslation('login_role_surveillance', currentLang),
+                    ADMIN: getTranslation('login_role_admin', currentLang)
                   };
                   return (
                     <button
@@ -249,7 +249,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
             {/* Official Designation / Name */}
             <div>
               <label className="block text-xs font-bold text-zinc-700 dark:text-zinc-300 mb-1">
-                Official Designation / Name
+                {getTranslation('login_official_name', currentLang)}
               </label>
               <input
                 type="text"
@@ -264,7 +264,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
             {/* Official Email / Govt ID */}
             <div>
               <label className="block text-xs font-bold text-zinc-700 dark:text-zinc-300 mb-1">
-                Official Email / Govt ID
+                {getTranslation('login_official_email', currentLang)}
               </label>
               <input
                 type="email"
@@ -279,7 +279,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
             {/* Passcode / PIN */}
             <div>
               <label className="block text-xs font-bold text-zinc-700 dark:text-zinc-300 mb-1">
-                Security Passcode / Token
+                {getTranslation('login_security_token', currentLang)}
               </label>
               <input
                 type="password"
@@ -295,7 +295,7 @@ export const LoginPage: React.FC<LoginPageProps> = ({
               type="submit"
               className="w-full bg-[#00A651] hover:bg-emerald-600 text-white text-xs font-black py-3 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer mt-2"
             >
-              <span>Sign In to Official Portal</span>
+              <span>{getTranslation('login_submit_btn', currentLang)}</span>
               <ArrowRight className="w-4 h-4" />
             </button>
           </form>
@@ -306,10 +306,10 @@ export const LoginPage: React.FC<LoginPageProps> = ({
           <div className="flex items-center justify-between border-b border-zinc-200 dark:border-zinc-800 pb-3">
             <div>
               <h2 className="text-base font-black text-zinc-900 dark:text-zinc-100 tracking-tight flex items-center gap-2">
-                <span>Authorized Demonstration Access (1-Click Test Rooms)</span>
+                <span>{getTranslation('login_test_rooms', currentLang)}</span>
               </h2>
               <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                Click any regulatory role below to enter directly into its dedicated operational workflow
+                {getTranslation('login_test_rooms_desc', currentLang)}
               </p>
             </div>
             <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-zinc-200 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300">

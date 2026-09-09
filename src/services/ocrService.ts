@@ -396,14 +396,27 @@ CRITICAL RULES FOR BOUNDING BOXES:
  * Automatically classifies an array of 1 to 3 images into Front, Back, Side panels
  * and extracts complete LMPC declarations.
  */
-export async function analyzeAndClassifyBulkImages(
-  imageUris: string[],
-  apiKey: string = DEFAULT_VISION_KEY
-): Promise<{
+export interface BulkClassifiedProduct {
+  id: string;
+  productTitle: string;
+  brandName: string;
+  category?: ProductCommodityCategory;
+  images: { front?: string; back?: string; side?: string };
+  detectedProductInfo: Partial<ExtractedProductInfo>;
+}
+
+export interface BulkClassifyResult {
   classifiedImages: { front?: string; back?: string; side?: string };
   productInfo: Partial<ExtractedProductInfo>;
   imageQuality?: ImageQualityAudit;
-}> {
+  isMultiProduct?: boolean;
+  productGroups?: BulkClassifiedProduct[];
+}
+
+export async function analyzeAndClassifyBulkImages(
+  imageUris: string[],
+  apiKey: string = DEFAULT_VISION_KEY
+): Promise<BulkClassifyResult> {
   if (!imageUris || imageUris.length === 0) {
     return { classifiedImages: {}, productInfo: {} };
   }
@@ -417,27 +430,68 @@ export async function analyzeAndClassifyBulkImages(
     return {
       classifiedImages: { front: imageUris[0] },
       productInfo: singleProduct || {},
-      imageQuality
+      imageQuality,
+      isMultiProduct: false,
+      productGroups: [
+        {
+          id: 'prod-1',
+          productTitle: singleProduct?.productName || 'Packaged Commodity',
+          brandName: singleProduct?.brandName || '',
+          category: singleProduct?.category,
+          images: { front: imageUris[0] },
+          detectedProductInfo: singleProduct || {}
+        }
+      ]
     };
   }
 
-  // Multi-image classification prompt
+  // Multi-image classification prompt: handles BOTH multi-panel of 1 product AND multi-product batch
   const classificationPrompt = `You are an expert Legal Metrology Packaged Commodities (LMPC) AI inspector.
-You are given ${imageUris.length} photos of a single retail product package (labeled IMAGE 0, IMAGE 1, etc.).
-Task:
-1. Identify which image index corresponds to:
-   - "frontIndex": Principal Display Panel (PDP) showing brand name, product title, prominent net weight.
-   - "backIndex": Back panel showing ingredients list, manufacturer factory address, nutritional info, FSSAI logo.
-   - "sideIndex": Side or bottom panel showing MRP, Batch No, Mfg Date, Expiry Date, Barcode.
-   If an index is not clear, assign the most suitable.
-2. Extract all statutory declarations across all images into a unified JSON object conforming to:
+You are given ${imageUris.length} packaging photos (labeled IMAGE 0, IMAGE 1, etc.).
+
+CRITICAL FIRST DECISION:
+Determine whether these photos show:
+CASE A: The SAME SINGLE product from different angles/panels (e.g. Front PDP, Back panel with ingredients, Side/bottom with MRP & batch).
+CASE B: MULTIPLE DIFFERENT products uploaded together (e.g. IMAGE 0 is a Diet Coke beverage can, IMAGE 1 is a MuscleBlaze supplement jar).
+
+Return a valid JSON object conforming to this exact schema:
 {
+  "isMultiProduct": false, // true ONLY if the images are distinct, different products
   "classifiedSlots": {
     "frontIndex": 0,
     "backIndex": 1,
     "sideIndex": 2
   },
-  "productName": "Commercial Product Name",
+  "products": [
+    {
+      "productIndex": 1,
+      "imageIndex": 0,
+      "productName": "Commercial Product Name (e.g. Diet Coke Zero Sugar Can)",
+      "genericName": "Generic Name (e.g. Caffeinated Carbonated Beverage)",
+      "brandName": "Brand Name (e.g. Coca-Cola / Diet Coke)",
+      "category": "aerated_water",
+      "netQuantity": 300,
+      "quantityUnit": "ml",
+      "mrp": 40.0,
+      "mrpString": "Rs. 40.00 (incl. of all taxes)",
+      "hasInclAllTaxes": true,
+      "mfgMonth": "08",
+      "mfgYear": "2026",
+      "expMonth": "08",
+      "expYear": "2027",
+      "expiryDate": "08/2027",
+      "shelfLifeMonths": 12,
+      "ingredientsRaw": "Carbonated Water, Colour (INS 150d), Acidity Regulators (INS 338, INS 330), Sweeteners (INS 951, INS 950), Preservative (INS 211), Caffeine",
+      "ingredientsList": ["Carbonated Water", "Caramel IV (INS 150d)", "Aspartame (INS 951)", "Acesulfame K (INS 950)", "Sodium Benzoate (INS 211)"],
+      "manufacturerName": "Hindustan Coca-Cola Beverages Pvt. Ltd.",
+      "manufacturerAddress": "Pirangut Industrial Area, Pune, Maharashtra",
+      "manufacturerPinCode": "412115",
+      "countryOfOrigin": "India",
+      "consumerCarePhone": "1800-208-2653",
+      "consumerCareEmail": "indiahelpline@coca-cola.com"
+    }
+  ],
+  "productName": "Commercial Product Name (for single product)",
   "genericName": "Generic / Common Name",
   "brandName": "Brand Name",
   "category": "general_packaged",
@@ -452,16 +506,17 @@ Task:
   "expYear": "2027",
   "expiryDate": "08/2027",
   "shelfLifeMonths": 12,
-  "ingredientsRaw": "Comma separated ingredients list",
-  "ingredientsList": ["Peanuts", "Salt"],
+  "ingredientsRaw": "Ingredients text",
+  "ingredientsList": [],
   "manufacturerName": "Manufacturer Name",
   "manufacturerAddress": "Complete Address",
   "manufacturerPinCode": "PIN code",
   "countryOfOrigin": "India",
   "consumerCarePhone": "Helpline",
-  "consumerCareEmail": "Email",
-  "detectedBoxes": []
-}`;
+  "consumerCareEmail": "Email"
+}
+
+IMPORTANT: If CASE B (Multiple Products), make sure each product in "products" is strictly bound to its own imageIndex and contains its own accurate product details without mixing them up!`;
 
   const parts: any[] = [{ text: classificationPrompt }];
   for (let i = 0; i < imageUris.length; i++) {
@@ -477,7 +532,7 @@ Task:
     try {
       const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 18000);
+      const timeoutId = setTimeout(() => controller.abort(), 20000);
 
       const res = await fetch(url, {
         method: 'POST',
@@ -495,6 +550,44 @@ Task:
         const text = json.candidates?.[0]?.content?.parts?.[0]?.text;
         if (text) {
           const parsed = JSON.parse(text);
+          const isMulti = Boolean(parsed.isMultiProduct || (Array.isArray(parsed.products) && parsed.products.length > 1));
+
+          if (isMulti && Array.isArray(parsed.products) && parsed.products.length > 1) {
+            // Distinct multi-product segmentation
+            const productGroups: BulkClassifiedProduct[] = parsed.products.map((p: any, idx: number) => {
+              const imgIdx = typeof p.imageIndex === 'number' && p.imageIndex < imageUris.length ? p.imageIndex : idx;
+              const imgUri = imageUris[imgIdx] || imageUris[0];
+              return {
+                id: `prod-${idx + 1}`,
+                productTitle: p.productName || `Product ${idx + 1}`,
+                brandName: p.brandName || '',
+                category: (p.category as ProductCommodityCategory) || 'general_packaged',
+                images: { front: imgUri },
+                detectedProductInfo: {
+                  ...p,
+                  productName: p.productName || `Product ${idx + 1}`,
+                  brandName: p.brandName || '',
+                  netQuantity: p.netQuantity || 100,
+                  quantityUnit: p.quantityUnit || 'g',
+                  rawQuantityString: `${p.netQuantity || 100} ${p.quantityUnit || 'g'}`,
+                  mrp: p.mrp || 99,
+                  mrpString: p.mrpString || `Rs. ${p.mrp || 99}.00 (incl. of all taxes)`,
+                  hasInclAllTaxes: p.hasInclAllTaxes ?? true,
+                  countryOfOrigin: p.countryOfOrigin || 'India'
+                }
+              };
+            });
+
+            return {
+              classifiedImages: { front: imageUris[0], back: imageUris[1] },
+              productInfo: productGroups[0].detectedProductInfo,
+              imageQuality,
+              isMultiProduct: true,
+              productGroups
+            };
+          }
+
+          // Single Product Multi-Panel Case
           const slots = parsed.classifiedSlots || {};
           const fIdx = typeof slots.frontIndex === 'number' && slots.frontIndex < imageUris.length ? slots.frontIndex : 0;
           const bIdx = typeof slots.backIndex === 'number' && slots.backIndex < imageUris.length ? slots.backIndex : (imageUris.length > 1 ? 1 : undefined);
@@ -509,7 +602,18 @@ Task:
           return {
             classifiedImages,
             productInfo: parsed,
-            imageQuality
+            imageQuality,
+            isMultiProduct: false,
+            productGroups: [
+              {
+                id: 'prod-1',
+                productTitle: parsed.productName || 'Packaged Commodity',
+                brandName: parsed.brandName || '',
+                category: parsed.category,
+                images: classifiedImages,
+                detectedProductInfo: parsed
+              }
+            ]
           };
         }
       }
@@ -518,7 +622,7 @@ Task:
     }
   }
 
-  // Fallback: assign in index order
+  // Fallback: Assign panel slots in index order
   const classifiedImages = {
     front: imageUris[0],
     back: imageUris[1],
@@ -528,14 +632,21 @@ Task:
   return {
     classifiedImages,
     productInfo: fallbackProduct || {},
-    imageQuality
+    imageQuality,
+    isMultiProduct: false,
+    productGroups: [
+      {
+        id: 'prod-1',
+        productTitle: fallbackProduct?.productName || 'Packaged Commodity',
+        brandName: fallbackProduct?.brandName || '',
+        category: fallbackProduct?.category,
+        images: classifiedImages,
+        detectedProductInfo: fallbackProduct || {}
+      }
+    ]
   };
 }
 
-/**
- * Intelligent E-Commerce Product URL Auditor
- * Extracts product details and audits Rule 10 digital declarations from real Amazon, Blinkit, Zepto, Flipkart links
- */
 export async function auditEcommerceProductUrl(
   url: string,
   platformHint = 'Amazon India',
@@ -820,6 +931,20 @@ export function parseLabelDeclarations(
     countryOfOrigin = (originMatch?.[1] || originMatch?.[2] || 'India').trim();
   }
 
+  let ingredientsRaw = '';
+  let ingredientsList: string[] = [];
+  const ingMatch = text.match(/(?:ingredients|contains|composition)[:\s]*([^\n\r]+)/i);
+  if (ingMatch) {
+    ingredientsRaw = ingMatch[1].trim();
+    ingredientsList = ingredientsRaw.split(/[,;•]/).map(s => s.trim()).filter(Boolean);
+  } else {
+    const additiveKeywords = text.match(/(?:aspartame|acesulfame|sucralose|caramel|tartrazine|benzoate|sorbate|ins\s*\d+|e\d+)/gi);
+    if (additiveKeywords) {
+      ingredientsRaw = `Contains: ${Array.from(new Set(additiveKeywords)).join(', ')}`;
+      ingredientsList = Array.from(new Set(additiveKeywords));
+    }
+  }
+
   const cleanProductName = lines[0] ? lines[0].replace(/^[—\-_|:•\s]+/, '').trim() : '';
 
   return {
@@ -840,6 +965,8 @@ export function parseLabelDeclarations(
     mfgYear: mfgYear || '',
     expMonth,
     expYear,
+    ingredientsRaw,
+    ingredientsList,
     manufacturerName: manufacturerName || '',
     manufacturerAddress: manufacturerAddress || '',
     manufacturerPinCode: manufacturerPinCode || '',

@@ -77,7 +77,7 @@ export const ComplianceScorecard: React.FC<ComplianceScorecardProps> = ({
               {report.id} • {report.formType}
             </div>
             <h2 className="text-lg font-black text-slate-900 dark:text-zinc-100 tracking-tight">
-              Legal Metrology Compliance Audit
+              {getTranslation('legal_compliance_audit', currentLang)}
             </h2>
           </div>
           <div className="flex flex-wrap items-center gap-2">
@@ -94,12 +94,12 @@ export const ComplianceScorecard: React.FC<ComplianceScorecardProps> = ({
               {isSaved ? (
                 <>
                   <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
-                  <span>Stored in Database</span>
+                  <span>{getTranslation('btn_stored_in_db', currentLang)}</span>
                 </>
               ) : (
                 <>
                   <Archive className="w-3.5 h-3.5" />
-                  <span>{isSaving ? 'Storing Record...' : 'Store in Database'}</span>
+                  <span>{isSaving ? getTranslation('btn_storing', currentLang) : getTranslation('btn_store_in_db', currentLang)}</span>
                 </>
               )}
             </button>
@@ -111,7 +111,7 @@ export const ComplianceScorecard: React.FC<ComplianceScorecardProps> = ({
                 title="Preview Official Seventh Schedule Form A/B Sheet in browser"
               >
                 <FileText className="w-3.5 h-3.5 text-[#0A3663] dark:text-blue-400" />
-                <span>Preview PDF Sheet</span>
+                <span>{getTranslation('btn_preview_pdf', currentLang)}</span>
               </button>
             )}
 
@@ -122,7 +122,7 @@ export const ComplianceScorecard: React.FC<ComplianceScorecardProps> = ({
               title="Download Seventh Schedule Form A/B Official Data Sheet with Photographic Evidence"
             >
               <Download className={`w-3.5 h-3.5 ${isGeneratingPdf ? 'animate-bounce' : ''}`} />
-              <span>{isGeneratingPdf ? 'Generating...' : `Download PDF`}</span>
+              <span>{isGeneratingPdf ? 'Generating...' : getTranslation('btn_download_pdf', currentLang)}</span>
             </button>
           </div>
         </div>
@@ -351,7 +351,7 @@ export const ComplianceScorecard: React.FC<ComplianceScorecardProps> = ({
             <div className="flex items-center justify-between text-xs font-bold text-slate-800 dark:text-zinc-200 uppercase tracking-wider mb-2">
               <span className="flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-                <span>Additives, Preservatives & Health Safety Audit</span>
+                <span>{getTranslation('health_safety_title', currentLang)}</span>
               </span>
               <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
                 report.healthSafety.safetyVerdict === 'CLEAN'

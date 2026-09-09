@@ -186,6 +186,11 @@ export function App() {
     setCurrentUser(null);
   };
 
+  const handleLanguageChange = (lang: Language) => {
+    setStoredLanguage(lang);
+    setCurrentLang(lang);
+  };
+
   // If user signed out, display the dedicated full-page LoginPage outside the website chrome
   if (!currentUser) {
     return (
@@ -194,7 +199,7 @@ export function App() {
         isDarkMode={isDarkMode}
         setIsDarkMode={setIsDarkMode}
         currentLang={currentLang}
-        onLanguageChange={setStoredLanguage}
+        onLanguageChange={handleLanguageChange}
       />
     );
   }
@@ -221,6 +226,8 @@ export function App() {
         onOpenGrievance={() => setIsGrievanceOpen(true)}
         onOpenLogin={() => setIsLoginOpen(true)}
         onSignOut={handleSignOut}
+        currentLang={currentLang}
+        onLanguageChange={handleLanguageChange}
       />
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 py-6">
@@ -262,6 +269,7 @@ export function App() {
               onScanComplete={handleScanComplete}
               activeView={activeView}
               setActiveView={setActiveView}
+              currentLang={currentLang}
             />
 
             {/* Benchmark Demo Presets */}
@@ -358,6 +366,7 @@ export function App() {
                   activeView={activeView}
                   setActiveView={setActiveView}
                   availableImages={currentReport.capturedImages}
+                  currentLang={currentLang}
                 />
 
                 {/* Statutory Regulatory Context Card */}
@@ -386,6 +395,7 @@ export function App() {
                   report={currentReport}
                   onOpenGrievanceModal={() => setIsGrievanceOpen(true)}
                   onPreviewPDF={() => setIsPDFPreviewOpen(true)}
+                  currentLang={currentLang}
                 />
               </div>
             </div>
@@ -405,6 +415,7 @@ export function App() {
               setCurrentReport(rep);
               setIsPDFPreviewOpen(true);
             }}
+            currentLang={currentLang}
           />
         )}
 

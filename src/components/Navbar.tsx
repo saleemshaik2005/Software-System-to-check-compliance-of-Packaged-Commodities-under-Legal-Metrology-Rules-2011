@@ -137,12 +137,12 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             onClick={handleManualSync}
             disabled={isSyncing}
-            className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-950/90 border border-emerald-600/70 text-emerald-400 hover:bg-emerald-900 font-bold text-[10px] transition-all cursor-pointer shadow-xs"
-            title={`Click to immediately synchronize with Google Cloud Firestore. Last Synced: ${lastSyncedTime}`}
+            className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-950/80 border border-emerald-500/40 text-emerald-400 hover:bg-emerald-900 font-medium text-[10px] transition-all cursor-pointer shadow-2xs"
+            title={`Google Cloud Firestore Synced. Click to refresh. Last Synced: ${lastSyncedTime}`}
           >
             <RefreshCw className={`w-3 h-3 text-emerald-400 ${isSyncing ? 'animate-spin' : ''}`} />
-            <span>{isSyncing ? getTranslation('syncing', currentLang) : getTranslation('sync_now', currentLang)}</span>
-            <span className="text-[9px] text-emerald-300/80 font-normal">({lastSyncedTime})</span>
+            <span>{isSyncing ? getTranslation('syncing', currentLang) : (currentLang === 'hi' ? 'क्लाउड सिंक' : currentLang === 'te' ? 'క్లౌడ్ సింక్' : '☁️ Synced')}</span>
+            <span className="text-[9px] text-emerald-300/70">({lastSyncedTime})</span>
           </button>
 
           {/* Language Switcher Pill */}
@@ -213,14 +213,14 @@ export const Navbar: React.FC<NavbarProps> = ({
                           {currentUser.name}
                         </div>
                         <div className="text-[10px] font-bold text-[#00A651] uppercase">
-                          {userRole} • Active Session
+                          {userRole} • {getTranslation('menu_active_session', currentLang)}
                         </div>
                       </div>
                     </div>
                   ) : (
                     <div className="px-4 py-2.5 border-b border-slate-100 dark:border-zinc-800 bg-slate-50/70 dark:bg-zinc-950/50">
                       <div className="text-xs font-bold text-slate-700 dark:text-zinc-300">
-                        Signed Out (Guest Mode)
+                        {getTranslation('menu_guest_mode', currentLang)}
                       </div>
                       <button
                         onClick={() => {
@@ -229,7 +229,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                         }}
                         className="text-[11px] font-bold text-[#00A651] hover:underline cursor-pointer mt-0.5 block"
                       >
-                        Sign in with test account →
+                        {getTranslation('menu_sign_in_test', currentLang)}
                       </button>
                     </div>
                   )}
@@ -498,8 +498,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                       >
                         <LogOut className="w-4 h-4 text-red-500 shrink-0" />
                         <div>
-                          <div>Sign Out</div>
-                          <div className="text-[10px] font-normal text-red-400">Return to role login selector</div>
+                          <div>{getTranslation('menu_sign_out', currentLang)}</div>
+                          <div className="text-[10px] font-normal text-red-400">{getTranslation('menu_return_login', currentLang)}</div>
                         </div>
                       </button>
                     ) : (
@@ -512,8 +512,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                       >
                         <KeyRound className="w-4 h-4 text-[#00A651] shrink-0" />
                         <div>
-                          <div>Sign In to Inspack</div>
-                          <div className="text-[10px] font-normal text-slate-400">Choose role profile</div>
+                          <div>{getTranslation('menu_sign_in_title', currentLang)}</div>
+                          <div className="text-[10px] font-normal text-slate-400">{getTranslation('menu_choose_role', currentLang)}</div>
                         </div>
                       </button>
                     )}
@@ -614,7 +614,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 }`}
               >
                 <Globe className="w-3.5 h-3.5" />
-                <span>Dark Store Deals Audit</span>
+                <span>{getTranslation('tab_dark_store', currentLang)}</span>
               </button>
             </>
           )}
@@ -631,7 +631,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 }`}
               >
                 <Camera className="w-3.5 h-3.5" />
-                <span>Field Scan Studio</span>
+                <span>{getTranslation('tab_field_scan', currentLang)}</span>
               </button>
 
               <button
@@ -643,7 +643,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 }`}
               >
                 <Scale className="w-3.5 h-3.5" />
-                <span>Official Inspection Report</span>
+                <span>{getTranslation('tab_official_inspection', currentLang)}</span>
               </button>
 
               <button
@@ -655,7 +655,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 }`}
               >
                 <BarChart3 className="w-3.5 h-3.5" />
-                <span>Officer Enforcement Hub</span>
+                <span>{getTranslation('tab_officer_hub', currentLang)}</span>
               </button>
 
               <button
@@ -684,7 +684,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 }`}
               >
                 <Radio className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
-                <span>National Surveillance Hub</span>
+                <span>{getTranslation('tab_surveillance_hub', currentLang)}</span>
               </button>
 
               <button
@@ -696,7 +696,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 }`}
               >
                 <Archive className="w-3.5 h-3.5" />
-                <span>Central Dossier</span>
+                <span>{getTranslation('tab_central_dossier', currentLang)}</span>
               </button>
 
               <button
@@ -708,7 +708,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 }`}
               >
                 <Globe className="w-3.5 h-3.5" />
-                <span>Platform Surveillance</span>
+                <span>{getTranslation('tab_platform_surveillance', currentLang)}</span>
               </button>
             </>
           )}
@@ -737,7 +737,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 }`}
               >
                 <BarChart3 className="w-3.5 h-3.5" />
-                <span>All Scans & Audit Logs</span>
+                <span>{getTranslation('tab_audit_logs', currentLang)}</span>
               </button>
 
               <button
@@ -749,7 +749,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                 }`}
               >
                 <Camera className="w-3.5 h-3.5" />
-                <span>Scan Studio</span>
+                <span>{getTranslation('tab_scan_studio', currentLang)}</span>
               </button>
             </>
           )}
@@ -795,7 +795,7 @@ export const Navbar: React.FC<NavbarProps> = ({
               className="flex items-center gap-1.5 px-3 py-1.5 bg-[#00A651] hover:bg-emerald-600 text-white rounded-xl text-xs font-bold transition-all cursor-pointer shadow-xs"
             >
               <KeyRound className="w-3.5 h-3.5" />
-              <span>Sign In</span>
+              <span>{getTranslation('sign_in_btn', currentLang)}</span>
             </button>
           )}
 

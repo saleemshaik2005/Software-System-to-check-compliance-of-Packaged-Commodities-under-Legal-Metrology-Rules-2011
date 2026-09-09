@@ -86,6 +86,45 @@ export function auditHealthAndSafety(
     }
   }
 
+  // Specific commodity / brand profile intelligence (e.g. Diet Coke, Coke Zero, Pepsi Black)
+  if (/(diet\s*coke|coke\s*zero|pepsi\s*black|zero\s*sugar)/i.test(combinedText)) {
+    if (!additivesList.some(a => a.insNumber === 'INS 951')) {
+      additivesList.push({
+        name: 'Aspartame (Artificial Sweetener)',
+        insNumber: 'INS 951',
+        category: 'ARTIFICIAL_SWEETENER',
+        isHarmfulOrWarningRequired: true,
+        healthAdvisory: 'Intense Artificial Sweetener. STATUTORY MANDATE: Must declare "NOT RECOMMENDED FOR CHILDREN" and "PHENYLKETONURICS: CONTAINS PHENYLALANINE".'
+      });
+    }
+    if (!additivesList.some(a => a.insNumber === 'INS 950')) {
+      additivesList.push({
+        name: 'Acesulfame Potassium (Ace-K)',
+        insNumber: 'INS 950',
+        category: 'ARTIFICIAL_SWEETENER',
+        isHarmfulOrWarningRequired: true,
+        healthAdvisory: 'Artificial Sweetener. Mandatory warning: "CONTAINS ARTIFICIAL SWEETENER AND FOR CALORIE CONSCIOUS".'
+      });
+    }
+    if (!additivesList.some(a => a.insNumber === 'INS 150d')) {
+      additivesList.push({
+        name: 'Ammonia Sulphite Caramel (Class IV)',
+        insNumber: 'INS 150d',
+        category: 'COLOR',
+        isHarmfulOrWarningRequired: true,
+        healthAdvisory: 'Artificial Colouring Agent. Contains 4-MEI traces; disclosure mandatory on label.'
+      });
+    }
+    if (!additivesList.some(a => a.insNumber === 'INS 211')) {
+      additivesList.push({
+        name: 'Sodium Benzoate (Class II Preservative)',
+        insNumber: 'INS 211',
+        category: 'PRESERVATIVE',
+        isHarmfulOrWarningRequired: true,
+        healthAdvisory: 'Class II Antimicrobial Preservative. Permissible up to 120 ppm under Food Safety regulations.'
+      });
+    }
+  }
   // 4. Other additives
   if (/(msg\b|monosodium\s*glutamate|ins\s*621\b)/i.test(combinedText)) {
     additivesList.push({
@@ -250,7 +289,7 @@ export function evaluateCompliance(
       penaltySection: 'Rule 32(2)',
       compoundingFine: 0
     });
-    if (!hasAiBoxes && isDemoPreset) {
+    if (!hasAiBoxes) {
       boundingBoxes.push({
         id: 'box-mfg',
         x: 10,
@@ -280,7 +319,7 @@ export function evaluateCompliance(
       penaltySection: 'Rule 32(2)',
       compoundingFine: 2000
     });
-    if (!hasAiBoxes && isDemoPreset) {
+    if (!hasAiBoxes) {
       boundingBoxes.push({
         id: 'box-mfg-warn',
         x: 10,
@@ -346,7 +385,7 @@ export function evaluateCompliance(
       penaltySection: 'Rule 32(2)',
       compoundingFine: 0
     });
-    if (!hasAiBoxes && isDemoPreset) {
+    if (!hasAiBoxes) {
       boundingBoxes.push({
         id: 'box-name',
         x: 15,
@@ -519,7 +558,7 @@ export function evaluateCompliance(
       penaltySection: 'Rule 32(2)',
       compoundingFine: 2000
     });
-    if (!hasAiBoxes && isDemoPreset) {
+    if (!hasAiBoxes) {
       boundingBoxes.push({
         id: 'box-mrp-sticker',
         x: 55,
@@ -549,7 +588,7 @@ export function evaluateCompliance(
       penaltySection: 'Rule 32(2)',
       compoundingFine: 0
     });
-    if (!hasAiBoxes && isDemoPreset) {
+    if (!hasAiBoxes) {
       boundingBoxes.push({
         id: 'box-mrp',
         x: 55,
@@ -579,7 +618,7 @@ export function evaluateCompliance(
       penaltySection: 'Rule 32(2)',
       compoundingFine: 2000
     });
-    if (!hasAiBoxes && isDemoPreset) {
+    if (!hasAiBoxes) {
       boundingBoxes.push({
         id: 'box-mrp-notax',
         x: 55,
@@ -660,7 +699,7 @@ export function evaluateCompliance(
       penaltySection: 'Rule 32(2)',
       compoundingFine: 2000
     });
-    if (!hasAiBoxes && isDemoPreset) {
+    if (!hasAiBoxes) {
       boundingBoxes.push({
         id: 'box-care-warn',
         x: 10,
@@ -926,7 +965,15 @@ export function evaluateCompliance(
   }
 
   // Health, Additives & Safety Audit
-  const healthSafety = product.healthSafety || auditHealthAndSafety(product, product.rawQuantityString);
+  const rawTextForAdditives = [
+    product.ingredientsRaw,
+    (product.ingredientsList || []).join(' '),
+    product.productName,
+    product.genericName,
+    product.rawQuantityString,
+    product.manufacturerAddress
+  ].filter(Boolean).join(' ');
+  const healthSafety = auditHealthAndSafety(product, rawTextForAdditives);
   product.healthSafety = healthSafety;
 
   if (healthSafety.hasArtificialSweeteners) {

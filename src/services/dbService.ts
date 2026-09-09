@@ -9,13 +9,32 @@ import {
   saveReportToFirestore,
   fetchReportsFromFirestore,
   deleteReportFromFirestore,
-  uploadToCloudinary
+  uploadToCloudinary,
+  deleteImageFromCloudinary
 } from './cloudService';
 
 const STORAGE_KEY = 'inspack_inspection_history_v2';
 const LEGACY_STORAGE_KEY = 'inspack_inspection_history_v1';
 
 export const DB_CHANGE_EVENT = 'inspack_db_changed';
+const DELETED_IDS_KEY = 'inspack_deleted_report_ids_v1';
+
+export function getDeletedReportIds(): Set<string> {
+  try {
+    const raw = localStorage.getItem(DELETED_IDS_KEY);
+    if (raw) return new Set(JSON.parse(raw));
+  } catch {}
+  return new Set();
+}
+
+export function recordDeletedReportId(id: string): void {
+  try {
+    const set = getDeletedReportIds();
+    set.add(id);
+    localStorage.setItem(DELETED_IDS_KEY, JSON.stringify(Array.from(set)));
+  } catch {}
+}
+
 export const SYNC_STATUS_EVENT = 'inspack_sync_status';
 
 // Zero-latency cross-tab synchronization channel
@@ -92,8 +111,10 @@ export function getScanReports(): ComplianceReport[] {
  * Synchronize local database with Google Cloud Firestore
  * Fetches all audits created across all devices and merges them in real time
  */
-export async function syncWithCloudDatabase(): Promise<ComplianceReport[]> {
-  notifySyncStatus(true);
+export async function syncWithCloudDatabase(isManual = false): Promise<ComplianceReport[]> {
+  if (isManual) {
+    notifySyncStatus(true);
+  }
   try {
     const cloudReports = await fetchReportsFromFirestore();
     if (!cloudReports || cloudReports.length === 0) {
@@ -107,8 +128,14 @@ export async function syncWithCloudDatabase(): Promise<ComplianceReport[]> {
     // Add local reports first
     localReports.forEach(r => reportsMap.set(r.id, r));
 
-    // Merge in cloud reports (cloud data takes precedence for scans)
+    const deletedIds = getDeletedReportIds();
+
+    // Merge in cloud reports (ignoring any deleted IDs)
     cloudReports.forEach(cr => {
+      if (deletedIds.has(cr.id)) {
+        deleteReportFromFirestore(cr.id).catch(() => {});
+        return;
+      }
       if (!reportsMap.has(cr.id)) {
         reportsMap.set(cr.id, cr);
       } else {
@@ -150,7 +177,7 @@ export async function syncWithCloudDatabase(): Promise<ComplianceReport[]> {
  */
 export async function triggerImmediateCloudSync(): Promise<ComplianceReport[]> {
   SYNC_CHANNEL?.postMessage({ type: 'SYNC_REQUEST' });
-  return syncWithCloudDatabase();
+  return syncWithCloudDatabase(true);
 }
 
 /**
@@ -238,15 +265,32 @@ export function getScanReportById(id: string): ComplianceReport | null {
  * Delete a report from local storage and Google Cloud Firestore
  */
 export function deleteScanReport(id: string): void {
+  recordDeletedReportId(id);
   const existing = getScanReports();
+  const reportToDelete = existing.find(r => r.id === id);
   const updated = existing.filter(r => r.id !== id);
   localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
   notifyDbChange(id);
 
-  // Permanently delete from Google Cloud Firestore
+  // 1. Permanently delete from Google Cloud Firestore
   deleteReportFromFirestore(id).catch(err => {
     console.warn('Failed to delete report from Firestore:', err);
   });
+
+  // 2. Unlink and purge media assets from Cloudinary CDN
+  if (reportToDelete?.capturedImages) {
+    const imgUrls = [
+      reportToDelete.capturedImages.front,
+      reportToDelete.capturedImages.back,
+      reportToDelete.capturedImages.side
+    ].filter(Boolean) as string[];
+
+    imgUrls.forEach(url => {
+      deleteImageFromCloudinary(url).catch(err => {
+        console.warn('Cloudinary image delete note:', err);
+      });
+    });
+  }
 }
 
 export function getInspectionStats() {

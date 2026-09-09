@@ -306,3 +306,45 @@ export async function fetchReportsFromFirestore(): Promise<ComplianceReport[]> {
     return [];
   }
 }
+
+/**
+ * Delete or unlink an image from Cloudinary CDN
+ */
+export async function deleteImageFromCloudinary(imageUrl: string): Promise<{ success: boolean; error?: string }> {
+  if (!imageUrl || !imageUrl.includes('cloudinary.com')) {
+    return { success: true };
+  }
+
+  try {
+    const urlParts = imageUrl.split('/image/upload/');
+    if (urlParts.length > 1) {
+      let afterUpload = urlParts[1];
+      // remove version like v1234567/
+      afterUpload = afterUpload.replace(/^v\d+\//, '');
+      // remove extension like .png, .jpg
+      const publicId = afterUpload.replace(/\.[^/.]+$/, '');
+
+      const deletedMediaKey = 'inspack_deleted_cloudinary_media_v1';
+      try {
+        const raw = localStorage.getItem(deletedMediaKey) || '[]';
+        const list: any[] = JSON.parse(raw);
+        if (!list.some(item => item.publicId === publicId)) {
+          list.push({ publicId, url: imageUrl, deletedAt: new Date().toISOString() });
+          localStorage.setItem(deletedMediaKey, JSON.stringify(list));
+        }
+      } catch {}
+
+      const cfg = getCloudConfig();
+      if (cfg.cloudinaryCloudName) {
+        await fetch(`https://api.cloudinary.com/v1_1/${cfg.cloudinaryCloudName}/image/destroy`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: `public_id=${encodeURIComponent(publicId)}`
+        }).catch(() => {});
+      }
+    }
+    return { success: true };
+  } catch (err: any) {
+    return { success: false, error: err.message };
+  }
+}

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { ComplianceReport } from '../types';
+import { ComplianceReport, Language } from '../types';
+import { getTranslation } from '../services/i18nService';
 import { getScanReports, getInspectionStats, deleteScanReport, DB_CHANGE_EVENT } from '../services/dbService';
 import { generateCompliancePDF } from '../services/pdfReportGenerator';
 import { PDFPreviewModal } from './PDFPreviewModal';
@@ -31,11 +32,13 @@ import {
 interface OfficerAnalyticsDashboardProps {
   onSelectReport: (report: ComplianceReport) => void;
   onPreviewReport?: (report: ComplianceReport) => void;
+  currentLang?: Language;
 }
 
 export const OfficerAnalyticsDashboard: React.FC<OfficerAnalyticsDashboardProps> = ({
   onSelectReport,
   onPreviewReport,
+  currentLang = 'en',
 }) => {
   const [reports, setReports] = useState<ComplianceReport[]>(() => getScanReports());
   const [searchQuery, setSearchQuery] = useState('');
@@ -51,15 +54,21 @@ export const OfficerAnalyticsDashboard: React.FC<OfficerAnalyticsDashboardProps>
 
   // Fifth Schedule Calculator state - OPEN BY DEFAULT as requested
   const [isCalcOpen, setIsCalcOpen] = useState(true);
-  const [lotSize, setLotSize] = useState<number>(1000);
-  const [declaredQty, setDeclaredQty] = useState<number>(350);
+  const [lotSizeInput, setLotSizeInput] = useState<string>('1000');
+  const [declaredQtyInput, setDeclaredQtyInput] = useState<string>('350');
+  const [tareWeightInput, setTareWeightInput] = useState<string>('0');
   const [qtyUnit, setQtyUnit] = useState<string>('g');
+
+  const lotSize = Math.max(1, parseInt(lotSizeInput, 10) || 1);
+  const declaredQty = Math.max(0.01, parseFloat(declaredQtyInput) || 0.01);
+  const tareWeight = Math.max(0, parseFloat(tareWeightInput) || 0);
 
   // Interactive Batch Sampling Test State
   const [simulatedWeights, setSimulatedWeights] = useState<number[]>([]);
   const [testMode, setTestMode] = useState<'standard' | 'defective'>('standard');
   const [batchVerdict, setBatchVerdict] = useState<{
     avg: number;
+    avgGross: number;
     stdDev: number;
     defectiveCount: number;
     minAvgRequired: number;
@@ -81,8 +90,10 @@ export const OfficerAnalyticsDashboard: React.FC<OfficerAnalyticsDashboardProps>
 
   const stats = getInspectionStats();
 
-  // Fifth Schedule Table 1 logic (Official Rule 24)
+  // Fifth Schedule Table 1 logic (Official Rule 24 & Small Lots)
   const getSamplingPlan = (N: number) => {
+    if (N < 10) return { sampleSize: Math.max(1, N), maxDefective: 0, tFactor: 0.400 };
+    if (N <= 100) return { sampleSize: 10, maxDefective: 0, tFactor: 0.400 };
     if (N <= 500) return { sampleSize: 32, maxDefective: 1, tFactor: 0.379 };
     if (N <= 3200) return { sampleSize: 50, maxDefective: 2, tFactor: 0.328 };
     if (N <= 35000) return { sampleSize: 80, maxDefective: 3, tFactor: 0.283 };
@@ -145,41 +156,43 @@ export const OfficerAnalyticsDashboard: React.FC<OfficerAnalyticsDashboardProps>
   const mpe = getMpeForQuantity(declaredQty, qtyUnit);
   const minPermittedDefectiveBoundary = Math.max(0, declaredQty - mpe.mpeVal);
 
-  // Run statistical batch simulation
+  // Run statistical batch simulation with Tare Weight deduction per Sixth Schedule Part II
   const handleRunBatchSimulation = (defectType: 'compliant' | 'violating' = 'compliant') => {
     const n = sampling.sampleSize;
-    const weights: number[] = [];
+    const netWeights: number[] = [];
     const target = declaredQty;
     const errorLimit = mpe.mpeVal;
 
     for (let i = 0; i < n; i++) {
-      let w = 0;
+      let netW = 0;
       if (defectType === 'violating' && i < sampling.maxDefective + 2) {
         // Intentionally create defective units violating MPE boundary
-        w = target - errorLimit - (Math.random() * errorLimit * 0.8 + 0.5);
+        netW = target - errorLimit - (Math.random() * errorLimit * 0.8 + 0.5);
       } else {
         // Normal distribution around declared quantity
         const variance = (Math.random() - 0.45) * errorLimit * 0.9;
-        w = target + variance;
+        netW = target + variance;
       }
-      weights.push(Number(w.toFixed(2)));
+      netWeights.push(Number(netW.toFixed(2)));
     }
 
-    const sum = weights.reduce((a, b) => a + b, 0);
-    const avg = sum / n;
-    const variance = weights.reduce((a, b) => a + Math.pow(b - avg, 2), 0) / (n - 1);
+    const sumNet = netWeights.reduce((a, b) => a + b, 0);
+    const avgNet = sumNet / n;
+    const avgGross = avgNet + tareWeight;
+    const variance = netWeights.reduce((a, b) => a + Math.pow(b - avgNet, 2), 0) / (n - 1 || 1);
     const stdDev = Math.sqrt(variance);
 
     const minAvgRequired = target - (sampling.tFactor * stdDev);
-    const defectiveCount = weights.filter(w => w < minPermittedDefectiveBoundary).length;
+    const defectiveCount = netWeights.filter(w => w < minPermittedDefectiveBoundary).length;
 
-    const passedAvg = avg >= minAvgRequired;
+    const passedAvg = avgNet >= minAvgRequired;
     const passedDefectives = defectiveCount <= sampling.maxDefective;
     const passedOverall = passedAvg && passedDefectives;
 
-    setSimulatedWeights(weights);
+    setSimulatedWeights(netWeights);
     setBatchVerdict({
-      avg: Number(avg.toFixed(2)),
+      avg: Number(avgNet.toFixed(2)),
+      avgGross: Number(avgGross.toFixed(2)),
       stdDev: Number(stdDev.toFixed(2)),
       defectiveCount,
       minAvgRequired: Number(minAvgRequired.toFixed(2)),
@@ -425,20 +438,21 @@ Government of India`;
 
         {isCalcOpen && (
           <div className="p-5 border-t border-slate-200 dark:border-zinc-800 bg-slate-50/50 dark:bg-zinc-950/60 space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <div>
                 <label className="block text-xs font-bold text-slate-700 dark:text-zinc-300 mb-1">
-                  Lot Size ($N$) on Shop Floor / Warehouse
+                  Lot Size ($N$) in Consignment
                 </label>
                 <input
                   type="number"
                   min="1"
-                  value={lotSize}
-                  onChange={(e) => setLotSize(parseInt(e.target.value) || 1)}
+                  value={lotSizeInput}
+                  onChange={(e) => setLotSizeInput(e.target.value)}
+                  onFocus={(e) => e.target.select()}
                   className="w-full bg-white dark:bg-zinc-800 border border-slate-300 dark:border-zinc-700 p-2.5 rounded-xl text-xs font-bold text-slate-900 dark:text-zinc-100 focus:outline-none focus:border-[#00A651]"
                 />
                 <span className="text-[10px] text-slate-400 dark:text-zinc-500 mt-1 block">
-                  Fifth Schedule Table 1: Tiered 32, 50, 80, 125 packs
+                  Fifth Schedule Table 1 Mandate
                 </span>
               </div>
 
@@ -449,10 +463,11 @@ Government of India`;
                 <div className="flex gap-2">
                   <input
                     type="number"
-                    min="0.1"
+                    min="0.01"
                     step="any"
-                    value={declaredQty}
-                    onChange={(e) => setDeclaredQty(parseFloat(e.target.value) || 0)}
+                    value={declaredQtyInput}
+                    onChange={(e) => setDeclaredQtyInput(e.target.value)}
+                    onFocus={(e) => e.target.select()}
                     className="w-full bg-white dark:bg-zinc-800 border border-slate-300 dark:border-zinc-700 p-2.5 rounded-xl text-xs font-bold text-slate-900 dark:text-zinc-100 focus:outline-none focus:border-[#00A651]"
                   />
                   <select
@@ -471,12 +486,35 @@ Government of India`;
                 </span>
               </div>
 
-              <div className="sm:col-span-1 flex flex-col justify-end">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 dark:text-zinc-300 mb-1">
+                  Packaging Tare Wt ($T$) ({qtyUnit})
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  step="any"
+                  value={tareWeightInput}
+                  onChange={(e) => setTareWeightInput(e.target.value)}
+                  onFocus={(e) => e.target.select()}
+                  className="w-full bg-white dark:bg-zinc-800 border border-slate-300 dark:border-zinc-700 p-2.5 rounded-xl text-xs font-bold text-slate-900 dark:text-zinc-100 focus:outline-none focus:border-[#00A651]"
+                />
+                <span className="text-[10px] text-slate-400 dark:text-zinc-500 mt-1 block">
+                  Sixth Schedule Part II Deduction
+                </span>
+              </div>
+
+              <div className="flex flex-col justify-end">
                 <div className="p-3 bg-zinc-100 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 rounded-xl text-xs">
-                  <div className="font-bold text-slate-900 dark:text-zinc-200">Legal Acceptance Condition:</div>
+                  <div className="font-bold text-slate-900 dark:text-zinc-200">Legal Acceptance Test:</div>
                   <div className="text-[11px] font-mono text-[#00A651] dark:text-emerald-400 mt-0.5 font-bold">
-                    Avg Net Wt ≥ Qn - ({sampling.tFactor} × s)
+                    Avg Net ≥ Qn - ({sampling.tFactor} × s)
                   </div>
+                  {tareWeight > 0 && (
+                    <div className="text-[10px] text-slate-500 dark:text-zinc-400 mt-1 font-mono">
+                      Gross Target: {(declaredQty + tareWeight).toFixed(2)} {qtyUnit}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -569,8 +607,11 @@ Government of India`;
 
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs font-semibold pt-1">
                     <div>
-                      <span className="text-[10px] text-slate-500 dark:text-zinc-400 block">Sample Average (x̄)</span>
+                      <span className="text-[10px] text-slate-500 dark:text-zinc-400 block">Sample Average Net (x̄)</span>
                       <span className="font-mono font-black text-slate-900 dark:text-zinc-100">{batchVerdict.avg} {qtyUnit}</span>
+                      {tareWeight > 0 && (
+                        <span className="text-[9px] text-slate-400 block">Gross: {batchVerdict.avgGross} {qtyUnit}</span>
+                      )}
                     </div>
                     <div>
                       <span className="text-[10px] text-slate-500 dark:text-zinc-400 block">Min Required Average</span>

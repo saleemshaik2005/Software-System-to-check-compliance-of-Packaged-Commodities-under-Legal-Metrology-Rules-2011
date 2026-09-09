@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { BoundingBox, RuleStatus } from '../types';
+import { BoundingBox, RuleStatus, Language } from '../types';
+import { getTranslation } from '../services/i18nService';
 import { AlertCircle, AlertTriangle, CheckCircle2, Eye, Info } from 'lucide-react';
 
 interface EvidenceVisualizerProps {
@@ -12,6 +13,7 @@ interface EvidenceVisualizerProps {
     back?: string;
     side?: string;
   };
+  currentLang?: Language;
 }
 
 export const EvidenceVisualizer: React.FC<EvidenceVisualizerProps> = ({
@@ -20,6 +22,7 @@ export const EvidenceVisualizer: React.FC<EvidenceVisualizerProps> = ({
   activeView,
   setActiveView,
   availableImages,
+  currentLang = 'en',
 }) => {
   const [selectedBox, setSelectedBox] = useState<BoundingBox | null>(null);
   const [showOverlays, setShowOverlays] = useState(true);
@@ -69,9 +72,9 @@ export const EvidenceVisualizer: React.FC<EvidenceVisualizerProps> = ({
       <div className="px-4 py-3 bg-slate-50 dark:bg-zinc-950 border-b border-slate-200 dark:border-zinc-800 flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2">
           <Eye className="w-4 h-4 text-[#00A651]" />
-          <span className="text-sm font-black text-slate-900 dark:text-zinc-100 tracking-wide">Evidence-First Visual Overlay</span>
+          <span className="text-sm font-black text-slate-900 dark:text-zinc-100 tracking-wide">{getTranslation('visual_overlay_title', currentLang)}</span>
           <span className="text-xs bg-white dark:bg-zinc-800 text-slate-700 dark:text-zinc-200 font-bold px-2 py-0.5 rounded-full border border-slate-200 dark:border-zinc-700 shadow-2xs">
-            {visibleBoxes.length} {visibleBoxes.length === 1 ? 'Region' : 'Regions'} on {activeView.toUpperCase()}
+            {visibleBoxes.length} {currentLang === 'hi' ? 'क्षेत्र' : currentLang === 'te' ? 'ప్రాంతాలు' : (visibleBoxes.length === 1 ? 'Region' : 'Regions')} ({activeView.toUpperCase()})
           </span>
         </div>
 
@@ -149,7 +152,7 @@ export const EvidenceVisualizer: React.FC<EvidenceVisualizerProps> = ({
         {imageSrc && visibleBoxes.length === 0 && (
           <div className="absolute top-3 left-3 bg-slate-900/85 backdrop-blur-md text-slate-200 text-[11px] px-3 py-1.5 rounded-xl border border-slate-700/80 flex items-center gap-2 z-20 shadow-lg">
             <Info className="w-3.5 h-3.5 text-blue-400" />
-            <span>No statutory declarations flagged on {activeView} view</span>
+            <span>{getTranslation('visual_no_declarations', currentLang)} ({activeView})</span>
           </div>
         )}
 

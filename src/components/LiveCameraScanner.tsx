@@ -29,17 +29,21 @@ import {
 import { evaluateCompliance } from '../services/complianceEngine';
 import { ComplianceReport, ExtractedProductInfo, ImageQualityAudit, ProductCommodityCategory, MultiProductGroup } from '../types';
 import { saveScanReport } from '../services/dbService';
+import { getTranslation } from '../services/i18nService';
+import { Language } from '../types';
 
 interface LiveCameraScannerProps {
   onScanComplete: (report: ComplianceReport) => void;
   activeView: 'front' | 'back' | 'side';
   setActiveView?: (view: 'front' | 'back' | 'side') => void;
+  currentLang?: Language;
 }
 
 export const LiveCameraScanner: React.FC<LiveCameraScannerProps> = ({
   onScanComplete,
   activeView,
   setActiveView,
+  currentLang = 'en',
 }) => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -283,44 +287,24 @@ export const LiveCameraScanner: React.FC<LiveCameraScannerProps> = ({
         imageQuality: result.imageQuality
       };
 
-      // Check if multi-product segmentation is applicable (e.g. 2 or more images)
-      const groups: MultiProductGroup[] = [];
-      if (dataUris.length >= 4) {
-        // Multi-Product Case: Segment into 2 distinct products
-        groups.push({
-          id: 'prod-1',
-          productTitle: merged.productName || 'Product 1 (Peanut Butter / Food)',
-          brandName: merged.brandName || 'Brand A',
-          category: merged.category,
-          images: { front: dataUris[0], back: dataUris[1] },
-          detectedProductInfo: { ...merged, productName: merged.productName || 'Pintola All Natural Peanut Butter 350g' }
-        });
-        const secondBase = parseLabelDeclarations('Whole Wheat Atta 5kg MRP Rs. 265');
-        groups.push({
-          id: 'prod-2',
-          productTitle: 'Product 2 (Whole Wheat Atta 5kg)',
-          brandName: 'Aashirvaad',
-          category: 'rice_flour_atta_suji',
-          images: { front: dataUris[2], side: dataUris[3] },
+      // Check if multi-product segmentation is applicable
+      let groups: MultiProductGroup[] = [];
+
+      if (result.productGroups && result.productGroups.length > 0) {
+        groups = result.productGroups.map((g, idx) => ({
+          id: g.id || `prod-${idx + 1}`,
+          productTitle: g.productTitle || (g.detectedProductInfo as any)?.productName || `Product ${idx + 1}`,
+          brandName: g.brandName || (g.detectedProductInfo as any)?.brandName || '',
+          category: (g.category as ProductCommodityCategory) || 'general_packaged',
+          images: g.images,
           detectedProductInfo: {
-            ...secondBase,
-            productName: 'Aashirvaad Shudh Chakki Whole Wheat Atta 5kg',
-            brandName: 'Aashirvaad',
-            category: 'rice_flour_atta_suji',
-            netQuantity: 5,
-            quantityUnit: 'kg',
-            rawQuantityString: '5 kg',
-            mrp: 265,
-            mrpString: 'Rs. 265.00 (incl. of all taxes)',
-            hasInclAllTaxes: true,
-            mfgMonth: '08',
-            mfgYear: '2026',
-            manufacturerName: 'ITC Limited',
-            manufacturerAddress: '37, J.L. Nehru Road, Kolkata, West Bengal',
-            manufacturerPinCode: '700071',
-            countryOfOrigin: 'India'
+            ...baseInfo,
+            ...merged,
+            ...g.detectedProductInfo,
+            productName: g.productTitle || (g.detectedProductInfo as any)?.productName || merged.productName,
+            brandName: g.brandName || (g.detectedProductInfo as any)?.brandName || merged.brandName
           }
-        });
+        }));
       } else {
         // Single product multi-view
         groups.push({
@@ -400,6 +384,13 @@ export const LiveCameraScanner: React.FC<LiveCameraScannerProps> = ({
   const handleBatchVerifyAll = () => {
     if (productGroups.length === 0) return;
 
+        // Save current active group edits first
+    if (draftProductInfo && productGroups[activeGroupIndex]) {
+      productGroups[activeGroupIndex].detectedProductInfo = { ...draftProductInfo };
+      productGroups[activeGroupIndex].images = { ...slotAssignments };
+      productGroups[activeGroupIndex].productTitle = draftProductInfo.productName || productGroups[activeGroupIndex].productTitle;
+    }
+
     setIsReviewModalOpen(false);
     setIsProcessing(true);
     setStatusMessage(`Running batch compliance across ${productGroups.length} segmented packaged commodities...`);
@@ -433,13 +424,33 @@ export const LiveCameraScanner: React.FC<LiveCameraScannerProps> = ({
     }, 600);
   };
 
-  // Switch Active Product Group in Review Modal
+  // Switch Active Product Group in Review Modal with state preservation
   const handleSelectProductGroup = (idx: number) => {
+    // 1. SAVE current active group edits before switching
+    if (draftProductInfo && productGroups[activeGroupIndex]) {
+      setProductGroups((prev) => {
+        const next = [...prev];
+        if (next[activeGroupIndex]) {
+          next[activeGroupIndex] = {
+            ...next[activeGroupIndex],
+            detectedProductInfo: { ...draftProductInfo },
+            productTitle: draftProductInfo.productName || next[activeGroupIndex].productTitle,
+            brandName: draftProductInfo.brandName || next[activeGroupIndex].brandName,
+            images: { ...slotAssignments }
+          };
+        }
+        return next;
+      });
+    }
+
+    // 2. ACTIVATE target product group
     setActiveGroupIndex(idx);
     const grp = productGroups[idx];
     if (grp) {
-      if (grp.detectedProductInfo) setDraftProductInfo(grp.detectedProductInfo);
-      setSlotAssignments(grp.images);
+      if (grp.detectedProductInfo) {
+        setDraftProductInfo({ ...grp.detectedProductInfo });
+      }
+      setSlotAssignments({ ...(grp.images || {}) });
     }
   };
 
@@ -448,10 +459,10 @@ export const LiveCameraScanner: React.FC<LiveCameraScannerProps> = ({
     if (productGroups.length >= 2) return;
     const currentImages = { ...slotAssignments };
     const p1Images: { front?: string; back?: string; side?: string } = {
-      front: currentImages.front
+      front: currentImages.front || Object.values(currentImages)[0]
     };
     const p2Images: { front?: string; back?: string; side?: string } = {
-      front: currentImages.back || currentImages.side
+      front: currentImages.back || currentImages.side || currentImages.front
     };
 
     const g1: MultiProductGroup = {
@@ -472,17 +483,21 @@ export const LiveCameraScanner: React.FC<LiveCameraScannerProps> = ({
       images: p2Images,
       detectedProductInfo: {
         ...base2,
-        productName: 'Secondary Packaged Commodity',
-        brandName: 'Secondary Brand',
+        productName: 'Segmented Product 2',
+        brandName: 'Brand 2',
         category: 'general_packaged',
         netQuantity: 250,
         quantityUnit: 'g',
+        rawQuantityString: '250 g',
         mrp: 120,
         mrpString: 'Rs. 120.00 (incl. of all taxes)',
         hasInclAllTaxes: true,
         mfgMonth: '08',
         mfgYear: '2026',
-        countryOfOrigin: 'India'
+        countryOfOrigin: 'India',
+        manufacturerName: 'Packager / Importer Unit',
+        manufacturerAddress: 'Industrial Zone Phase 2',
+        manufacturerPinCode: '110020'
       }
     };
 
@@ -1251,17 +1266,34 @@ export const LiveCameraScanner: React.FC<LiveCameraScannerProps> = ({
                 onClick={() => setIsReviewModalOpen(false)}
                 className="px-5 py-2.5 rounded-xl bg-slate-200 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 font-bold hover:bg-slate-300 dark:hover:bg-zinc-700 cursor-pointer"
               >
-                Cancel
+                {getTranslation('action_cancel', currentLang)}
               </button>
 
-              <button
-                type="button"
-                onClick={handleConfirmVerification}
-                className="px-6 py-2.5 rounded-xl bg-[#00A651] hover:bg-[#008f45] text-white font-black shadow-md flex items-center gap-2 cursor-pointer"
-              >
-                <ShieldCheck className="w-4 h-4" />
-                <span>Confirm & Run LMPC Compliance Engine</span>
-              </button>
+              <div className="flex items-center gap-3">
+                {productGroups.length > 1 && (
+                  <button
+                    type="button"
+                    onClick={handleBatchVerifyAll}
+                    className="px-5 py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-black shadow-md flex items-center gap-2 cursor-pointer transition-all"
+                  >
+                    <Layers className="w-4 h-4" />
+                    <span>⚡ Batch Verify All ({productGroups.length} Products)</span>
+                  </button>
+                )}
+
+                <button
+                  type="button"
+                  onClick={handleConfirmVerification}
+                  className="px-6 py-2.5 rounded-xl bg-[#00A651] hover:bg-[#008f45] text-white font-black shadow-md flex items-center gap-2 cursor-pointer transition-all"
+                >
+                  <ShieldCheck className="w-4 h-4" />
+                  <span>
+                    {productGroups.length > 1
+                      ? `Confirm & Inspect Product ${activeGroupIndex + 1}`
+                      : 'Confirm & Run LMPC Compliance Engine'}
+                  </span>
+                </button>
+              </div>
             </div>
           </div>
         </div>
