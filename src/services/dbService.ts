@@ -7,20 +7,28 @@ import { DEMO_PRESETS } from '../data/demoProducts';
 import { evaluateCompliance } from './complianceEngine';
 import { saveReportToFirestore, uploadToCloudinary } from './cloudService';
 
-const STORAGE_KEY = 'inspack_inspection_history_v1';
+const STORAGE_KEY = 'inspack_inspection_history_v2';
+
+export const DB_CHANGE_EVENT = 'inspack_db_changed';
+
+export function notifyDbChange(deletedId?: string): void {
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent(DB_CHANGE_EVENT, { detail: { deletedId } }));
+  }
+}
 
 export function getScanReports(): ComplianceReport[] {
   try {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) {
-      // Seed with demo reports on first launch
+      // Seed with verified benchmark reports on first launch (Pintola Peanut Butter first!)
       const seededReports = DEMO_PRESETS.map((preset, idx) => {
         const report = evaluateCompliance(
           preset.productInfo,
           'front',
           preset.imageVisual,
           {
-            name: 'Insp. R. K. Verma',
+            name: 'Legal Metrology Inspector',
             badge: 'LM-ND-4092',
             location: idx % 2 === 0 ? 'Reliance Smart Bazaar, Connaught Place' : 'Blinkit Dark Store, Gurugram Hub'
           }
@@ -43,6 +51,7 @@ export function saveScanReport(report: ComplianceReport, skipCloudSync = false):
     const existing = getScanReports();
     const updated = [report, ...existing.filter(r => r.id !== report.id)];
     localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+    notifyDbChange();
 
     if (!skipCloudSync) {
       // 1. Sync structured audit report to Google Cloud Firestore
@@ -101,6 +110,7 @@ export function deleteScanReport(id: string): void {
   const existing = getScanReports();
   const updated = existing.filter(r => r.id !== id);
   localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+  notifyDbChange(id);
 }
 
 export function getInspectionStats() {

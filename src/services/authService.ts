@@ -6,8 +6,8 @@ import { AuthUser, UserRole } from '../types';
 export const TEST_ACCOUNTS: Record<UserRole, AuthUser> = {
   OFFICER: {
     id: 'user-officer-01',
-    name: 'Insp. R. K. Verma',
-    email: 'verma.officer@lm.gov.in',
+    name: 'Legal Metrology Inspector',
+    email: 'inspector@lm.gov.in',
     role: 'OFFICER',
     badgeNumber: 'LM-ND-4092',
     organization: 'Department of Legal Metrology, New Delhi Zone',
@@ -15,24 +15,24 @@ export const TEST_ACCOUNTS: Record<UserRole, AuthUser> = {
   },
   CITIZEN: {
     id: 'user-citizen-01',
-    name: 'Ananya Sharma',
-    email: 'ananya.consumer@gmail.com',
+    name: 'Consumer / Citizen',
+    email: 'consumer@citizen.nic.in',
     role: 'CITIZEN',
-    organization: 'Consumer Rights Advocate • National Consumer Forum',
+    organization: 'National Consumer Helpline (NCH 1915) • Public Verification',
     avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=120&auto=format&fit=crop&q=80'
   },
   MANUFACTURER: {
     id: 'user-mfg-01',
-    name: 'Tata Consumer Products QA Division',
-    email: 'regulatory@tataagro.in',
+    name: 'Brand Manufacturer',
+    email: 'compliance@manufacturer.in',
     role: 'MANUFACTURER',
-    organization: 'Tata Agro FMCG Packaging QA & Pre-Market Compliance Group',
+    organization: 'FMCG Packaged Commodities Pre-Printing & QA Compliance',
     avatarUrl: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=120&auto=format&fit=crop&q=80'
   },
   SURVEILLANCE: {
     id: 'user-surv-01',
-    name: 'Dr. S. K. Rastogi',
-    email: 'surveillance.controller@consumeraffairs.nic.in',
+    name: 'National Surveillance Director',
+    email: 'director.surveillance@consumeraffairs.nic.in',
     role: 'SURVEILLANCE',
     badgeNumber: 'MOCA-SURV-01',
     organization: 'National Legal Metrology Surveillance Directorate • Ministry Oversight',
@@ -40,11 +40,11 @@ export const TEST_ACCOUNTS: Record<UserRole, AuthUser> = {
   },
   ADMIN: {
     id: 'user-admin-01',
-    name: 'Arjun Mehta (Lead Systems Admin)',
-    email: 'sysadmin@inspack.gov.in',
+    name: 'System Administrator',
+    email: 'admin@inspack.gov.in',
     role: 'ADMIN',
     badgeNumber: 'SYS-ADMIN-01',
-    organization: 'Inspack Platform Engineering & Core Software Administration',
+    organization: 'Inspack Platform Engineering & System Configuration',
     avatarUrl: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=120&auto=format&fit=crop&q=80'
   }
 };

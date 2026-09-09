@@ -102,7 +102,7 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onConfig
       )}
 
       {/* Sub Tabs */}
-      <div className="flex border-b border-slate-200 dark:border-slate-800 bg-white rounded-2xl p-1.5 shadow-xs gap-1 text-xs font-bold">
+      <div className="flex border-b border-slate-200 dark:border-zinc-800 bg-white rounded-2xl p-1.5 shadow-xs gap-1 text-xs font-bold">
         <button
           onClick={() => setActiveSubTab('rules')}
           className={`flex items-center gap-1.5 px-4 py-2 rounded-xl transition-all cursor-pointer ${
@@ -153,8 +153,8 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onConfig
       {activeSubTab === 'rules' && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Compounding Fines */}
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 shadow-xs space-y-4">
-            <div className="flex items-center gap-2 text-sm font-black text-slate-900 dark:text-slate-100 border-b border-slate-100 dark:border-slate-800 pb-3">
+          <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-3xl p-5 shadow-xs space-y-4">
+            <div className="flex items-center gap-2 text-sm font-black text-slate-900 dark:text-zinc-100 border-b border-slate-100 dark:border-zinc-800 pb-3">
               <IndianRupee className="w-4 h-4 text-emerald-600" />
               <span>Rule 32 Compounding Penalties (INR)</span>
             </div>
@@ -208,8 +208,8 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onConfig
           </div>
 
           {/* Numeral Height & Scoring Thresholds */}
-          <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 shadow-xs space-y-4">
-            <div className="flex items-center gap-2 text-sm font-black text-slate-900 dark:text-slate-100 border-b border-slate-100 dark:border-slate-800 pb-3">
+          <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-3xl p-5 shadow-xs space-y-4">
+            <div className="flex items-center gap-2 text-sm font-black text-slate-900 dark:text-zinc-100 border-b border-slate-100 dark:border-zinc-800 pb-3">
               <Sliders className="w-4 h-4 text-blue-600" />
               <span>Table I Numeral Heights & Score Thresholds</span>
             </div>
@@ -269,8 +269,8 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onConfig
 
       {/* Tab 2: Banner Announcement */}
       {activeSubTab === 'banner' && (
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 shadow-xs space-y-4">
-          <div className="flex items-center gap-2 text-sm font-black text-slate-900 dark:text-slate-100 border-b border-slate-100 dark:border-slate-800 pb-3">
+        <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-3xl p-5 shadow-xs space-y-4">
+          <div className="flex items-center gap-2 text-sm font-black text-slate-900 dark:text-zinc-100 border-b border-slate-100 dark:border-zinc-800 pb-3">
             <Megaphone className="w-4 h-4 text-amber-600" />
             <span>Ministry Special Drive Announcement Banner</span>
           </div>
@@ -303,9 +303,9 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onConfig
 
       {/* Tab 3: Cloud Database & Export */}
       {activeSubTab === 'database' && (
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 shadow-xs space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-            <div className="flex items-center gap-2 text-sm font-black text-slate-900 dark:text-slate-100">
+        <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-3xl p-5 shadow-xs space-y-4">
+          <div className="flex items-center justify-between border-b border-slate-100 dark:border-zinc-800 pb-3">
+            <div className="flex items-center gap-2 text-sm font-black text-slate-900 dark:text-zinc-100">
               <Database className="w-4 h-4 text-blue-600" />
               <span>Inspection Dossiers & Cloud Sync Operations</span>
             </div>
@@ -320,17 +320,17 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onConfig
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="p-4 bg-slate-50 dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800">
+            <div className="p-4 bg-slate-50 dark:bg-zinc-950 rounded-2xl border border-slate-200 dark:border-zinc-800">
               <span className="text-[10px] font-bold text-slate-500 uppercase block">Local Dossiers</span>
-              <span className="text-xl font-black text-slate-900 dark:text-slate-100">{getScanReports().length} Records</span>
+              <span className="text-xl font-black text-slate-900 dark:text-zinc-100">{getScanReports().length} Records</span>
               <span className="text-[11px] text-emerald-600 font-bold block mt-1">IndexedDB Persistent</span>
             </div>
-            <div className="p-4 bg-slate-50 dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800">
+            <div className="p-4 bg-slate-50 dark:bg-zinc-950 rounded-2xl border border-slate-200 dark:border-zinc-800">
               <span className="text-[10px] font-bold text-slate-500 uppercase block">Cloud Firestore</span>
               <span className="text-xl font-black text-amber-900">Live Active</span>
               <span className="text-[11px] text-slate-500 block mt-1">sih-2026-project-229ad</span>
             </div>
-            <div className="p-4 bg-slate-50 dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800">
+            <div className="p-4 bg-slate-50 dark:bg-zinc-950 rounded-2xl border border-slate-200 dark:border-zinc-800">
               <span className="text-[10px] font-bold text-slate-500 uppercase block">Cloudinary Media</span>
               <span className="text-xl font-black text-sky-900">CDN Connected</span>
               <span className="text-[11px] text-slate-500 block mt-1">dq17ske9m • Preset Ready</span>
@@ -341,9 +341,9 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onConfig
 
       {/* Tab 4: Field Inspectors */}
       {activeSubTab === 'officers' && (
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-5 shadow-xs space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-            <div className="flex items-center gap-2 text-sm font-black text-slate-900 dark:text-slate-100">
+        <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-3xl p-5 shadow-xs space-y-4">
+          <div className="flex items-center justify-between border-b border-slate-100 dark:border-zinc-800 pb-3">
+            <div className="flex items-center gap-2 text-sm font-black text-slate-900 dark:text-zinc-100">
               <Users className="w-4 h-4 text-purple-600" />
               <span>Authorized Legal Metrology Officers Registry</span>
             </div>
@@ -351,13 +351,13 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onConfig
 
           <div className="space-y-2">
             {[
-              { name: 'Insp. R. K. Verma', badge: 'LM-ND-4092', zone: 'New Delhi North Hub', status: 'ACTIVE ON FIELD' },
+              { name: 'Legal Metrology Inspector', badge: 'LM-ND-4092', zone: 'New Delhi North Hub', status: 'ACTIVE ON FIELD' },
               { name: 'Insp. Sunita Deshmukh', badge: 'LM-MH-8812', zone: 'Mumbai Port & Dark Stores', status: 'ACTIVE ON FIELD' },
               { name: 'Insp. Arvind Swaminathan', badge: 'LM-TN-3104', zone: 'Chennai Industrial Area', status: 'ACTIVE ON FIELD' },
             ].map((o) => (
               <div key={o.badge} className="p-3 border border-slate-200 rounded-xl flex items-center justify-between bg-slate-50 text-xs">
                 <div>
-                  <span className="font-black text-slate-900 dark:text-slate-100 block">{o.name}</span>
+                  <span className="font-black text-slate-900 dark:text-zinc-100 block">{o.name}</span>
                   <span className="text-slate-500 text-[11px]">Badge: {o.badge} • Jurisdiction: {o.zone}</span>
                 </div>
                 <span className="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-bold text-[10px]">

@@ -238,7 +238,7 @@ export async function generateCompliancePDF(report: ComplianceReport): Promise<v
   doc.setTextColor(15, 23, 42);
   doc.text('Authorized Legal Metrology Officer', 14, signY + 3.5);
   doc.setFont('helvetica', 'normal');
-  doc.text(`Name: ${report.inspectorName || 'Insp. R. K. Verma'}`, 14, signY + 7);
+  doc.text(`Name: ${report.inspectorName || 'Legal Metrology Inspector'}`, 14, signY + 7);
   doc.text(`Badge: ${report.inspectorBadgeNumber || 'LM-ND-4092'}`, 14, signY + 10.5);
   doc.text(`Location: ${report.location || 'New Delhi Retail Hub'}`, 14, signY + 14);
 

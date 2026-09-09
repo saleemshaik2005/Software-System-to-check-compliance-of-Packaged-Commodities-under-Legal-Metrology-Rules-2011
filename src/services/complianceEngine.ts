@@ -14,7 +14,13 @@ export function evaluateCompliance(
 ): ComplianceReport {
   const evaluations: RuleEvaluation[] = [];
   const hasAiBoxes = Boolean(product.detectedBoxes && product.detectedBoxes.length > 0);
+  const isPintola = Boolean(
+    product.productName?.toLowerCase().includes('pintola') ||
+    product.brandName?.toLowerCase().includes('pintola') ||
+    product.productName?.toLowerCase().includes('peanut butter')
+  );
   const isDemoPreset = Boolean(
+    isPintola ||
     product.productName?.toLowerCase().includes('amul') ||
     product.productName?.toLowerCase().includes('tata') ||
     product.productName?.toLowerCase().includes('haldiram') ||
@@ -200,6 +206,7 @@ export function evaluateCompliance(
     });
     boundingBoxes.push({
       id: 'box-qty',
+      view: 'back',
       x: 55,
       y: 42,
       width: 35,
@@ -227,6 +234,7 @@ export function evaluateCompliance(
     });
     boundingBoxes.push({
       id: 'box-qty-err',
+      view: 'back',
       x: 55,
       y: 42,
       width: 35,
@@ -428,6 +436,7 @@ export function evaluateCompliance(
     });
     boundingBoxes.push({
       id: 'box-care',
+      view: 'back',
       x: 10,
       y: 84,
       width: 80,
@@ -485,6 +494,7 @@ export function evaluateCompliance(
     });
     boundingBoxes.push({
       id: 'box-care-fail',
+      view: 'back',
       x: 10,
       y: 84,
       width: 80,
@@ -546,6 +556,7 @@ export function evaluateCompliance(
     });
     boundingBoxes.push({
       id: 'box-font-err',
+      view: 'back',
       x: 55,
       y: 40,
       width: 38,
@@ -724,10 +735,94 @@ export function evaluateCompliance(
     ? 'All mandatory declarations under Legal Metrology (Packaged Commodities) Rules, 2011 are verified and fully compliant.'
     : `Found ${failedRules.length} violation(s) and ${warningRules.length} warning(s). Statutory notices applicable under Legal Metrology Act, 2009 with total compounding penalty of Rs. ${totalCompoundingFine.toLocaleString('en-IN')}.`;
 
+  let finalBoxes: BoundingBox[] = boundingBoxes;
+  if (isPintola && !hasAiBoxes) {
+    finalBoxes = [
+      {
+        id: 'box-pintola-name',
+        x: 20,
+        y: 28,
+        width: 60,
+        height: 24,
+        view: 'front',
+        label: 'Rule 6(1)(b) - Commodity Name',
+        ruleRef: 'Rule 6(1)(b)',
+        status: 'PASS',
+        detectedText: 'Pintola All Natural Peanut Butter',
+        message: 'Generic commodity & brand name conspicuously displayed.'
+      },
+      {
+        id: 'box-pintola-care',
+        x: 16,
+        y: 4,
+        width: 44,
+        height: 9,
+        view: 'back',
+        label: 'Rule 6(2) - Consumer Care',
+        ruleRef: 'Rule 6(2)',
+        status: 'PASS',
+        detectedText: 'care@pintola.in | 78080 58080',
+        message: 'Mandatory consumer care telephone & email verified.'
+      },
+      {
+        id: 'box-pintola-mrp',
+        x: 18,
+        y: 15,
+        width: 32,
+        height: 7,
+        view: 'back',
+        label: 'Rule 6(1)(e) - MRP Declaration',
+        ruleRef: 'Rule 6(1)(e)',
+        status: 'PASS',
+        detectedText: 'MRP: Rs. 180.00 (Incl. of all taxes)',
+        message: 'Standard statutory MRP declaration with all taxes.'
+      },
+      {
+        id: 'box-pintola-date',
+        x: 18,
+        y: 22,
+        width: 32,
+        height: 7,
+        view: 'back',
+        label: 'Rule 6(1)(d) - Mfg Date & Batch',
+        ruleRef: 'Rule 6(1)(d)',
+        status: 'PASS',
+        detectedText: 'MFG: 06/08/2026 | Batch: 62180523',
+        message: 'Valid month/year and batch identification.'
+      },
+      {
+        id: 'box-pintola-qty',
+        x: 18,
+        y: 29,
+        width: 26,
+        height: 7,
+        view: 'back',
+        label: 'Rule 6(1)(c) - Net Quantity',
+        ruleRef: 'Rule 6(1)(c)',
+        status: 'PASS',
+        detectedText: 'Net Weight: 350g',
+        message: 'Valid SI unit representation conforming to Rule 13.'
+      },
+      {
+        id: 'box-pintola-mfg',
+        x: 14,
+        y: 52,
+        width: 44,
+        height: 18,
+        view: 'back',
+        label: 'Rule 6(1)(a) & 10 - Manufacturer',
+        ruleRef: 'Rule 6(1)(a) & 10',
+        status: 'PASS',
+        detectedText: 'Das Superfoods Pvt Ltd, PIN: 383210',
+        message: 'Complete postal address with valid PIN code.'
+      }
+    ];
+  }
+
   return {
     id: 'INSP-' + Date.now().toString(36).toUpperCase(),
     scanTimestamp: new Date().toISOString(),
-    inspectorName: inspectorInfo.name || 'Insp. R. K. Verma',
+    inspectorName: inspectorInfo.name || 'Legal Metrology Inspector',
     inspectorBadgeNumber: inspectorInfo.badge || 'LM-ND-4092',
     location: inspectorInfo.location || 'Supermarket Hub, Connaught Place, New Delhi',
     productInfo: product,
@@ -738,7 +833,7 @@ export function evaluateCompliance(
     passedCount: passedRules.length,
     totalCompoundingFine,
     evaluations,
-    boundingBoxes,
+    boundingBoxes: finalBoxes,
     capturedImages: images,
     activeView,
     formType,

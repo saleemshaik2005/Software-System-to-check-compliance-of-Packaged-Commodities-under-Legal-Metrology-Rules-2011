@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Navbar } from './components/Navbar';
+import { LoginPage } from './components/LoginPage';
 import { DemoPresetSelector } from './components/DemoPresetSelector';
 import { LiveCameraScanner } from './components/LiveCameraScanner';
 import { EvidenceVisualizer } from './components/EvidenceVisualizer';
@@ -19,23 +20,39 @@ import { InspectionVaultModal } from './components/InspectionVaultModal';
 import { Footer } from './components/Footer';
 import { DEMO_PRESETS, DemoProductPreset } from './data/demoProducts';
 import { evaluateCompliance } from './services/complianceEngine';
-import { saveScanReport } from './services/dbService';
+import { saveScanReport, getScanReports, DB_CHANGE_EVENT } from './services/dbService';
 import { getCurrentUser, switchRole, logoutUser } from './services/authService';
 import { ComplianceReport, UserRole, AuthUser, ActiveTab } from './types';
 import { Camera, Archive, CheckCircle, AlertTriangle, ArrowRight, ShieldCheck, Sparkles, Building2, Radio } from 'lucide-react';
 
 export function App() {
   const [currentUser, setCurrentUser] = useState<AuthUser | null>(() => getCurrentUser());
-  const [userRole, setUserRole] = useState<UserRole>(() => currentUser?.role || 'CITIZEN');
+  const [userRole, setUserRole] = useState<UserRole>(() => currentUser?.role || 'OFFICER');
+
+  const getTabForRole = (role: UserRole): ActiveTab => {
+    switch (role) {
+      case 'OFFICER':
+        return 'analytics'; // Inspector lands directly in Dashboard
+      case 'CITIZEN':
+        return 'upload'; // Consumer lands directly in Upload / Scanner
+      case 'MANUFACTURER':
+        return 'manufacturer'; // Brand lands in Artwork Simulator
+      case 'SURVEILLANCE':
+        return 'surveillance'; // Surveillance lands in Hub
+      case 'ADMIN':
+        return 'admin'; // Admin lands in Control Center
+      default:
+        return 'analytics';
+    }
+  };
+
   const [currentTab, setCurrentTab] = useState<ActiveTab>(() => {
-    const role = currentUser?.role || 'CITIZEN';
-    if (role === 'SURVEILLANCE') return 'surveillance';
-    if (role === 'ADMIN') return 'admin';
-    if (role === 'MANUFACTURER') return 'manufacturer';
-    if (role === 'CITIZEN') return 'upload';
-    return 'scanner';
+    const role = currentUser?.role || 'OFFICER';
+    return getTabForRole(role);
   });
-  const [activePresetId, setActivePresetId] = useState<string>('demo-amul-milk');
+
+  // Default preset is Pintola All Natural Peanut Butter (350g)
+  const [activePresetId, setActivePresetId] = useState<string>('demo-pintola-peanut-butter');
   const [activeView, setActiveView] = useState<'front' | 'back' | 'side'>('front');
   const [isPDFPreviewOpen, setIsPDFPreviewOpen] = useState(false);
   const [isGrievanceOpen, setIsGrievanceOpen] = useState(false);
@@ -50,7 +67,7 @@ export function App() {
     document.documentElement.classList.toggle('dark', isDarkMode);
   }, [isDarkMode]);
 
-  // Initialize with the Slide 2 demo (Amul Taaza Milk)
+  // Initialize with verified benchmark Pintola All Natural Peanut Butter
   const [currentReport, setCurrentReport] = useState<ComplianceReport>(() => {
     const initialPreset = DEMO_PRESETS[0];
     const rep = evaluateCompliance(
@@ -58,14 +75,30 @@ export function App() {
       'front',
       initialPreset.imageVisual,
       {
-        name: currentUser?.name || 'Authorized Inspector',
+        name: currentUser?.name || 'Legal Metrology Inspector',
         badge: currentUser?.badgeNumber || 'LM-ND-4092',
-        location: 'Reliance Smart Bazaar, Connaught Place'
+        location: 'Department of Legal Metrology, New Delhi Zone'
       }
     );
     rep.id = 'INSP-261001';
     return rep;
   });
+
+  // Listen to DB changes (deletes & uploads) across all tabs and components
+  useEffect(() => {
+    const handleDbChange = (e: Event) => {
+      const customEvent = e as CustomEvent<{ deletedId?: string }>;
+      const deletedId = customEvent.detail?.deletedId;
+      const allReports = getScanReports();
+      if (deletedId && currentReport.id === deletedId) {
+        if (allReports.length > 0) {
+          setCurrentReport(allReports[0]);
+        }
+      }
+    };
+    window.addEventListener(DB_CHANGE_EVENT, handleDbChange);
+    return () => window.removeEventListener(DB_CHANGE_EVENT, handleDbChange);
+  }, [currentReport]);
 
   const handleSelectPreset = (preset: DemoProductPreset) => {
     setActivePresetId(preset.id);
@@ -75,9 +108,9 @@ export function App() {
       'front',
       preset.imageVisual,
       {
-        name: currentUser?.name || 'Authorized Inspector',
+        name: currentUser?.name || 'Legal Metrology Inspector',
         badge: currentUser?.badgeNumber || 'LM-ND-4092',
-        location: 'Supermarket Hub'
+        location: 'Department of Legal Metrology, New Delhi Zone'
       }
     );
     rep.id = 'INSP-' + Math.floor(100000 + Math.random() * 900000);
@@ -102,42 +135,30 @@ export function App() {
     const user = switchRole(newRole);
     setCurrentUser(user);
     setUserRole(newRole);
-    if (newRole === 'ADMIN') {
-      setCurrentTab('admin');
-    } else if (newRole === 'MANUFACTURER') {
-      setCurrentTab('manufacturer');
-    } else if (newRole === 'SURVEILLANCE') {
-      setCurrentTab('surveillance');
-    } else if (newRole === 'CITIZEN') {
-      setCurrentTab('upload');
-    } else {
-      setCurrentTab('scanner');
-    }
+    setCurrentTab(getTabForRole(newRole));
   };
 
   const handleLoginSuccess = (user: AuthUser) => {
     setCurrentUser(user);
     setUserRole(user.role);
-    if (user.role === 'ADMIN') {
-      setCurrentTab('admin');
-    } else if (user.role === 'MANUFACTURER') {
-      setCurrentTab('manufacturer');
-    } else if (user.role === 'SURVEILLANCE') {
-      setCurrentTab('surveillance');
-    } else if (user.role === 'CITIZEN') {
-      setCurrentTab('upload');
-    } else {
-      setCurrentTab('scanner');
-    }
+    setCurrentTab(getTabForRole(user.role));
   };
 
   const handleSignOut = () => {
     logoutUser();
     setCurrentUser(null);
-    setUserRole('CITIZEN');
-    setCurrentTab('upload');
-    setIsLoginOpen(true);
   };
+
+  // If user signed out, display the dedicated full-page LoginPage outside the website chrome
+  if (!currentUser) {
+    return (
+      <LoginPage
+        onLoginSuccess={handleLoginSuccess}
+        isDarkMode={isDarkMode}
+        setIsDarkMode={setIsDarkMode}
+      />
+    );
+  }
 
   const currentImageSrc =
     currentReport.capturedImages?.[activeView] ||
@@ -146,7 +167,7 @@ export function App() {
 
   return (
     <div className={`min-h-screen flex flex-col font-sans selection:bg-[#00A651] selection:text-white ${
-      isDarkMode ? 'dark bg-slate-950 text-slate-100' : 'bg-slate-50 text-slate-900'
+      isDarkMode ? 'dark bg-[#09090b] text-zinc-100' : 'bg-zinc-50 text-zinc-900'
     }`}>
       <Navbar
         currentTab={currentTab}
@@ -170,17 +191,17 @@ export function App() {
         {currentTab === 'upload' && (
           <div className="space-y-6 animate-in fade-in duration-200">
             {/* Studio Header */}
-            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-6 shadow-xs flex flex-wrap items-center justify-between gap-4 transition-colors">
+            <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl p-6 shadow-xs flex flex-wrap items-center justify-between gap-4 transition-colors">
               <div>
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="p-2 rounded-2xl bg-[#0A3663] text-white">
+                  <span className="p-2 rounded-2xl bg-[#0A3663] dark:bg-zinc-800 text-white">
                     <Camera className="w-5 h-5" />
                   </span>
-                  <h1 className="text-xl font-black text-slate-900 dark:text-slate-100 tracking-tight">
+                  <h1 className="text-xl font-black text-zinc-900 dark:text-zinc-100 tracking-tight">
                     {userRole === 'CITIZEN' ? 'Consumer Package Compliance Scanner' : 'Field Inspection Scan Studio'}
                   </h1>
                 </div>
-                <p className="text-xs text-slate-500 dark:text-slate-400">
+                <p className="text-xs text-zinc-500 dark:text-zinc-400">
                   {userRole === 'CITIZEN'
                     ? 'Upload front and back photos of any packaged product to check if the MRP, weight, and manufacturer details follow the law.'
                     : 'Upload multi-view photos or capture live camera images of Front, Back, and Side panels for automated LMPC 2011 compliance verification.'}
@@ -190,7 +211,7 @@ export function App() {
               {/* Quick Jump to latest audit report */}
               <button
                 onClick={() => setCurrentTab('scanner')}
-                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-800 dark:text-slate-200 font-bold text-xs transition-colors cursor-pointer border border-slate-200 dark:border-slate-700"
+                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-800 dark:text-zinc-200 font-bold text-xs transition-colors cursor-pointer border border-zinc-200 dark:border-zinc-700"
               >
                 <span>View Latest Audit Sheet</span>
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -208,7 +229,7 @@ export function App() {
             <div className="pt-2">
               <div className="flex items-center gap-2 mb-3">
                 <Sparkles className="w-4 h-4 text-[#00A651]" />
-                <span className="text-xs font-black uppercase tracking-wider text-slate-800 dark:text-slate-200">
+                <span className="text-xs font-black uppercase tracking-wider text-zinc-800 dark:text-zinc-200">
                   Or Test With Verified Benchmark Packaging Presets
                 </span>
               </div>
@@ -226,7 +247,7 @@ export function App() {
         {currentTab === 'scanner' && (
           <div className="space-y-6 animate-in fade-in duration-200">
             {/* Top Report Header & Action Bar */}
-            <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 shadow-xs flex flex-wrap items-center justify-between gap-4 transition-colors">
+            <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-4 shadow-xs flex flex-wrap items-center justify-between gap-4 transition-colors">
               <div className="flex items-center gap-3">
                 <div className={`p-2.5 rounded-2xl ${
                   currentReport.overallStatus === 'COMPLIANT'
@@ -241,7 +262,7 @@ export function App() {
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-mono font-bold text-slate-400 dark:text-slate-500">
+                    <span className="text-xs font-mono font-bold text-zinc-400 dark:text-zinc-500">
                       ID: {currentReport.id}
                     </span>
                     <span className={`text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-wide ${
@@ -252,7 +273,7 @@ export function App() {
                       {currentReport.overallStatus === 'COMPLIANT' ? 'Statutory Compliant' : 'Non-Compliant (Violations Detected)'}
                     </span>
                   </div>
-                  <h2 className="text-base font-black text-slate-900 dark:text-slate-100 mt-0.5">
+                  <h2 className="text-base font-black text-zinc-900 dark:text-zinc-100 mt-0.5">
                     {currentReport.productInfo.productName || 'Inspected Packaged Commodity'}
                   </h2>
                 </div>
@@ -262,7 +283,7 @@ export function App() {
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setIsVaultOpen(true)}
-                  className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 font-bold text-xs transition-colors border border-slate-200 dark:border-slate-700 cursor-pointer"
+                  className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 font-bold text-xs transition-colors border border-zinc-200 dark:border-zinc-700 cursor-pointer"
                 >
                   <Archive className="w-3.5 h-3.5 text-emerald-600" />
                   <span>Stored Vault</span>
@@ -301,8 +322,8 @@ export function App() {
                 />
 
                 {/* Statutory Regulatory Context Card */}
-                <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-4 text-xs text-slate-600 dark:text-slate-400 shadow-xs space-y-2 transition-colors">
-                  <div className="font-black text-slate-900 dark:text-slate-100 uppercase tracking-wider text-[11px] flex items-center justify-between">
+                <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-4 text-xs text-zinc-600 dark:text-zinc-400 shadow-xs space-y-2 transition-colors">
+                  <div className="font-black text-zinc-900 dark:text-zinc-100 uppercase tracking-wider text-[11px] flex items-center justify-between">
                     <span>
                       {userRole === 'MANUFACTURER'
                         ? 'Manufacturer Pre-Pack Verification Protocol'

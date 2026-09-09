@@ -1,4 +1,4 @@
-﻿// Pre-configured Test Showcases for SIH-26034 Evaluation
+// Pre-configured Test Showcases for SIH-26034 Evaluation
 // Matches Slide 2 (Amul Taaza Milk) and Slide 3 (Tata Agro Basmati Rice)
 
 import { ExtractedProductInfo } from '../types';
@@ -21,6 +21,48 @@ export interface DemoProductPreset {
 }
 
 export const DEMO_PRESETS: DemoProductPreset[] = [
+  {
+    id: 'demo-pintola-peanut-butter',
+    badge: 'Verified Benchmark Pack',
+    title: 'Pintola All Natural Peanut Butter (350 g)',
+    subtitle: '100% Fully Compliant Labeling under Rule 6, 7, 10 & 18',
+    categoryDisplay: 'Nut Butters / FMCG Spreads',
+    expectedResult: 'COMPLIANT',
+    expectedScore: 100,
+    keyViolation: 'None (Full statutory compliance across all mandatory packaging declarations)',
+    productInfo: {
+      productName: 'Pintola All Natural Peanut Butter (Crunchy)',
+      genericName: 'Peanut Butter & Roasted Peanuts',
+      brandName: 'Pintola',
+      category: 'general_fmcg',
+      netQuantity: 350,
+      quantityUnit: 'g',
+      rawQuantityString: '350 g',
+      mrp: 180.0,
+      currency: 'INR',
+      mrpString: 'MRP: Rs. 180.00 (Incl. of all taxes)',
+      hasInclAllTaxes: true,
+      isStickerPrice: false,
+      isDualPrice: false,
+      mfgMonth: '08',
+      mfgYear: '2026',
+      manufacturerName: 'Das Superfoods Private Limited',
+      manufacturerAddress: 'G. No. 381-382, Sonasan, Ta. Prantij, Sabarkantha, Gujarat',
+      manufacturerPinCode: '383210',
+      countryOfOrigin: 'India',
+      consumerCarePhone: '78080 58080',
+      consumerCareEmail: 'care@pintola.in',
+      batchNumber: '62180523',
+      measuredNumeralHeightMm: 3.5,
+      pdpAreaCm2: 260,
+      actualNetWeightSample: 352
+    },
+    imageVisual: {
+      front: '/demo/pintola-front.png',
+      back: '/demo/pintola-back.png',
+      side: '/demo/pintola-side.png'
+    }
+  },
   {
     id: 'demo-amul-milk',
     badge: 'Slide 2 Demo',

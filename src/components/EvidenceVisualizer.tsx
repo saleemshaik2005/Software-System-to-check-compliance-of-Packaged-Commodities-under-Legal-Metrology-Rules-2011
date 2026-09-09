@@ -64,19 +64,19 @@ export const EvidenceVisualizer: React.FC<EvidenceVisualizerProps> = ({
   };
 
   return (
-    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl overflow-hidden shadow-sm flex flex-col transition-colors">
+    <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl overflow-hidden shadow-sm flex flex-col transition-colors">
       {/* Visualizer Header */}
-      <div className="px-4 py-3 bg-slate-50 dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3">
+      <div className="px-4 py-3 bg-slate-50 dark:bg-zinc-950 border-b border-slate-200 dark:border-zinc-800 flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2">
           <Eye className="w-4 h-4 text-[#00A651]" />
-          <span className="text-sm font-black text-slate-900 dark:text-slate-100 tracking-wide">Evidence-First Visual Overlay</span>
-          <span className="text-xs bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 font-bold px-2 py-0.5 rounded-full border border-slate-200 dark:border-slate-700 shadow-2xs">
+          <span className="text-sm font-black text-slate-900 dark:text-zinc-100 tracking-wide">Evidence-First Visual Overlay</span>
+          <span className="text-xs bg-white dark:bg-zinc-800 text-slate-700 dark:text-zinc-200 font-bold px-2 py-0.5 rounded-full border border-slate-200 dark:border-zinc-700 shadow-2xs">
             {visibleBoxes.length} {visibleBoxes.length === 1 ? 'Region' : 'Regions'} on {activeView.toUpperCase()}
           </span>
         </div>
 
         {/* Multi-View Toggle (Front / Back / Side) */}
-        <div className="flex items-center gap-1 bg-white dark:bg-slate-800 p-1 rounded-xl border border-slate-200 dark:border-slate-700 text-xs shadow-2xs">
+        <div className="flex items-center gap-1 bg-white dark:bg-zinc-800 p-1 rounded-xl border border-slate-200 dark:border-zinc-700 text-xs shadow-2xs">
           <button
             onClick={() => {
               setActiveView('front');
@@ -85,7 +85,7 @@ export const EvidenceVisualizer: React.FC<EvidenceVisualizerProps> = ({
             className={`px-2.5 py-1 rounded-lg font-bold transition-all cursor-pointer ${
               activeView === 'front'
                 ? 'bg-[#00A651] text-white shadow-xs'
-                : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+                : 'text-slate-600 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
             Front
@@ -98,7 +98,7 @@ export const EvidenceVisualizer: React.FC<EvidenceVisualizerProps> = ({
             className={`px-2.5 py-1 rounded-lg font-bold transition-all cursor-pointer ${
               activeView === 'back'
                 ? 'bg-[#00A651] text-white shadow-xs'
-                : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+                : 'text-slate-600 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
             Back
@@ -111,7 +111,7 @@ export const EvidenceVisualizer: React.FC<EvidenceVisualizerProps> = ({
             className={`px-2.5 py-1 rounded-lg font-bold transition-all cursor-pointer ${
               activeView === 'side'
                 ? 'bg-[#00A651] text-white shadow-xs'
-                : 'text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+                : 'text-slate-600 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white'
             }`}
           >
             Side
@@ -124,7 +124,7 @@ export const EvidenceVisualizer: React.FC<EvidenceVisualizerProps> = ({
           className={`text-xs px-2.5 py-1 rounded-lg border font-bold transition-all cursor-pointer ${
             showOverlays
               ? 'bg-blue-50 dark:bg-blue-950/60 border-blue-300 dark:border-blue-700 text-[#0A3663] dark:text-blue-300'
-              : 'bg-white dark:bg-slate-800 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white'
+              : 'bg-white dark:bg-zinc-800 border-slate-200 dark:border-zinc-700 text-slate-600 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white'
           }`}
         >
           {showOverlays ? 'Overlays ON' : 'Overlays OFF'}
@@ -190,7 +190,7 @@ export const EvidenceVisualizer: React.FC<EvidenceVisualizerProps> = ({
 
         {/* Selected Box Interactive Tooltip Card */}
         {selectedBox && (
-          <div className="absolute bottom-3 left-3 right-3 sm:left-auto sm:right-3 sm:w-80 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 shadow-2xl z-30 text-left transition-colors">
+          <div className="absolute bottom-3 left-3 right-3 sm:left-auto sm:right-3 sm:w-80 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md p-3.5 rounded-xl border border-slate-200 dark:border-zinc-700 shadow-2xl z-30 text-left transition-colors">
             <div className="flex items-center justify-between gap-2 mb-1.5">
               <div className="flex items-center gap-1.5">
                 <span
@@ -202,19 +202,19 @@ export const EvidenceVisualizer: React.FC<EvidenceVisualizerProps> = ({
                       : 'bg-emerald-500'
                   }`}
                 />
-                <span className="text-xs font-bold text-slate-900 dark:text-slate-100">{selectedBox.ruleRef}</span>
+                <span className="text-xs font-bold text-slate-900 dark:text-zinc-100">{selectedBox.ruleRef}</span>
               </div>
               <button
                 onClick={() => setSelectedBox(null)}
-                className="text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white text-xs px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 cursor-pointer"
+                className="text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white text-xs px-1.5 py-0.5 rounded bg-slate-100 dark:bg-zinc-800 cursor-pointer"
               >
                 ✕
               </button>
             </div>
-            <div className="text-xs font-bold text-slate-900 dark:text-slate-100 mb-1">{selectedBox.label}</div>
-            <div className="text-[11px] text-slate-600 dark:text-slate-300 leading-relaxed mb-2">{selectedBox.message}</div>
+            <div className="text-xs font-bold text-slate-900 dark:text-zinc-100 mb-1">{selectedBox.label}</div>
+            <div className="text-[11px] text-slate-600 dark:text-zinc-300 leading-relaxed mb-2">{selectedBox.message}</div>
             {selectedBox.detectedText && (
-              <div className="text-[10px] font-mono bg-slate-100 dark:bg-slate-800 p-1.5 rounded border border-slate-200 dark:border-slate-700 text-[#0A3663] dark:text-blue-300 truncate">
+              <div className="text-[10px] font-mono bg-slate-100 dark:bg-zinc-800 p-1.5 rounded border border-slate-200 dark:border-zinc-700 text-[#0A3663] dark:text-blue-300 truncate">
                 Text: "{selectedBox.detectedText}"
               </div>
             )}
@@ -223,7 +223,7 @@ export const EvidenceVisualizer: React.FC<EvidenceVisualizerProps> = ({
       </div>
 
       {/* Caption bar */}
-      <div className="px-4 py-2 bg-slate-50 dark:bg-slate-950 text-[11px] text-slate-600 dark:text-slate-400 flex flex-wrap items-center justify-between gap-2 border-t border-slate-200 dark:border-slate-800">
+      <div className="px-4 py-2 bg-slate-50 dark:bg-zinc-950 text-[11px] text-slate-600 dark:text-zinc-400 flex flex-wrap items-center justify-between gap-2 border-t border-slate-200 dark:border-zinc-800">
         <div className="flex items-center gap-3 font-semibold">
           <span className="flex items-center gap-1">
             <span className="w-2 h-2 rounded-full bg-red-500"></span> Violation
@@ -235,7 +235,7 @@ export const EvidenceVisualizer: React.FC<EvidenceVisualizerProps> = ({
             <span className="w-2 h-2 rounded-full bg-emerald-500"></span> Verified Conforming
           </span>
         </div>
-        <div className="text-slate-500 dark:text-slate-400 text-[10px]">
+        <div className="text-slate-500 dark:text-zinc-400 text-[10px]">
           {visibleBoxes.length > 0 ? 'Click any bounding box on the image' : 'Select Front or Back to view declarations'}
         </div>
       </div>

@@ -222,7 +222,7 @@ export const LiveCameraScanner: React.FC<LiveCameraScannerProps> = ({
         activeView,
         imagesToAnalyze,
         {
-          name: 'Insp. R. K. Verma',
+          name: 'Legal Metrology Inspector',
           badge: 'LM-ND-4092',
           location: 'Inspection Field Unit • Retail Market'
         }
@@ -241,17 +241,17 @@ export const LiveCameraScanner: React.FC<LiveCameraScannerProps> = ({
   const capturedCount = [multiImages.front, multiImages.back, multiImages.side].filter(Boolean).length;
 
   return (
-    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-5 shadow-sm mb-6">
+    <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl p-5 shadow-sm mb-6">
       <canvas ref={canvasRef} className="hidden" />
 
       {/* Header bar */}
-      <div className="flex flex-wrap items-center justify-between gap-2 mb-4 pb-3 border-b border-slate-100 dark:border-slate-800">
+      <div className="flex flex-wrap items-center justify-between gap-2 mb-4 pb-3 border-b border-slate-100 dark:border-zinc-800">
         <div>
           <div className="flex items-center gap-2">
             <span className="p-1.5 rounded-lg bg-emerald-100 text-[#00A651]">
               <Layers className="w-4 h-4" />
             </span>
-            <h3 className="text-base font-black text-slate-900 dark:text-slate-100 tracking-tight">
+            <h3 className="text-base font-black text-slate-900 dark:text-zinc-100 tracking-tight">
               Multi-View Package Inspection (Front • Back • Sides)
             </h3>
           </div>
@@ -338,12 +338,12 @@ export const LiveCameraScanner: React.FC<LiveCameraScannerProps> = ({
 
       {/* Processing Loader */}
       {isProcessing && (
-        <div className="py-10 flex flex-col items-center justify-center gap-3 bg-slate-50 dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 mb-4">
+        <div className="py-10 flex flex-col items-center justify-center gap-3 bg-slate-50 dark:bg-zinc-950 rounded-2xl border border-slate-200 dark:border-zinc-800 mb-4">
           <div className="relative">
             <RefreshCw className="w-12 h-12 text-[#00A651] animate-spin" />
             <Sparkles className="w-5 h-5 text-blue-600 absolute top-0 right-0 animate-ping" />
           </div>
-          <p className="text-sm font-black text-slate-900 dark:text-slate-100 tracking-wide">{statusMessage}</p>
+          <p className="text-sm font-black text-slate-900 dark:text-zinc-100 tracking-wide">{statusMessage}</p>
           <p className="text-xs text-slate-500 text-center max-w-md">
             Scanning Principal Display Panel, MRP clause, Postal PIN Code, and Second Schedule standard sizes across all uploaded views
           </p>
@@ -399,7 +399,7 @@ export const LiveCameraScanner: React.FC<LiveCameraScannerProps> = ({
                 )}
               </div>
 
-              <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-200 dark:border-slate-800">
+              <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-200 dark:border-zinc-800">
                 <button
                   onClick={() => startCameraForSlot('front')}
                   className="flex items-center justify-center gap-1.5 bg-[#0A3663] hover:bg-blue-900 text-white text-xs font-bold py-2 px-2.5 rounded-xl transition-all cursor-pointer"
@@ -466,7 +466,7 @@ export const LiveCameraScanner: React.FC<LiveCameraScannerProps> = ({
                 )}
               </div>
 
-              <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-200 dark:border-slate-800">
+              <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-200 dark:border-zinc-800">
                 <button
                   onClick={() => startCameraForSlot('back')}
                   className="flex items-center justify-center gap-1.5 bg-[#0A3663] hover:bg-blue-900 text-white text-xs font-bold py-2 px-2.5 rounded-xl transition-all cursor-pointer"
@@ -533,7 +533,7 @@ export const LiveCameraScanner: React.FC<LiveCameraScannerProps> = ({
                 )}
               </div>
 
-              <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-200 dark:border-slate-800">
+              <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-200 dark:border-zinc-800">
                 <button
                   onClick={() => startCameraForSlot('side')}
                   className="flex items-center justify-center gap-1.5 bg-[#0A3663] hover:bg-blue-900 text-white text-xs font-bold py-2 px-2.5 rounded-xl transition-all cursor-pointer"
@@ -557,7 +557,7 @@ export const LiveCameraScanner: React.FC<LiveCameraScannerProps> = ({
           </div>
 
           {/* Big Action Bar */}
-          <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-200 dark:border-slate-800">
+          <div className="flex flex-wrap items-center justify-between gap-3 pt-3 border-t border-slate-200 dark:border-zinc-800">
             <div className="text-xs text-slate-600 font-semibold">
               {capturedCount > 0 ? (
                 <span className="text-[#00A651]">

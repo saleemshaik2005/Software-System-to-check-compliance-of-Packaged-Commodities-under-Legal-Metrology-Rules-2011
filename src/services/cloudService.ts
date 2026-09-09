@@ -191,7 +191,7 @@ export async function saveReportToFirestore(
       fields: {
         id: toFirestoreValue(sanitizedReport.id),
         scanTimestamp: toFirestoreValue(sanitizedReport.scanTimestamp),
-        inspectorName: toFirestoreValue(sanitizedReport.inspectorName || 'Insp. R. K. Verma'),
+        inspectorName: toFirestoreValue(sanitizedReport.inspectorName || 'Legal Metrology Inspector'),
         inspectorBadgeNumber: toFirestoreValue(sanitizedReport.inspectorBadgeNumber || 'LM-ND-4092'),
         location: toFirestoreValue(sanitizedReport.location || 'Supermarket Hub'),
         score: toFirestoreValue(sanitizedReport.score),
