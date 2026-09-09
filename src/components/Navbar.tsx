@@ -199,14 +199,14 @@ export const Navbar: React.FC<NavbarProps> = ({
                         <button
                           onClick={() => {
                             setIsMenuOpen(false);
-                            onOpenRulebook?.();
+                            setCurrentTab('rulebook');
                           }}
                           className="w-full px-4 py-2 text-left text-xs font-bold text-slate-700 dark:text-zinc-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white flex items-center gap-3 transition-colors cursor-pointer"
                         >
                           <BookOpen className="w-4 h-4 text-[#0A3663] dark:text-blue-400 shrink-0" />
                           <div>
-                            <div>Packaging Rules & Font Height Table</div>
-                            <div className="text-[10px] font-normal text-slate-400">Rule 6, 7 Table I, Rule 10, Rule 18</div>
+                            <div>Official LMPC 2011 Rulebook (43 Pages)</div>
+                            <div className="text-[10px] font-normal text-slate-400">Chapters I–VII, Schedules I–VIII & Font Table</div>
                           </div>
                         </button>
 
@@ -274,14 +274,14 @@ export const Navbar: React.FC<NavbarProps> = ({
                         <button
                           onClick={() => {
                             setIsMenuOpen(false);
-                            onOpenRulebook?.();
+                            setCurrentTab('rulebook');
                           }}
                           className="w-full px-4 py-2 text-left text-xs font-bold text-slate-700 dark:text-zinc-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white flex items-center gap-3 transition-colors cursor-pointer"
                         >
                           <BookOpen className="w-4 h-4 text-[#0A3663] dark:text-blue-400 shrink-0" />
                           <div>
-                            <div>Consumer Rights Guide</div>
-                            <div className="text-[10px] font-normal text-slate-400">Know your packaging protections</div>
+                            <div>Consumer Rights & LMPC Rulebook (43 Pages)</div>
+                            <div className="text-[10px] font-normal text-slate-400">Complete legal rights & pack protections</div>
                           </div>
                         </button>
                       </>
@@ -321,14 +321,14 @@ export const Navbar: React.FC<NavbarProps> = ({
                         <button
                           onClick={() => {
                             setIsMenuOpen(false);
-                            onOpenRulebook?.();
+                            setCurrentTab('rulebook');
                           }}
                           className="w-full px-4 py-2 text-left text-xs font-bold text-slate-700 dark:text-zinc-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white flex items-center gap-3 transition-colors cursor-pointer"
                         >
                           <BookOpen className="w-4 h-4 text-[#0A3663] dark:text-blue-400 shrink-0" />
                           <div>
-                            <div>Legal Metrology Gazette Rulebook</div>
-                            <div className="text-[10px] font-normal text-slate-400">Rules 5-32 & Fifth Schedule tables</div>
+                            <div>Legal Metrology Gazette Rulebook (43 Pages)</div>
+                            <div className="text-[10px] font-normal text-slate-400">Complete Chapters I–VII & Fifth Schedule tables</div>
                           </div>
                         </button>
 
@@ -696,6 +696,20 @@ export const Navbar: React.FC<NavbarProps> = ({
               </button>
             </>
           )}
+
+          {/* Global Rulebook Tab Access */}
+          <button
+            onClick={() => setCurrentTab('rulebook')}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+              currentTab === 'rulebook'
+                ? 'bg-[#0A3663] text-white shadow-xs'
+                : 'text-slate-700 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-zinc-800'
+            }`}
+            title="View full 43-page Legal Metrology Rules 2011 Gazette"
+          >
+            <BookOpen className="w-3.5 h-3.5 text-amber-500" />
+            <span>LMPC Rulebook</span>
+          </button>
         </nav>
 
         {/* Right Section: User Profile Chip / Sign-In & Theme Toggle */}

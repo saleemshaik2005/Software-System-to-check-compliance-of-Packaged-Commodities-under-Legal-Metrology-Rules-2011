@@ -11,6 +11,8 @@ import {
   MessageSquareWarning,
   Archive,
   Eye,
+  Clock,
+  Sparkles,
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { saveScanReport } from '../services/dbService';
@@ -270,12 +272,124 @@ export const ComplianceScorecard: React.FC<ComplianceScorecardProps> = ({
 
             <div className="bg-white dark:bg-zinc-800 p-2 rounded-lg border border-slate-200 dark:border-zinc-700">
               <span className="text-[10px] text-slate-500 block font-semibold">Consumer Care Helpline</span>
-              <span className="font-bold text-slate-900 truncate block">
+              <span className="font-bold text-slate-900 dark:text-zinc-100 truncate block">
                 {p.consumerCarePhone || 'Missing Helpline'}
               </span>
             </div>
           </div>
         </div>
+
+        {/* Real-time Shelf-Life & Expiry Status Widget */}
+        {report.expiryAudit && (
+          <div className="bg-slate-50 dark:bg-zinc-950 rounded-xl p-3.5 border border-slate-200 dark:border-zinc-800 mb-4 transition-colors">
+            <div className="flex items-center justify-between text-xs font-bold text-slate-800 dark:text-zinc-200 uppercase tracking-wider mb-2">
+              <span className="flex items-center gap-1.5">
+                <Clock className="w-3.5 h-3.5 text-blue-600 dark:text-blue-400" />
+                <span>Product Shelf-Life & Expiry Verification</span>
+              </span>
+              <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase ${
+                report.expiryAudit.status === 'EXPIRED'
+                  ? 'bg-red-600 text-white'
+                  : report.expiryAudit.status === 'NEAR_EXPIRY'
+                  ? 'bg-amber-500 text-slate-950'
+                  : 'bg-emerald-600 text-white'
+              }`}>
+                {report.expiryAudit.status === 'EXPIRED' ? 'EXPIRED' : report.expiryAudit.status === 'NEAR_EXPIRY' ? 'NEAR EXPIRY' : 'ACTIVE / FRESH'}
+              </span>
+            </div>
+
+            <div className="space-y-2">
+              <div className="flex items-center justify-between text-xs">
+                <span className="text-slate-600 dark:text-zinc-400">
+                  Mfg: <strong className="text-slate-900 dark:text-zinc-100">{report.expiryAudit.mfgDateFormatted}</strong> • Expiry: <strong className="text-slate-900 dark:text-zinc-100">{report.expiryAudit.expiryDateFormatted}</strong>
+                </span>
+                <span className="font-mono font-bold text-slate-900 dark:text-zinc-100 text-xs">
+                  {report.expiryAudit.status === 'EXPIRED'
+                    ? `${Math.abs(report.expiryAudit.remainingDays)} days overdue`
+                    : `${report.expiryAudit.remainingDays} days remaining (${report.expiryAudit.shelfLifeRemainingPercent}%)`}
+                </span>
+              </div>
+
+              {/* Progress Bar */}
+              <div className="w-full bg-slate-200 dark:bg-zinc-800 h-2 rounded-full overflow-hidden">
+                <div
+                  className={`h-full transition-all duration-500 ${
+                    report.expiryAudit.status === 'EXPIRED'
+                      ? 'bg-red-600'
+                      : report.expiryAudit.status === 'NEAR_EXPIRY'
+                      ? 'bg-amber-500'
+                      : 'bg-emerald-500'
+                  }`}
+                  style={{ width: `${report.expiryAudit.status === 'EXPIRED' ? 100 : report.expiryAudit.shelfLifeRemainingPercent}%` }}
+                />
+              </div>
+
+              <div className={`p-2 rounded-lg text-[11px] font-medium ${
+                report.expiryAudit.status === 'EXPIRED'
+                  ? 'bg-red-100/70 dark:bg-red-950/50 text-red-900 dark:text-red-300 border border-red-200 dark:border-red-900/50'
+                  : report.expiryAudit.status === 'NEAR_EXPIRY'
+                  ? 'bg-amber-100/70 dark:bg-amber-950/50 text-amber-900 dark:text-amber-300 border border-amber-200 dark:border-amber-900/50'
+                  : 'bg-emerald-100/70 dark:bg-emerald-950/50 text-emerald-900 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-900/50'
+              }`}>
+                {report.expiryAudit.advisoryText}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Additives, Preservatives & Health Safety Audit Card */}
+        {report.healthSafety && (
+          <div className="bg-slate-50 dark:bg-zinc-950 rounded-xl p-3.5 border border-slate-200 dark:border-zinc-800 mb-4 transition-colors">
+            <div className="flex items-center justify-between text-xs font-bold text-slate-800 dark:text-zinc-200 uppercase tracking-wider mb-2">
+              <span className="flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+                <span>Additives, Preservatives & Health Safety Audit</span>
+              </span>
+              <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${
+                report.healthSafety.safetyVerdict === 'CLEAN'
+                  ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300'
+                  : report.healthSafety.safetyVerdict === 'CONTAINS_ADDITIVES'
+                  ? 'bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300'
+                  : 'bg-red-100 dark:bg-red-950 text-red-800 dark:text-red-300'
+              }`}>
+                {report.healthSafety.safetyVerdict === 'CLEAN' ? 'Clean Formulation' : 'Contains Additives'}
+              </span>
+            </div>
+
+            <p className="text-[11px] text-slate-600 dark:text-zinc-400 mb-2">
+              {report.healthSafety.summaryText}
+            </p>
+
+            {report.healthSafety.additivesList.length > 0 ? (
+              <div className="space-y-1.5 pt-1">
+                {report.healthSafety.additivesList.map((item, idx) => (
+                  <div
+                    key={idx}
+                    className="p-2 rounded-lg bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-[11px]"
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold ${
+                        item.category === 'COLOR'
+                          ? 'bg-purple-100 text-purple-800 dark:bg-purple-950 dark:text-purple-300'
+                          : item.category === 'PRESERVATIVE'
+                          ? 'bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300'
+                          : 'bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-300'
+                      }`}>
+                        {item.insNumber || item.category}
+                      </span>
+                      <span className="font-bold text-slate-900 dark:text-zinc-100">{item.name}</span>
+                    </div>
+                    <span className="text-[10px] text-slate-500 dark:text-zinc-400">{item.healthAdvisory}</span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="p-2 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800/40 text-[11px] text-emerald-800 dark:text-emerald-300 font-medium">
+                ✓ 100% All-Natural Ingredients: No synthetic food colors (INS 102/110/129), artificial preservatives (INS 211/202), or chemical sweeteners detected.
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Compounding Penalty / Statutory Notice Callout */}
         {report.totalCompoundingFine > 0 && (

@@ -29,7 +29,41 @@ export type ProductCommodityCategory =
 export type ComplianceStatus = 'COMPLIANT' | 'NON_COMPLIANT' | 'NEEDS_REVIEW';
 export type RuleStatus = 'PASS' | 'FAIL' | 'WARNING' | 'EXEMPT';
 export type UserRole = 'OFFICER' | 'CITIZEN' | 'MANUFACTURER' | 'SURVEILLANCE' | 'ADMIN';
-export type ActiveTab = 'scanner' | 'upload' | 'analytics' | 'ecommerce' | 'manufacturer' | 'surveillance' | 'admin';
+export type ActiveTab = 'scanner' | 'upload' | 'analytics' | 'ecommerce' | 'manufacturer' | 'surveillance' | 'admin' | 'rulebook';
+
+export interface FoodAdditiveInfo {
+  name: string;
+  insNumber?: string;
+  category: 'COLOR' | 'PRESERVATIVE' | 'ARTIFICIAL_SWEETENER' | 'FLAVOR_ENHANCER' | 'OTHER';
+  isHarmfulOrWarningRequired: boolean;
+  healthAdvisory: string;
+}
+
+export interface HealthSafetyAudit {
+  hasArtificialColors: boolean;
+  hasPreservatives: boolean;
+  hasArtificialSweeteners: boolean;
+  additivesList: FoodAdditiveInfo[];
+  safetyVerdict: 'CLEAN' | 'CONTAINS_ADDITIVES' | 'HIGH_RISK_WARNING';
+  summaryText: string;
+  statutoryWarningRequired?: string;
+}
+
+export interface ExpiryAudit {
+  mfgDateFormatted: string;
+  expiryDateFormatted: string;
+  shelfLifeMonths?: number;
+  remainingDays: number;
+  shelfLifeRemainingPercent: number;
+  status: 'ACTIVE' | 'NEAR_EXPIRY' | 'EXPIRED';
+  advisoryText: string;
+}
+
+export interface ImageQualityAudit {
+  isBlurry: boolean;
+  sharpnessScore: number; // 0 - 100
+  qualityWarning?: string;
+}
 
 export interface AuthUser {
   id: string;
@@ -122,6 +156,13 @@ export interface ExtractedProductInfo {
   sampleSize?: number;
   hasStandardPackDisclaimer?: boolean;
   detectedBoxes?: BoundingBox[];
+  ingredientsRaw?: string;
+  ingredientsList?: string[];
+  expiryDate?: string;
+  shelfLifeMonths?: number;
+  healthSafety?: HealthSafetyAudit;
+  expiryAudit?: ExpiryAudit;
+  imageQuality?: ImageQualityAudit;
 }
 
 export interface ComplianceReport {
@@ -148,6 +189,9 @@ export interface ComplianceReport {
   ocrRawText?: string;
   formType: 'Form A' | 'Form B';
   summaryRemarks: string;
+  healthSafety?: HealthSafetyAudit;
+  expiryAudit?: ExpiryAudit;
+  imageQuality?: ImageQualityAudit;
 }
 
 export interface StandardPackSizeRule {

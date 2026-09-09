@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 import { ComplianceReport, ExtractedProductInfo } from '../types';
 import { evaluateCompliance } from '../services/complianceEngine';
-import { parseLabelDeclarations } from '../services/ocrService';
+import { parseLabelDeclarations, auditEcommerceProductUrl } from '../services/ocrService';
 
 interface EcommerceAuditTabProps {
   onAuditSelected: (report: ComplianceReport) => void;
@@ -249,36 +249,72 @@ export const EcommerceAuditTab: React.FC<EcommerceAuditTabProps> = ({ onAuditSel
     }, 600);
   };
 
-  const handleCustomUrlAudit = (e: React.FormEvent) => {
+  const handleCustomUrlAudit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!urlInput.trim()) return;
 
     setIsAuditing(true);
     const platform = detectPlatformFromUrl(urlInput);
-    const productName = extractProductNameFromUrl(urlInput);
 
-    setTimeout(() => {
-      // Find matching sample if domain matches, otherwise generate a customized audit for this URL
-      const matchingSample = ecomSamples.find(s =>
-        urlInput.toLowerCase().includes(s.platform.toLowerCase().replace('.in', ''))
-      );
+    try {
+      // Execute live neural URL auditor
+      const result = await auditEcommerceProductUrl(urlInput, platform);
+      const productInfo = result.productInfo;
+      const digital = result.digitalCompliance;
 
-      const baseInfo = matchingSample ? { ...matchingSample.productInfo } : { ...ecomSamples[0].productInfo };
-      baseInfo.productName = productName !== 'Audited E-Commerce Product Listing' ? productName : baseInfo.productName;
+      // Select high quality category image
+      let categoryImage = 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=800&auto=format&fit=crop&q=80';
+      const pLower = productInfo.productName.toLowerCase();
+      if (pLower.includes('butter') || pLower.includes('peanut')) {
+        categoryImage = '/demo/pintola-front.png';
+      } else if (pLower.includes('tea') || pLower.includes('coffee') || pLower.includes('chai')) {
+        categoryImage = 'https://images.unsplash.com/photo-1576092768241-dec231879fc3?w=800&auto=format&fit=crop&q=80';
+      } else if (pLower.includes('atta') || pLower.includes('flour') || pLower.includes('rice')) {
+        categoryImage = 'https://images.unsplash.com/photo-1586201375761-83865001e31c?w=800&auto=format&fit=crop&q=80';
+      } else if (pLower.includes('oil') || pLower.includes('ghee')) {
+        categoryImage = 'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=800&auto=format&fit=crop&q=80';
+      } else if (pLower.includes('chocolate') || pLower.includes('biscuit') || pLower.includes('cookie')) {
+        categoryImage = 'https://images.unsplash.com/photo-1549007994-cb92caebd54b?w=800&auto=format&fit=crop&q=80';
+      }
 
       const report = evaluateCompliance(
-        baseInfo,
+        productInfo,
         'front',
-        { front: matchingSample ? matchingSample.image : ecomSamples[0].image },
+        { front: categoryImage },
         {
           name: 'Legal Metrology Inspector',
           badge: 'LM-ECOM-01',
-          location: `Digital Marketplace Audit: ${platform} (${urlInput.slice(0, 40)}...)`
+          location: `Digital Marketplace Audit: ${platform} (${urlInput.slice(0, 45)}...)`
         }
       );
+
+      // Add Rule 10 digital platform evaluation
+      if (!digital.isRule10Compliant && digital.missingDeclarations.length > 0) {
+        report.evaluations.unshift({
+          ruleId: 'RULE_10_ECOM',
+          ruleNumber: 'Rule 10(1)',
+          ruleTitle: 'E-Commerce Marketplace Pre-Sale Digital Declarations',
+          category: 'MANDATORY_DECLARATIONS',
+          status: 'FAIL',
+          detectedValue: `Missing on listing: ${digital.missingDeclarations.join(', ')}`,
+          requiredStandard: 'E-commerce entities must display all mandatory packaging declarations (Rule 6) on digital product display pages before consumer purchase',
+          legalReference: 'Rule 10 read with Section 18 & 36 of Legal Metrology Act 2009',
+          gazettePage: 7,
+          explanation: `The audited product listing on ${platform} omitted required statutory disclosures prior to point-of-sale checkout.`,
+          penaltySection: 'Section 36(1)',
+          compoundingFine: 25000
+        });
+        report.violationsCount++;
+        report.totalCompoundingFine += 25000;
+        report.overallStatus = 'NON_COMPLIANT';
+      }
+
       setIsAuditing(false);
       onAuditSelected(report);
-    }, 800);
+    } catch (err) {
+      console.error('Error during ecommerce URL audit:', err);
+      setIsAuditing(false);
+    }
   };
 
   const handleCustomTextAudit = (e: React.FormEvent) => {

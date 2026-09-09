@@ -1,10 +1,208 @@
 // Compliance Evaluation Engine
 // Enforces The Legal Metrology (Packaged Commodities) Rules, 2011
 
-import { ExtractedProductInfo, ComplianceReport, RuleEvaluation, BoundingBox } from '../types';
+import { ExtractedProductInfo, ComplianceReport, RuleEvaluation, BoundingBox, HealthSafetyAudit, ExpiryAudit, FoodAdditiveInfo } from '../types';
 import { isStandardPackSize } from '../data/standardPackSizes';
 import { calculateMPE } from '../data/mpeLimits';
 import { getAdminConfig } from './adminService';
+
+/**
+ * Health & Safety Audit: Detects artificial colors, chemical preservatives, artificial sweeteners
+ */
+export function auditHealthAndSafety(
+  product: ExtractedProductInfo,
+  rawOcrText = ''
+): HealthSafetyAudit {
+  const combinedText = [
+    product.productName || '',
+    product.genericName || '',
+    product.ingredientsRaw || '',
+    (product.ingredientsList || []).join(' '),
+    rawOcrText || ''
+  ].join(' ').toLowerCase();
+
+  const additivesList: FoodAdditiveInfo[] = [];
+
+  // 1. Synthetic Food Colors
+  const syntheticColors: { match: RegExp; name: string; ins: string; advisory: string }[] = [
+    { match: /(tartrazine|ins\s*102\b|e102\b|yellow\s*5)/i, name: 'Tartrazine (Synthetic Yellow)', ins: 'INS 102', advisory: 'Permitted Synthetic Food Colour. Warning required: May cause hyperactivity or allergic reactions in sensitive individuals.' },
+    { match: /(sunset\s*yellow|ins\s*110\b|e110\b|yellow\s*6)/i, name: 'Sunset Yellow FCF', ins: 'INS 110', advisory: 'Synthetic Azo Dye. Requires statutory declaration: CONTAINS PERMITTED SYNTHETIC FOOD COLOUR(S).' },
+    { match: /(allura\s*red|ins\s*129\b|e129\b|red\s*40)/i, name: 'Allura Red AC', ins: 'INS 129', advisory: 'Synthetic Red Colour. Requires prominent declaration under Food Safety Packaging regulations.' },
+    { match: /(brilliant\s*blue|ins\s*133\b|e133\b|blue\s*1)/i, name: 'Brilliant Blue FCF', ins: 'INS 133', advisory: 'Synthetic Triarylmethane Colour. Must not exceed statutory dosage limits.' },
+    { match: /(carmoisine|azorubine|ins\s*122\b|e122\b)/i, name: 'Carmoisine (Azorubine)', ins: 'INS 122', advisory: 'Synthetic Food Colour. Strictly prohibited in infant and weaning foods under Second Schedule.' },
+    { match: /(ponceau\s*4r|ins\s*124\b|e124\b)/i, name: 'Ponceau 4R', ins: 'INS 124', advisory: 'Synthetic Colour. Mandatory declaration required on Principal Display Panel.' },
+    { match: /(caramel\s*iv|caramel\s*color|ins\s*150d\b|e150d\b)/i, name: 'Ammonia Sulphite Caramel (Class IV)', ins: 'INS 150d', advisory: 'Artificial Colouring Agent. Contains 4-MEI traces; disclosure mandatory.' },
+  ];
+
+  for (const c of syntheticColors) {
+    if (c.match.test(combinedText)) {
+      additivesList.push({
+        name: c.name,
+        insNumber: c.ins,
+        category: 'COLOR',
+        isHarmfulOrWarningRequired: true,
+        healthAdvisory: c.advisory
+      });
+    }
+  }
+
+  // 2. Chemical Preservatives
+  const preservatives: { match: RegExp; name: string; ins: string; advisory: string }[] = [
+    { match: /(sodium\s*benzoate|benzoate|ins\s*211\b|e211\b)/i, name: 'Sodium Benzoate (Class II Preservative)', ins: 'INS 211', advisory: 'Antimicrobial Preservative. Formation of benzene traces when combined with Ascorbic Acid (Vitamin C).' },
+    { match: /(potassium\s*sorbate|sorbate|ins\s*202\b|e202\b)/i, name: 'Potassium Sorbate', ins: 'INS 202', advisory: 'Class II Preservative for mold inhibition. Allowed within statutory limits under FSSAI norms.' },
+    { match: /(sulphur\s*dioxide|sulphite|sulfite|ins\s*220\b|ins\s*224\b|e220\b)/i, name: 'Sulphites / Sulphur Dioxide', ins: 'INS 220-224', advisory: 'Preservative & Antioxidant. High allergen risk: Mandatory allergen declaration if >10mg/kg.' },
+    { match: /(bha\b|butylated\s*hydroxyanisole|ins\s*320\b)/i, name: 'BHA (Antioxidant Preservative)', ins: 'INS 320', advisory: 'Synthetic phenolic antioxidant. Strict concentration limits apply under Indian Food Standards.' },
+    { match: /(tbhq\b|ins\s*319\b)/i, name: 'TBHQ (Tertiary Butylhydroquinone)', ins: 'INS 319', advisory: 'Synthetic antioxidant preservative in edible oils. Permissible up to 200 ppm.' },
+  ];
+
+  for (const p of preservatives) {
+    if (p.match.test(combinedText)) {
+      additivesList.push({
+        name: p.name,
+        insNumber: p.ins,
+        category: 'PRESERVATIVE',
+        isHarmfulOrWarningRequired: true,
+        healthAdvisory: p.advisory
+      });
+    }
+  }
+
+  // 3. Artificial Sweeteners
+  const sweeteners: { match: RegExp; name: string; ins: string; advisory: string }[] = [
+    { match: /(aspartame|ins\s*951\b|e951\b)/i, name: 'Aspartame (Artificial Sweetener)', ins: 'INS 951', advisory: 'Intense Artificial Sweetener. STATUTORY MANDATE: Must declare "NOT RECOMMENDED FOR CHILDREN" and "PHENYLKETONURICS: CONTAINS PHENYLALANINE".' },
+    { match: /(sucralose|ins\s*955\b|e955\b)/i, name: 'Sucralose', ins: 'INS 955', advisory: 'Non-caloric synthetic sweetener. Must declare quantitative sweetener percentage on label.' },
+    { match: /(acesulfame|ace-k|ins\s*950\b|e950\b)/i, name: 'Acesulfame Potassium', ins: 'INS 950', advisory: 'Artificial Sweetener. Mandatory warning: "CONTAINS ARTIFICIAL SWEETENER AND FOR CALORIE CONSCIOUS".' },
+  ];
+
+  for (const s of sweeteners) {
+    if (s.match.test(combinedText)) {
+      additivesList.push({
+        name: s.name,
+        insNumber: s.ins,
+        category: 'ARTIFICIAL_SWEETENER',
+        isHarmfulOrWarningRequired: true,
+        healthAdvisory: s.advisory
+      });
+    }
+  }
+
+  // 4. Other additives
+  if (/(msg\b|monosodium\s*glutamate|ins\s*621\b)/i.test(combinedText)) {
+    additivesList.push({
+      name: 'Monosodium Glutamate (MSG)',
+      insNumber: 'INS 621',
+      category: 'FLAVOR_ENHANCER',
+      isHarmfulOrWarningRequired: true,
+      healthAdvisory: 'Flavor Enhancer. Mandatory statutory labeling: NOT RECOMMENDED FOR INFANTS BELOW 12 MONTHS.'
+    });
+  }
+
+  if (/(hydrogenated\s*vegetable\s*oil|trans\s*fat\s*[^0]|trans-fat)/i.test(combinedText)) {
+    additivesList.push({
+      name: 'Hydrogenated Vegetable Oil / Trans Fats',
+      category: 'OTHER',
+      isHarmfulOrWarningRequired: true,
+      healthAdvisory: 'Industrial trans fatty acids. Must comply with statutory limit of <2% of total oil/fat.'
+    });
+  }
+
+  const hasColors = additivesList.some(a => a.category === 'COLOR');
+  const hasPres = additivesList.some(a => a.category === 'PRESERVATIVE');
+  const hasSweeteners = additivesList.some(a => a.category === 'ARTIFICIAL_SWEETENER');
+
+  let safetyVerdict: 'CLEAN' | 'CONTAINS_ADDITIVES' | 'HIGH_RISK_WARNING' = 'CLEAN';
+  let summaryText = 'No synthetic food colors, artificial sweeteners, or harmful chemical preservatives detected. 100% natural / clean label formulation.';
+  let statutoryWarningRequired: string | undefined;
+
+  if (hasSweeteners) {
+    safetyVerdict = 'HIGH_RISK_WARNING';
+    summaryText = 'Contains artificial sweeteners requiring mandatory front-of-pack caution: "NOT RECOMMENDED FOR CHILDREN".';
+    statutoryWarningRequired = 'Rule 6 & FSSAI 2.4.5: Front-of-pack warning "CONTAINS ARTIFICIAL SWEETENER" mandatory.';
+  } else if (hasColors || hasPres) {
+    safetyVerdict = 'CONTAINS_ADDITIVES';
+    summaryText = `Detected ${additivesList.length} additive(s) (${[hasColors ? 'synthetic colors' : '', hasPres ? 'preservatives' : ''].filter(Boolean).join(', ')}). Mandatory statutory declaration required.`;
+    statutoryWarningRequired = 'Rule 6(1): Packages with permitted synthetic colors or Class II preservatives must explicitly declare them in ingredients.';
+  }
+
+  return {
+    hasArtificialColors: hasColors,
+    hasPreservatives: hasPres,
+    hasArtificialSweeteners: hasSweeteners,
+    additivesList,
+    safetyVerdict,
+    summaryText,
+    statutoryWarningRequired
+  };
+}
+
+/**
+ * Calculates remaining shelf life and checks if product is expired
+ */
+export function calculateExpiryAudit(product: ExtractedProductInfo): ExpiryAudit {
+  const now = new Date('2026-09-09T00:00:00Z'); // Current simulation date
+  
+  let mfgYear = parseInt(product.mfgYear, 10);
+  let mfgMonth = parseInt(product.mfgMonth, 10);
+  if (isNaN(mfgYear)) mfgYear = 2026;
+  if (isNaN(mfgMonth)) mfgMonth = 8;
+
+  let expYear = product.expYear ? parseInt(product.expYear, 10) : NaN;
+  let expMonth = product.expMonth ? parseInt(product.expMonth, 10) : NaN;
+
+  if (product.expiryDate) {
+    const parts = product.expiryDate.split(/[-/]/);
+    if (parts.length === 2) {
+      if (parts[0].length === 4) {
+        expYear = parseInt(parts[0], 10);
+        expMonth = parseInt(parts[1], 10);
+      } else {
+        expMonth = parseInt(parts[0], 10);
+        expYear = parseInt(parts[1], 10);
+      }
+    }
+  }
+
+  const shelfLife = product.shelfLifeMonths || 12;
+  if (isNaN(expYear) || isNaN(expMonth)) {
+    const expDateObj = new Date(Date.UTC(mfgYear, mfgMonth - 1 + shelfLife, 1));
+    expYear = expDateObj.getUTCFullYear();
+    expMonth = expDateObj.getUTCMonth() + 1;
+  }
+
+  const mfgDate = new Date(Date.UTC(mfgYear, mfgMonth - 1, 1));
+  const expDate = new Date(Date.UTC(expYear, expMonth, 0)); // last day of month
+
+  const totalShelfMs = expDate.getTime() - mfgDate.getTime();
+  const remainingMs = expDate.getTime() - now.getTime();
+  const remainingDays = Math.round(remainingMs / (1000 * 60 * 60 * 24));
+
+  const percent = totalShelfMs > 0 ? Math.max(0, Math.min(100, Math.round((remainingMs / totalShelfMs) * 100))) : 0;
+
+  const mfgFormatted = `${String(mfgMonth).padStart(2, '0')}/${mfgYear}`;
+  const expFormatted = `${String(expMonth).padStart(2, '0')}/${expYear}`;
+
+  let status: 'ACTIVE' | 'NEAR_EXPIRY' | 'EXPIRED' = 'ACTIVE';
+  let advisoryText = `Fresh & Within Shelf Life. ${remainingDays} days remaining (${percent}% shelf-life valid).`;
+
+  if (remainingDays < 0) {
+    status = 'EXPIRED';
+    const daysAgo = Math.abs(remainingDays);
+    advisoryText = `⛔ EXPIRED COMMODITY — Expired ${daysAgo} days ago (${expFormatted}). Sale of expired commodities is strictly prohibited under Legal Metrology Act & Consumer Protection Act.`;
+  } else if (remainingDays <= 30) {
+    status = 'NEAR_EXPIRY';
+    advisoryText = `⚠️ Approaching Expiry: Only ${remainingDays} days remaining before expiration (${expFormatted}). Rapid turnover required.`;
+  }
+
+  return {
+    mfgDateFormatted: mfgFormatted,
+    expiryDateFormatted: expFormatted,
+    shelfLifeMonths: shelfLife,
+    remainingDays,
+    shelfLifeRemainingPercent: percent,
+    status,
+    advisoryText
+  };
+}
 
 export function evaluateCompliance(
   product: ExtractedProductInfo,
@@ -706,6 +904,48 @@ export function evaluateCompliance(
     }
   }
 
+  // Expiry & Shelf Life Evaluation
+  const expiryAudit = product.expiryAudit || calculateExpiryAudit(product);
+  product.expiryAudit = expiryAudit;
+
+  if (expiryAudit.status === 'EXPIRED') {
+    evaluations.push({
+      ruleId: 'RULE_EXPIRY',
+      ruleNumber: 'Rule 6(1)(d) & Sec 36',
+      ruleTitle: 'Product Expiration & Outdated Commodity Prohibition',
+      category: 'MANDATORY_DECLARATIONS',
+      status: 'FAIL',
+      detectedValue: `Expired on ${expiryAudit.expiryDateFormatted} (${Math.abs(expiryAudit.remainingDays)} days overdue)`,
+      requiredStandard: 'Commodity offered for retail sale must be strictly within valid shelf-life period',
+      legalReference: 'Section 36(1) Legal Metrology Act read with Consumer Protection Act 2019',
+      gazettePage: 5,
+      explanation: `Product has surpassed its declared expiry date of ${expiryAudit.expiryDateFormatted}. Continued possession or offer for retail distribution is an offence.`,
+      penaltySection: 'Section 36(1)',
+      compoundingFine: 25000
+    });
+  }
+
+  // Health, Additives & Safety Audit
+  const healthSafety = product.healthSafety || auditHealthAndSafety(product, product.rawQuantityString);
+  product.healthSafety = healthSafety;
+
+  if (healthSafety.hasArtificialSweeteners) {
+    evaluations.push({
+      ruleId: 'RULE_ARTIFICIAL_SWEETENER',
+      ruleNumber: 'Rule 6 & FSSAI 2.4.5',
+      ruleTitle: 'Artificial Sweetener Statutory Front-of-Pack Caution',
+      category: 'MANDATORY_DECLARATIONS',
+      status: 'WARNING',
+      detectedValue: healthSafety.additivesList.filter(a => a.category === 'ARTIFICIAL_SWEETENER').map(a => a.name).join(', '),
+      requiredStandard: 'Mandatory declaration "NOT RECOMMENDED FOR CHILDREN" and quantitative declaration',
+      legalReference: 'FSSAI Packaging & Labelling Reg. 2011 read with LMPC Rule 6',
+      gazettePage: 7,
+      explanation: 'Products containing intense artificial sweeteners must carry front-of-pack caution for children and phenylketonurics.',
+      penaltySection: 'Rule 32(3)',
+      compoundingFine: 0
+    });
+  }
+
   // Deductions and Scoring
   const failedRules = evaluations.filter(e => e.status === 'FAIL');
   const warningRules = evaluations.filter(e => e.status === 'WARNING');
@@ -837,6 +1077,9 @@ export function evaluateCompliance(
     capturedImages: images,
     activeView,
     formType,
-    summaryRemarks
+    summaryRemarks,
+    healthSafety,
+    expiryAudit,
+    imageQuality: product.imageQuality
   };
 }

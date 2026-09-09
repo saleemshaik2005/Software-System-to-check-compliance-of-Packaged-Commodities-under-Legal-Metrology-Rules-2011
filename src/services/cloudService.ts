@@ -5,7 +5,7 @@
 // 3. Two-way Real-Time Cloud Synchronization across all devices
 
 import { ComplianceReport } from '../types';
-import { DEFAULT_GEMINI_KEY } from './ocrService';
+import { DEFAULT_VISION_KEY } from './ocrService';
 
 // Built-in Cloudinary configuration (pre-configured)
 export const DEFAULT_CLOUDINARY_CLOUD_NAME = 'dq17ske9m';
@@ -34,7 +34,7 @@ export const DEFAULT_CLOUD_CONFIG: CloudConfig = {
   cloudinaryUploadPreset: DEFAULT_CLOUDINARY_UPLOAD_PRESET,
   firestoreProjectId: DEFAULT_FIRESTORE_PROJECT_ID,
   firestoreApiKey: DEFAULT_FIRESTORE_API_KEY,
-  visionApiKey: DEFAULT_GEMINI_KEY,
+  visionApiKey: DEFAULT_VISION_KEY,
   autoSyncToCloud: true,
 };
 

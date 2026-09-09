@@ -15,6 +15,7 @@ import { PDFPreviewModal } from './components/PDFPreviewModal';
 import { ConsumerGrievanceModal } from './components/ConsumerGrievanceModal';
 import { CloudConfigModal } from './components/CloudConfigModal';
 import { RulebookDrawer } from './components/RulebookDrawer';
+import { RulebookPage } from './components/RulebookPage';
 import { LoginModal } from './components/LoginModal';
 import { InspectionVaultModal } from './components/InspectionVaultModal';
 import { Footer } from './components/Footer';
@@ -417,6 +418,13 @@ export function App() {
         {/* ========================================================================= */}
         {currentTab === 'admin' && (
           <AdminControlCenter />
+        )}
+
+        {/* ========================================================================= */}
+        {/* TAB 8: FULL-PAGE OFFICIAL LMPC 2011 RULEBOOK (43 PAGES) */}
+        {/* ========================================================================= */}
+        {currentTab === 'rulebook' && (
+          <RulebookPage onBack={() => setCurrentTab(getTabForRole(userRole))} />
         )}
       </main>
 
