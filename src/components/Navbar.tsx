@@ -1,27 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
+  Home,
   Scale,
   RefreshCw,
   CheckCircle,
   Building2,
   BarChart3,
   Globe,
-  Sun,
-  Moon,
   Menu,
   KeyRound,
   Shield,
-  ShoppingBag,
-  Sliders,
-  Settings,
   BookOpen,
   Archive,
   PhoneCall,
   LogOut,
   Camera,
-  Upload,
   Radio,
-  X
+  Settings,
+  X,
+  User as UserIcon,
+  ChevronDown,
+  Layers
 } from 'lucide-react';
 import { UserRole, AuthUser, ActiveTab, Language } from '../types';
 import { getTranslation, SUPPORTED_LANGUAGES, setStoredLanguage } from '../services/i18nService';
@@ -34,8 +33,8 @@ interface NavbarProps {
   userRole: UserRole;
   setUserRole: (role: UserRole) => void;
   currentUser: AuthUser | null;
-  isDarkMode: boolean;
-  setIsDarkMode: (val: boolean) => void;
+  isDarkMode?: boolean;
+  setIsDarkMode?: (val: boolean) => void;
   onOpenRulebook?: () => void;
   onOpenVault?: () => void;
   onOpenGrievance?: () => void;
@@ -51,8 +50,6 @@ export const Navbar: React.FC<NavbarProps> = ({
   userRole,
   setUserRole,
   currentUser,
-  isDarkMode,
-  setIsDarkMode,
   onOpenRulebook,
   onOpenVault,
   onOpenGrievance,
@@ -63,8 +60,10 @@ export const Navbar: React.FC<NavbarProps> = ({
 }) => {
   const adminConfig = getAdminConfig();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
   const [lastSyncedTime, setLastSyncedTime] = useState<string>('Just now');
+  const userMenuRef = useRef<HTMLDivElement>(null);
 
   // Real-time Cloud Sync Listener
   useEffect(() => {
@@ -77,6 +76,17 @@ export const Navbar: React.FC<NavbarProps> = ({
     };
     window.addEventListener(SYNC_STATUS_EVENT, handleSyncStatus);
     return () => window.removeEventListener(SYNC_STATUS_EVENT, handleSyncStatus);
+  }, []);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
+        setIsUserDropdownOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
   const handleManualSync = async () => {
@@ -101,34 +111,17 @@ export const Navbar: React.FC<NavbarProps> = ({
     }
   };
 
-  const handleLogoClick = () => {
-    switch (userRole) {
-      case 'MANUFACTURER':
-        setCurrentTab('manufacturer');
-        break;
-      case 'SURVEILLANCE':
-        setCurrentTab('surveillance');
-        break;
-      case 'ADMIN':
-        setCurrentTab('admin');
-        break;
-      default:
-        setCurrentTab('scanner');
-        break;
-    }
-  };
-
   return (
-    <header className="sticky top-0 z-40 bg-white dark:bg-zinc-900 border-b border-slate-200 dark:border-zinc-800 shadow-xs transition-colors">
-      {/* Sleek Top Govt of India & SIH Strip */}
-      <div className="bg-[#18181b] dark:bg-black text-white px-4 py-1 text-[11px] border-b border-zinc-800 flex flex-wrap items-center justify-between gap-2">
+    <header className="sticky top-0 z-40 bg-[#FEFAE0] border-b border-[#DDA15E]/40 shadow-xs transition-colors">
+      {/* Top Govt of India & SIH Strip in Deep Forest Olive (#283618) */}
+      <div className="bg-[#283618] text-[#FEFAE0] px-4 py-1 text-[11px] border-b border-[#606C38]/40 flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2">
-          <span className="inline-block w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span className="font-bold text-amber-300">SMART INDIA HACKATHON 2026</span>
-          <span className="text-blue-300">•</span>
+          <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#DDA15E] animate-pulse"></span>
+          <span className="font-bold text-[#DDA15E] tracking-wide">SMART INDIA HACKATHON 2026</span>
+          <span className="text-[#DDA15E]/60">•</span>
           <span className="font-mono font-bold text-white">PS ID: SIH-26034</span>
-          <span className="hidden md:inline text-blue-300">•</span>
-          <span className="hidden md:inline text-slate-300">
+          <span className="hidden md:inline text-[#DDA15E]/60">•</span>
+          <span className="hidden md:inline text-[#FEFAE0]/80">
             {adminConfig.specialDriveBanner || 'Ministry of Consumer Affairs, Food & Public Distribution'}
           </span>
         </div>
@@ -137,17 +130,17 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button
             onClick={handleManualSync}
             disabled={isSyncing}
-            className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-950/80 border border-emerald-500/40 text-emerald-400 hover:bg-emerald-900 font-medium text-[10px] transition-all cursor-pointer shadow-2xs"
+            className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#1c2610] border border-[#606C38] text-[#DDA15E] hover:bg-[#283618] font-medium text-[10px] transition-all cursor-pointer shadow-2xs"
             title={`Google Cloud Firestore Synced. Click to refresh. Last Synced: ${lastSyncedTime}`}
           >
-            <RefreshCw className={`w-3 h-3 text-emerald-400 ${isSyncing ? 'animate-spin' : ''}`} />
+            <RefreshCw className={`w-3 h-3 text-[#DDA15E] ${isSyncing ? 'animate-spin' : ''}`} />
             <span>{isSyncing ? getTranslation('syncing', currentLang) : (currentLang === 'hi' ? 'क्लाउड सिंक' : currentLang === 'te' ? 'క్లౌడ్ సింక్' : '☁️ Synced')}</span>
-            <span className="text-[9px] text-emerald-300/70">({lastSyncedTime})</span>
+            <span className="text-[9px] text-[#FEFAE0]/70">({lastSyncedTime})</span>
           </button>
 
           {/* Language Switcher Pill */}
-          <div className="flex items-center rounded-lg bg-zinc-800 p-0.5 border border-zinc-700 text-[10px] font-bold">
-            <Globe className="w-3 h-3 text-cyan-400 ml-1 mr-1" />
+          <div className="flex items-center rounded-lg bg-[#1c2610] p-0.5 border border-[#606C38] text-[10px] font-bold">
+            <Globe className="w-3 h-3 text-[#DDA15E] ml-1 mr-1" />
             {SUPPORTED_LANGUAGES.map((opt) => (
               <button
                 key={opt.code}
@@ -157,8 +150,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                 }}
                 className={`px-1.5 py-0.5 rounded-md transition-all cursor-pointer ${
                   currentLang === opt.code
-                    ? 'bg-[#00A651] text-white shadow-xs font-black'
-                    : 'text-zinc-400 hover:text-white'
+                    ? 'bg-[#606C38] text-[#FEFAE0] font-black shadow-xs'
+                    : 'text-[#FEFAE0]/70 hover:text-white'
                 }`}
                 title={opt.nativeLabel}
               >
@@ -167,339 +160,174 @@ export const Navbar: React.FC<NavbarProps> = ({
             ))}
           </div>
 
-          <div className="hidden lg:flex items-center gap-1 text-emerald-300 font-semibold">
+          <div className="hidden lg:flex items-center gap-1 text-[#DDA15E] font-semibold">
             <CheckCircle className="w-3 h-3" />
             <span>LMPC Rules 2011</span>
           </div>
-          <span className="hidden lg:inline text-zinc-600">|</span>
-          <div className="hidden lg:block text-cyan-300 font-mono font-bold">Team: Neural Knights</div>
+          <span className="hidden lg:inline text-[#606C38]">|</span>
+          <div className="hidden lg:block text-[#FEFAE0] font-mono font-bold">Team: Neural Knights</div>
         </div>
       </div>
 
-      {/* Main Navbar */}
-      <div className="max-w-7xl mx-auto px-4 py-2.5 flex flex-wrap items-center justify-between gap-3">
-        {/* Left Section: 3-Bars Hamburger Dropdown + Brand Logo */}
-        <div className="flex items-center gap-2.5">
-          {/* Top Left 3-Bars Hamburger Dropdown */}
+      {/* Main Navbar - Guaranteed Single Minimal Line Layout */}
+      <div className="max-w-7xl mx-auto px-4 py-2 flex items-center justify-between gap-3">
+        {/* Left Section: Hamburger Menu + Inspack Logo */}
+        <div className="flex items-center gap-2.5 shrink-0">
+          {/* 3-Bars Hamburger Button */}
           <div className="relative">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-zinc-800 dark:hover:bg-slate-700 text-slate-800 dark:text-zinc-200 transition-all cursor-pointer border border-slate-200 dark:border-zinc-700 shadow-2xs flex items-center justify-center"
+              className="p-2 rounded-xl bg-[#F4EED4] hover:bg-[#EAE2C2] text-[#283618] transition-all cursor-pointer border border-[#DDA15E]/40 shadow-xs flex items-center justify-center"
               title="Quick Menu"
             >
               {isMenuOpen ? (
-                <X className="w-4 h-4 text-[#0A3663] dark:text-blue-400" />
+                <X className="w-4 h-4 text-[#283618]" />
               ) : (
-                <Menu className="w-4 h-4 text-[#0A3663] dark:text-blue-400" />
+                <Menu className="w-4 h-4 text-[#283618]" />
               )}
             </button>
 
-            {/* Role-tailored Dropdown Menu */}
+            {/* Curated Non-Duplicate Hamburger Dropdown */}
             {isMenuOpen && (
               <>
                 <div
                   className="fixed inset-0 z-40"
                   onClick={() => setIsMenuOpen(false)}
                 />
-                <div className="absolute left-0 mt-2 w-72 bg-white dark:bg-zinc-900 rounded-2xl shadow-2xl border border-slate-200 dark:border-zinc-800 py-2 z-50 animate-in fade-in zoom-in-95 duration-150">
+                <div className="absolute left-0 mt-2 w-72 bg-[#FEFAE0] rounded-2xl shadow-2xl border border-[#DDA15E]/60 py-2 z-50 animate-in fade-in zoom-in-95 duration-150">
                   {/* Current User Header */}
                   {currentUser ? (
-                    <div className="px-4 py-2.5 border-b border-slate-100 dark:border-zinc-800 flex items-center gap-3 bg-slate-50/70 dark:bg-zinc-950/50">
-                      <div className="w-8 h-8 rounded-full bg-[#0A3663] text-white flex items-center justify-center font-bold text-xs">
+                    <div className="px-4 py-2.5 border-b border-[#DDA15E]/30 flex items-center gap-3 bg-[#F4EED4]/60">
+                      <div className="w-8 h-8 rounded-full bg-[#283618] text-[#FEFAE0] flex items-center justify-center font-bold text-xs">
                         {currentUser.name.charAt(0)}
                       </div>
                       <div className="overflow-hidden">
-                        <div className="text-xs font-black text-slate-900 dark:text-zinc-100 truncate">
+                        <div className="text-xs font-black text-[#283618] truncate">
                           {currentUser.name}
                         </div>
-                        <div className="text-[10px] font-bold text-[#00A651] uppercase">
-                          {userRole} • {getTranslation('menu_active_session', currentLang)}
+                        <div className="text-[10px] font-bold text-[#BC6C25] uppercase">
+                          {userRole} • Active Session
                         </div>
                       </div>
                     </div>
                   ) : (
-                    <div className="px-4 py-2.5 border-b border-slate-100 dark:border-zinc-800 bg-slate-50/70 dark:bg-zinc-950/50">
-                      <div className="text-xs font-bold text-slate-700 dark:text-zinc-300">
-                        {getTranslation('menu_guest_mode', currentLang)}
+                    <div className="px-4 py-2.5 border-b border-[#DDA15E]/30 bg-[#F4EED4]/60">
+                      <div className="text-xs font-bold text-[#283618]">
+                        Guest Mode
                       </div>
                       <button
                         onClick={() => {
                           setIsMenuOpen(false);
                           onOpenLogin?.();
                         }}
-                        className="text-[11px] font-bold text-[#00A651] hover:underline cursor-pointer mt-0.5 block"
+                        className="text-[11px] font-bold text-[#283618] hover:underline cursor-pointer mt-0.5 block"
                       >
-                        {getTranslation('menu_sign_in_test', currentLang)}
+                        Sign in to select role
                       </button>
                     </div>
                   )}
 
-                  {/* Menu Items strictly filtered by Role */}
+                  {/* Clean Non-Duplicate Menu Items */}
                   <div className="py-1">
-                    {/* Manufacturer Menu Options */}
-                    {userRole === 'MANUFACTURER' && (
-                      <>
-                        <button
-                          onClick={() => {
-                            setIsMenuOpen(false);
-                            setCurrentTab('manufacturer');
-                          }}
-                          className="w-full px-4 py-2 text-left text-xs font-bold text-slate-700 dark:text-zinc-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white flex items-center gap-3 transition-colors cursor-pointer"
-                        >
-                          <Building2 className="w-4 h-4 text-amber-600 shrink-0" />
-                          <div>
-                            <div>Artwork Pre-Check Simulator</div>
-                            <div className="text-[10px] font-normal text-slate-400">Validate packaging prior to printing</div>
-                          </div>
-                        </button>
+                    <button
+                      onClick={() => {
+                        setIsMenuOpen(false);
+                        setCurrentTab('home');
+                      }}
+                      className="w-full px-4 py-2 text-left text-xs font-bold text-[#283618] hover:bg-[#EAE2C2] flex items-center gap-3 transition-colors cursor-pointer"
+                    >
+                      <Home className="w-4 h-4 text-[#283618] shrink-0" />
+                      <div>
+                        <div>{getTranslation('tab_home', currentLang)}</div>
+                        <div className="text-[10px] font-normal text-[#606C38]">Main welcome and gateway dashboard</div>
+                      </div>
+                    </button>
 
-                        <button
-                          onClick={() => {
-                            setIsMenuOpen(false);
-                            setCurrentTab('rulebook');
-                          }}
-                          className="w-full px-4 py-2 text-left text-xs font-bold text-slate-700 dark:text-zinc-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white flex items-center gap-3 transition-colors cursor-pointer"
-                        >
-                          <BookOpen className="w-4 h-4 text-[#0A3663] dark:text-blue-400 shrink-0" />
-                          <div>
-                            <div>Official LMPC 2011 Rulebook (43 Pages)</div>
-                            <div className="text-[10px] font-normal text-slate-400">Chapters I–VII, Schedules I–VIII & Font Table</div>
-                          </div>
-                        </button>
+                    <button
+                      onClick={() => {
+                        setIsMenuOpen(false);
+                        setCurrentTab('profile');
+                      }}
+                      className="w-full px-4 py-2 text-left text-xs font-bold text-[#283618] hover:bg-[#EAE2C2] flex items-center gap-3 transition-colors cursor-pointer"
+                    >
+                      <UserIcon className="w-4 h-4 text-[#BC6C25] shrink-0" />
+                      <div>
+                        <div>{getTranslation('tab_profile', currentLang)}</div>
+                        <div className="text-[10px] font-normal text-[#606C38]">Official credentials, jurisdiction & powers</div>
+                      </div>
+                    </button>
 
-                        <button
-                          onClick={() => {
-                            setIsMenuOpen(false);
-                            onOpenVault?.();
-                          }}
-                          className="w-full px-4 py-2 text-left text-xs font-bold text-slate-700 dark:text-zinc-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white flex items-center gap-3 transition-colors cursor-pointer"
-                        >
-                          <Archive className="w-4 h-4 text-emerald-600 shrink-0" />
-                          <div>
-                            <div>Pre-Compliance Archive</div>
-                            <div className="text-[10px] font-normal text-slate-400">Saved artwork audit certificates</div>
-                          </div>
-                        </button>
-                      </>
-                    )}
+                    <button
+                      onClick={() => {
+                        setIsMenuOpen(false);
+                        setCurrentTab('catalog');
+                      }}
+                      className="w-full px-4 py-2 text-left text-xs font-bold text-[#283618] hover:bg-[#EAE2C2] flex items-center gap-3 transition-colors cursor-pointer"
+                    >
+                      <Layers className="w-4 h-4 text-[#606C38] shrink-0" />
+                      <div>
+                        <div>{getTranslation('tab_catalog', currentLang)}</div>
+                        <div className="text-[10px] font-normal text-[#606C38]">Multi-image factory batch auto-clustering</div>
+                      </div>
+                    </button>
 
-                    {/* Citizen Menu Options */}
-                    {userRole === 'CITIZEN' && (
-                      <>
-                        <button
-                          onClick={() => {
-                            setIsMenuOpen(false);
-                            setCurrentTab('upload');
-                          }}
-                          className="w-full px-4 py-2 text-left text-xs font-bold text-slate-700 dark:text-zinc-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white flex items-center gap-3 transition-colors cursor-pointer"
-                        >
-                          <Camera className="w-4 h-4 text-emerald-600 shrink-0" />
-                          <div>
-                            <div>Check Any Package</div>
-                            <div className="text-[10px] font-normal text-slate-400">Snap photos of front/back</div>
-                          </div>
-                        </button>
+                    <button
+                      onClick={() => {
+                        setIsMenuOpen(false);
+                        onOpenVault?.();
+                      }}
+                      className="w-full px-4 py-2 text-left text-xs font-bold text-[#283618] hover:bg-[#EAE2C2] flex items-center gap-3 transition-colors cursor-pointer"
+                    >
+                      <Archive className="w-4 h-4 text-[#283618] shrink-0" />
+                      <div>
+                        <div>Inspection Vault & Dossier</div>
+                        <div className="text-[10px] font-normal text-[#606C38]">Locally cached & cloud-synced reports</div>
+                      </div>
+                    </button>
 
-                        <button
-                          onClick={() => {
-                            setIsMenuOpen(false);
-                            setCurrentTab('ecommerce');
-                          }}
-                          className="w-full px-4 py-2 text-left text-xs font-bold text-slate-700 dark:text-zinc-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white flex items-center gap-3 transition-colors cursor-pointer"
-                        >
-                          <Globe className="w-4 h-4 text-indigo-600 shrink-0" />
-                          <div>
-                            <div>Dark Store Price Checker</div>
-                            <div className="text-[10px] font-normal text-slate-400">Blinkit, Zepto, Instamart deals</div>
-                          </div>
-                        </button>
+                    <button
+                      onClick={() => {
+                        setIsMenuOpen(false);
+                        onOpenGrievance?.();
+                      }}
+                      className="w-full px-4 py-2 text-left text-xs font-bold text-[#283618] hover:bg-[#EAE2C2] flex items-center gap-3 transition-colors cursor-pointer"
+                    >
+                      <PhoneCall className="w-4 h-4 text-[#BC6C25] shrink-0" />
+                      <div>
+                        <div>National Consumer Helpline (1915)</div>
+                        <div className="text-[10px] font-normal text-[#606C38]">Direct statutory grievance submission</div>
+                      </div>
+                    </button>
 
-                        <button
-                          onClick={() => {
-                            setIsMenuOpen(false);
-                            onOpenGrievance?.();
-                          }}
-                          className="w-full px-4 py-2 text-left text-xs font-bold text-slate-700 dark:text-zinc-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white flex items-center gap-3 transition-colors cursor-pointer"
-                        >
-                          <PhoneCall className="w-4 h-4 text-amber-600 shrink-0" />
-                          <div>
-                            <div>National Consumer Helpline (1915)</div>
-                            <div className="text-[10px] font-normal text-slate-400">Direct 1-tap grievance filing</div>
-                          </div>
-                        </button>
-
-                        <button
-                          onClick={() => {
-                            setIsMenuOpen(false);
-                            setCurrentTab('rulebook');
-                          }}
-                          className="w-full px-4 py-2 text-left text-xs font-bold text-slate-700 dark:text-zinc-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white flex items-center gap-3 transition-colors cursor-pointer"
-                        >
-                          <BookOpen className="w-4 h-4 text-[#0A3663] dark:text-blue-400 shrink-0" />
-                          <div>
-                            <div>Consumer Rights & LMPC Rulebook (43 Pages)</div>
-                            <div className="text-[10px] font-normal text-slate-400">Complete legal rights & pack protections</div>
-                          </div>
-                        </button>
-                      </>
-                    )}
-
-                    {/* Officer Menu Options */}
-                    {userRole === 'OFFICER' && (
-                      <>
-                        <button
-                          onClick={() => {
-                            setIsMenuOpen(false);
-                            setCurrentTab('upload');
-                          }}
-                          className="w-full px-4 py-2 text-left text-xs font-bold text-slate-700 dark:text-zinc-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white flex items-center gap-3 transition-colors cursor-pointer"
-                        >
-                          <Camera className="w-4 h-4 text-emerald-600 shrink-0" />
-                          <div>
-                            <div>Field Scan Studio</div>
-                            <div className="text-[10px] font-normal text-slate-400">Multi-panel physical inspection</div>
-                          </div>
-                        </button>
-
-                        <button
-                          onClick={() => {
-                            setIsMenuOpen(false);
-                            setCurrentTab('analytics');
-                          }}
-                          className="w-full px-4 py-2 text-left text-xs font-bold text-slate-700 dark:text-zinc-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white flex items-center gap-3 transition-colors cursor-pointer"
-                        >
-                          <BarChart3 className="w-4 h-4 text-[#0A3663] dark:text-blue-400 shrink-0" />
-                          <div>
-                            <div>Enforcement Dashboard & Notices</div>
-                            <div className="text-[10px] font-normal text-slate-400">Fifth Schedule sampling & Sec 36 notices</div>
-                          </div>
-                        </button>
-
-                        <button
-                          onClick={() => {
-                            setIsMenuOpen(false);
-                            setCurrentTab('rulebook');
-                          }}
-                          className="w-full px-4 py-2 text-left text-xs font-bold text-slate-700 dark:text-zinc-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white flex items-center gap-3 transition-colors cursor-pointer"
-                        >
-                          <BookOpen className="w-4 h-4 text-[#0A3663] dark:text-blue-400 shrink-0" />
-                          <div>
-                            <div>Legal Metrology Gazette Rulebook (43 Pages)</div>
-                            <div className="text-[10px] font-normal text-slate-400">Complete Chapters I–VII & Fifth Schedule tables</div>
-                          </div>
-                        </button>
-
-                        <button
-                          onClick={() => {
-                            setIsMenuOpen(false);
-                            onOpenVault?.();
-                          }}
-                          className="w-full px-4 py-2 text-left text-xs font-bold text-slate-700 dark:text-zinc-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white flex items-center gap-3 transition-colors cursor-pointer"
-                        >
-                          <Archive className="w-4 h-4 text-emerald-600 shrink-0" />
-                          <div>
-                            <div>Inspection Dossier Vault</div>
-                            <div className="text-[10px] font-normal text-slate-400">Saved Form A/B reports & evidence</div>
-                          </div>
-                        </button>
-                      </>
-                    )}
-
-                    {/* Surveillance (Ministry Directorate) Options */}
-                    {userRole === 'SURVEILLANCE' && (
-                      <>
-                        <button
-                          onClick={() => {
-                            setIsMenuOpen(false);
-                            setCurrentTab('surveillance');
-                          }}
-                          className="w-full px-4 py-2 text-left text-xs font-bold text-slate-700 dark:text-zinc-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white flex items-center gap-3 transition-colors cursor-pointer"
-                        >
-                          <Radio className="w-4 h-4 text-cyan-500 shrink-0" />
-                          <div>
-                            <div>National Surveillance Hub</div>
-                            <div className="text-[10px] font-normal text-slate-400">State rankings, seizures & repeat offenders</div>
-                          </div>
-                        </button>
-
-                        <button
-                          onClick={() => {
-                            setIsMenuOpen(false);
-                            setCurrentTab('analytics');
-                          }}
-                          className="w-full px-4 py-2 text-left text-xs font-bold text-slate-700 dark:text-zinc-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white flex items-center gap-3 transition-colors cursor-pointer"
-                        >
-                          <Archive className="w-4 h-4 text-emerald-600 shrink-0" />
-                          <div>
-                            <div>Macro Seizure Dossier</div>
-                            <div className="text-[10px] font-normal text-slate-400">Nationwide inspection audit logs</div>
-                          </div>
-                        </button>
-
-                        <button
-                          onClick={() => {
-                            setIsMenuOpen(false);
-                            setCurrentTab('ecommerce');
-                          }}
-                          className="w-full px-4 py-2 text-left text-xs font-bold text-slate-700 dark:text-zinc-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white flex items-center gap-3 transition-colors cursor-pointer"
-                        >
-                          <Globe className="w-4 h-4 text-indigo-600 shrink-0" />
-                          <div>
-                            <div>Quick Commerce Compliance</div>
-                            <div className="text-[10px] font-normal text-slate-400">Dark store platform rankings</div>
-                          </div>
-                        </button>
-                      </>
-                    )}
-
-                    {/* Platform Admin Options */}
-                    {userRole === 'ADMIN' && (
-                      <>
-                        <button
-                          onClick={() => {
-                            setIsMenuOpen(false);
-                            setCurrentTab('admin');
-                          }}
-                          className="w-full px-4 py-2 text-left text-xs font-bold text-slate-700 dark:text-zinc-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white flex items-center gap-3 transition-colors cursor-pointer"
-                        >
-                          <Settings className="w-4 h-4 text-purple-600 shrink-0" />
-                          <div>
-                            <div>Platform Control Center</div>
-                            <div className="text-[10px] font-normal text-slate-400">Tune fines, thresholds & announcements</div>
-                          </div>
-                        </button>
-
-                        <button
-                          onClick={() => {
-                            setIsMenuOpen(false);
-                            setCurrentTab('analytics');
-                          }}
-                          className="w-full px-4 py-2 text-left text-xs font-bold text-slate-700 dark:text-zinc-300 hover:bg-slate-50 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-white flex items-center gap-3 transition-colors cursor-pointer"
-                        >
-                          <BarChart3 className="w-4 h-4 text-blue-600 shrink-0" />
-                          <div>
-                            <div>All Scans & JSON Export</div>
-                            <div className="text-[10px] font-normal text-slate-400">Full audit repository & database dump</div>
-                          </div>
-                        </button>
-                      </>
-                    )}
+                    <button
+                      onClick={() => {
+                        setIsMenuOpen(false);
+                        setCurrentTab('rulebook');
+                      }}
+                      className="w-full px-4 py-2 text-left text-xs font-bold text-[#283618] hover:bg-[#EAE2C2] flex items-center gap-3 transition-colors cursor-pointer"
+                    >
+                      <BookOpen className="w-4 h-4 text-[#606C38] shrink-0" />
+                      <div>
+                        <div>Official LMPC Gazette (43 Pages)</div>
+                        <div className="text-[10px] font-normal text-[#606C38]">Complete Schedules, Rules & Font Heights</div>
+                      </div>
+                    </button>
                   </div>
 
-                  {/* Sign Out / Sign In Action */}
-                  <div className="border-t border-slate-100 dark:border-zinc-800 pt-1 mt-1">
+                  {/* Sign Out Action */}
+                  <div className="border-t border-[#DDA15E]/30 pt-1 mt-1">
                     {currentUser ? (
                       <button
                         onClick={() => {
                           setIsMenuOpen(false);
                           onSignOut();
                         }}
-                        className="w-full px-4 py-2 text-left text-xs font-bold text-red-600 hover:bg-red-50 dark:hover:bg-red-950/40 flex items-center gap-3 transition-colors cursor-pointer"
+                        className="w-full px-4 py-2 text-left text-xs font-bold text-[#BC6C25] hover:bg-[#F4EED4] flex items-center gap-3 transition-colors cursor-pointer"
                       >
-                        <LogOut className="w-4 h-4 text-red-500 shrink-0" />
+                        <LogOut className="w-4 h-4 text-[#BC6C25] shrink-0" />
                         <div>
-                          <div>{getTranslation('menu_sign_out', currentLang)}</div>
-                          <div className="text-[10px] font-normal text-red-400">{getTranslation('menu_return_login', currentLang)}</div>
+                          <div>Sign Out</div>
+                          <div className="text-[10px] font-normal text-[#BC6C25]/80">Return to role login portal</div>
                         </div>
                       </button>
                     ) : (
@@ -508,12 +336,12 @@ export const Navbar: React.FC<NavbarProps> = ({
                           setIsMenuOpen(false);
                           onOpenLogin?.();
                         }}
-                        className="w-full px-4 py-2 text-left text-xs font-bold text-[#00A651] hover:bg-emerald-50 dark:hover:bg-emerald-950/40 flex items-center gap-3 transition-colors cursor-pointer"
+                        className="w-full px-4 py-2 text-left text-xs font-bold text-[#283618] hover:bg-[#F4EED4] flex items-center gap-3 transition-colors cursor-pointer"
                       >
-                        <KeyRound className="w-4 h-4 text-[#00A651] shrink-0" />
+                        <KeyRound className="w-4 h-4 text-[#283618] shrink-0" />
                         <div>
-                          <div>{getTranslation('menu_sign_in_title', currentLang)}</div>
-                          <div className="text-[10px] font-normal text-slate-400">{getTranslation('menu_choose_role', currentLang)}</div>
+                          <div>Sign In / Select Role</div>
+                          <div className="text-[10px] font-normal text-[#606C38]">Switch to Officer, Citizen, Brand</div>
                         </div>
                       </button>
                     )}
@@ -523,41 +351,55 @@ export const Navbar: React.FC<NavbarProps> = ({
             )}
           </div>
 
-          {/* Logo & Brand */}
+          {/* Logo & Brand Name (Clicking always takes to Home) */}
           <div
-            className="flex items-center gap-2.5 cursor-pointer select-none"
-            onClick={handleLogoClick}
+            className="flex items-center gap-2 cursor-pointer select-none"
+            onClick={() => setCurrentTab('home')}
+            title="Go to Home Page"
           >
             <img
               src="/logos/inspack-logo.jpg"
               alt="Inspack Logo"
-              className="h-9 w-auto object-contain rounded-md"
+              className="h-8 w-auto object-contain rounded-md"
               onError={(e) => {
                 e.currentTarget.style.display = 'none';
               }}
             />
             <div className="flex flex-col">
-              <span className="text-xl font-black tracking-tight text-[#0A3663] dark:text-white leading-none">
-                in<span className="text-[#00A651]">spack</span>
+              <span className="text-lg font-black tracking-tight text-[#283618] leading-none">
+                in<span className="text-[#606C38]">spack</span>
               </span>
-              <span className="text-[9px] uppercase tracking-wider text-slate-500 dark:text-zinc-400 font-extrabold mt-0.5">
+              <span className="text-[8.5px] uppercase tracking-wider text-[#BC6C25] font-extrabold mt-0.5 truncate max-w-[150px]">
                 {getRoleSubtitle()}
               </span>
             </div>
           </div>
         </div>
 
-        {/* Navigation Tabs - Strictly Role-Specific */}
-        <nav className="flex items-center gap-1 overflow-x-auto py-1">
-          {/* 1. MANUFACTURER: ONLY Brand Artwork Pre-Check & Pre-Compliance Sheet */}
+        {/* Middle Navigation Tabs - Single Row with Horizontal Scroll on Small Displays */}
+        <nav className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 flex-nowrap">
+          {/* Universal Home Button */}
+          <button
+            onClick={() => setCurrentTab('home')}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer shrink-0 ${
+              currentTab === 'home'
+                ? 'bg-[#283618] text-[#FEFAE0] shadow-md'
+                : 'text-[#283618] hover:bg-[#F4EED4] bg-white/70 border border-[#DDA15E]/30'
+            }`}
+          >
+            <Home className="w-3.5 h-3.5" />
+            <span>{getTranslation('tab_home', currentLang)}</span>
+          </button>
+
+          {/* 1. MANUFACTURER TABS */}
           {userRole === 'MANUFACTURER' && (
             <>
               <button
                 onClick={() => setCurrentTab('manufacturer')}
-                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer shrink-0 ${
                   currentTab === 'manufacturer'
-                    ? 'bg-amber-600 text-white shadow-xs'
-                    : 'text-slate-700 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                    ? 'bg-[#BC6C25] text-white shadow-md'
+                    : 'text-[#283618] hover:bg-[#F4EED4] bg-white/70 border border-[#DDA15E]/30'
                 }`}
               >
                 <Building2 className="w-3.5 h-3.5" />
@@ -566,27 +408,39 @@ export const Navbar: React.FC<NavbarProps> = ({
 
               <button
                 onClick={() => setCurrentTab('scanner')}
-                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer shrink-0 ${
                   currentTab === 'scanner'
-                    ? 'bg-[#00A651] text-white shadow-xs'
-                    : 'text-slate-700 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                    ? 'bg-[#606C38] text-white shadow-md'
+                    : 'text-[#283618] hover:bg-[#F4EED4] bg-white/70 border border-[#DDA15E]/30'
                 }`}
               >
                 <CheckCircle className="w-3.5 h-3.5" />
                 <span>{getTranslation('tab_precompliance', currentLang)}</span>
               </button>
+
+              <button
+                onClick={() => setCurrentTab('catalog')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer shrink-0 ${
+                  currentTab === 'catalog'
+                    ? 'bg-[#283618] text-white shadow-md'
+                    : 'text-[#283618] hover:bg-[#F4EED4] bg-white/70 border border-[#DDA15E]/30'
+                }`}
+              >
+                <Layers className="w-3.5 h-3.5" />
+                <span>{getTranslation('tab_catalog', currentLang)}</span>
+              </button>
             </>
           )}
 
-          {/* 2. CITIZEN: Scan/Snap Package, Fair Pack Report, Dark Store Deals */}
+          {/* 2. CITIZEN TABS */}
           {userRole === 'CITIZEN' && (
             <>
               <button
                 onClick={() => setCurrentTab('upload')}
-                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer shrink-0 ${
                   currentTab === 'upload'
-                    ? 'bg-[#00A651] text-white shadow-xs'
-                    : 'text-slate-700 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                    ? 'bg-[#606C38] text-white shadow-md'
+                    : 'text-[#283618] hover:bg-[#F4EED4] bg-white/70 border border-[#DDA15E]/30'
                 }`}
               >
                 <Camera className="w-3.5 h-3.5" />
@@ -595,10 +449,10 @@ export const Navbar: React.FC<NavbarProps> = ({
 
               <button
                 onClick={() => setCurrentTab('scanner')}
-                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer shrink-0 ${
                   currentTab === 'scanner'
-                    ? 'bg-[#0A3663] text-white shadow-xs'
-                    : 'text-slate-700 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                    ? 'bg-[#283618] text-white shadow-md'
+                    : 'text-[#283618] hover:bg-[#F4EED4] bg-white/70 border border-[#DDA15E]/30'
                 }`}
               >
                 <Scale className="w-3.5 h-3.5" />
@@ -607,10 +461,10 @@ export const Navbar: React.FC<NavbarProps> = ({
 
               <button
                 onClick={() => setCurrentTab('ecommerce')}
-                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer shrink-0 ${
                   currentTab === 'ecommerce'
-                    ? 'bg-indigo-600 text-white shadow-xs'
-                    : 'text-slate-700 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                    ? 'bg-[#BC6C25] text-white shadow-md'
+                    : 'text-[#283618] hover:bg-[#F4EED4] bg-white/70 border border-[#DDA15E]/30'
                 }`}
               >
                 <Globe className="w-3.5 h-3.5" />
@@ -619,15 +473,15 @@ export const Navbar: React.FC<NavbarProps> = ({
             </>
           )}
 
-          {/* 3. LEGAL METROLOGY INSPECTOR (OFFICER): Field Scan, Inspection Report, Officer Hub, E-Comm Audit */}
+          {/* 3. OFFICER (LEGAL METROLOGY INSPECTOR) TABS */}
           {userRole === 'OFFICER' && (
             <>
               <button
                 onClick={() => setCurrentTab('upload')}
-                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer shrink-0 ${
                   currentTab === 'upload'
-                    ? 'bg-[#0A3663] dark:bg-blue-600 text-white shadow-xs'
-                    : 'text-slate-700 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                    ? 'bg-[#283618] text-white shadow-md'
+                    : 'text-[#283618] hover:bg-[#F4EED4] bg-white/70 border border-[#DDA15E]/30'
                 }`}
               >
                 <Camera className="w-3.5 h-3.5" />
@@ -636,10 +490,10 @@ export const Navbar: React.FC<NavbarProps> = ({
 
               <button
                 onClick={() => setCurrentTab('scanner')}
-                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer shrink-0 ${
                   currentTab === 'scanner'
-                    ? 'bg-[#00A651] text-white shadow-xs'
-                    : 'text-slate-700 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                    ? 'bg-[#606C38] text-white shadow-md'
+                    : 'text-[#283618] hover:bg-[#F4EED4] bg-white/70 border border-[#DDA15E]/30'
                 }`}
               >
                 <Scale className="w-3.5 h-3.5" />
@@ -648,10 +502,10 @@ export const Navbar: React.FC<NavbarProps> = ({
 
               <button
                 onClick={() => setCurrentTab('analytics')}
-                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer shrink-0 ${
                   currentTab === 'analytics'
-                    ? 'bg-[#0A3663] text-white shadow-xs'
-                    : 'text-slate-700 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                    ? 'bg-[#283618] text-white shadow-md'
+                    : 'text-[#283618] hover:bg-[#F4EED4] bg-white/70 border border-[#DDA15E]/30'
                 }`}
               >
                 <BarChart3 className="w-3.5 h-3.5" />
@@ -660,39 +514,51 @@ export const Navbar: React.FC<NavbarProps> = ({
 
               <button
                 onClick={() => setCurrentTab('ecommerce')}
-                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer shrink-0 ${
                   currentTab === 'ecommerce'
-                    ? 'bg-indigo-600 text-white shadow-xs'
-                    : 'text-slate-700 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                    ? 'bg-[#BC6C25] text-white shadow-md'
+                    : 'text-[#283618] hover:bg-[#F4EED4] bg-white/70 border border-[#DDA15E]/30'
                 }`}
               >
                 <Globe className="w-3.5 h-3.5" />
                 <span>{getTranslation('tab_ecommerce', currentLang)}</span>
               </button>
+
+              <button
+                onClick={() => setCurrentTab('catalog')}
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer shrink-0 ${
+                  currentTab === 'catalog'
+                    ? 'bg-[#606C38] text-white shadow-md'
+                    : 'text-[#283618] hover:bg-[#F4EED4] bg-white/70 border border-[#DDA15E]/30'
+                }`}
+              >
+                <Layers className="w-3.5 h-3.5" />
+                <span>{getTranslation('tab_catalog', currentLang)}</span>
+              </button>
             </>
           )}
 
-          {/* 4. NATIONAL SURVEILLANCE DIRECTORATE: Surveillance Hub, Central Archive, Quick Commerce */}
+          {/* 4. SURVEILLANCE TABS */}
           {userRole === 'SURVEILLANCE' && (
             <>
               <button
                 onClick={() => setCurrentTab('surveillance')}
-                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer shrink-0 ${
                   currentTab === 'surveillance'
-                    ? 'bg-[#0A3663] text-white shadow-xs'
-                    : 'text-slate-700 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                    ? 'bg-[#283618] text-white shadow-md'
+                    : 'text-[#283618] hover:bg-[#F4EED4] bg-white/70 border border-[#DDA15E]/30'
                 }`}
               >
-                <Radio className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
+                <Radio className="w-3.5 h-3.5 text-[#DDA15E] animate-pulse" />
                 <span>{getTranslation('tab_surveillance_hub', currentLang)}</span>
               </button>
 
               <button
                 onClick={() => setCurrentTab('analytics')}
-                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer shrink-0 ${
                   currentTab === 'analytics'
-                    ? 'bg-emerald-700 text-white shadow-xs'
-                    : 'text-slate-700 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                    ? 'bg-[#606C38] text-white shadow-md'
+                    : 'text-[#283618] hover:bg-[#F4EED4] bg-white/70 border border-[#DDA15E]/30'
                 }`}
               >
                 <Archive className="w-3.5 h-3.5" />
@@ -701,10 +567,10 @@ export const Navbar: React.FC<NavbarProps> = ({
 
               <button
                 onClick={() => setCurrentTab('ecommerce')}
-                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer shrink-0 ${
                   currentTab === 'ecommerce'
-                    ? 'bg-indigo-600 text-white shadow-xs'
-                    : 'text-slate-700 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                    ? 'bg-[#BC6C25] text-white shadow-md'
+                    : 'text-[#283618] hover:bg-[#F4EED4] bg-white/70 border border-[#DDA15E]/30'
                 }`}
               >
                 <Globe className="w-3.5 h-3.5" />
@@ -713,15 +579,15 @@ export const Navbar: React.FC<NavbarProps> = ({
             </>
           )}
 
-          {/* 5. PLATFORM ADMINISTRATOR (SOFTWARE/TECH ADMIN) */}
+          {/* 5. ADMIN TABS */}
           {userRole === 'ADMIN' && (
             <>
               <button
                 onClick={() => setCurrentTab('admin')}
-                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer shrink-0 ${
                   currentTab === 'admin'
-                    ? 'bg-purple-700 text-white shadow-xs'
-                    : 'text-purple-700 dark:text-purple-300 bg-purple-50 dark:bg-purple-950/40 hover:bg-purple-100'
+                    ? 'bg-[#283618] text-white shadow-md'
+                    : 'text-[#283618] hover:bg-[#F4EED4] bg-white/70 border border-[#DDA15E]/30'
                 }`}
               >
                 <Settings className="w-3.5 h-3.5" />
@@ -730,10 +596,10 @@ export const Navbar: React.FC<NavbarProps> = ({
 
               <button
                 onClick={() => setCurrentTab('analytics')}
-                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer shrink-0 ${
                   currentTab === 'analytics'
-                    ? 'bg-[#0A3663] text-white shadow-xs'
-                    : 'text-slate-700 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                    ? 'bg-[#606C38] text-white shadow-md'
+                    : 'text-[#283618] hover:bg-[#F4EED4] bg-white/70 border border-[#DDA15E]/30'
                 }`}
               >
                 <BarChart3 className="w-3.5 h-3.5" />
@@ -742,10 +608,10 @@ export const Navbar: React.FC<NavbarProps> = ({
 
               <button
                 onClick={() => setCurrentTab('upload')}
-                className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer shrink-0 ${
                   currentTab === 'upload'
-                    ? 'bg-[#00A651] text-white shadow-xs'
-                    : 'text-slate-700 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-slate-800'
+                    ? 'bg-[#BC6C25] text-white shadow-md'
+                    : 'text-[#283618] hover:bg-[#F4EED4] bg-white/70 border border-[#DDA15E]/30'
                 }`}
               >
                 <Camera className="w-3.5 h-3.5" />
@@ -754,59 +620,117 @@ export const Navbar: React.FC<NavbarProps> = ({
             </>
           )}
 
-          {/* Global Rulebook Tab Access */}
+          {/* Concise Rulebook Button */}
           <button
             onClick={() => setCurrentTab('rulebook')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer shrink-0 ${
               currentTab === 'rulebook'
-                ? 'bg-[#0A3663] text-white shadow-xs'
-                : 'text-slate-700 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-zinc-800'
+                ? 'bg-[#283618] text-[#FEFAE0] shadow-md'
+                : 'text-[#283618] hover:bg-[#F4EED4] bg-white/70 border border-[#DDA15E]/30'
             }`}
-            title="View full 43-page Legal Metrology Rules 2011 Gazette"
+            title="Gazette of India: Legal Metrology (Packaged Commodities) Rules, 2011"
           >
-            <BookOpen className="w-3.5 h-3.5 text-amber-500" />
-            <span>{getTranslation('tab_rulebook', currentLang)}</span>
+            <BookOpen className="w-3.5 h-3.5 text-[#BC6C25]" />
+            <span>{getTranslation('rulebook_concise', currentLang) || 'Rulebook'}</span>
           </button>
         </nav>
 
-        {/* Right Section: User Profile Chip / Sign-In & Theme Toggle */}
-        <div className="flex items-center gap-2">
+        {/* Right Section: Compact Officer / Role Dropdown (Zero-Wrap, Minimal) */}
+        <div className="flex items-center gap-2 shrink-0 relative" ref={userMenuRef}>
           {currentUser ? (
-            <button
-              onClick={onOpenLogin}
-              className="flex items-center gap-2 px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 dark:bg-zinc-800 dark:hover:bg-slate-700 border border-slate-200 dark:border-zinc-700 rounded-xl text-xs font-bold transition-all cursor-pointer"
-              title={`Logged in as ${currentUser.name} (${userRole}). Click to switch or sign out.`}
-            >
-              <div className="w-6 h-6 rounded-full bg-[#0A3663] text-white flex items-center justify-center text-xs font-bold">
-                {currentUser.name.charAt(0)}
-              </div>
-              <div className="hidden sm:flex flex-col text-left">
-                <span className="text-[11px] font-black text-slate-900 dark:text-zinc-100 leading-none truncate max-w-[100px]">
-                  {currentUser.name}
-                </span>
-                <span className="text-[9px] font-bold text-[#00A651] uppercase mt-0.5">
-                  {userRole}
-                </span>
-              </div>
-            </button>
+            <div className="relative">
+              <button
+                onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
+                className="flex items-center gap-2 px-3 py-1.5 bg-[#F4EED4] hover:bg-[#EAE2C2] border border-[#DDA15E]/60 rounded-xl text-xs font-black text-[#283618] transition-all cursor-pointer shadow-2xs"
+                title={`${currentUser.name} (${userRole}) - Click for Profile, Switch Role & Sign Out`}
+              >
+                <div className="w-5 h-5 rounded-full bg-[#283618] text-[#FEFAE0] flex items-center justify-center text-[10px] font-bold">
+                  {currentUser.name.charAt(0)}
+                </div>
+                <div className="flex flex-col text-left leading-tight">
+                  <span className="text-[11px] font-black text-[#283618] truncate max-w-[85px] sm:max-w-[110px]">
+                    {currentUser.name.split(' ')[0]}
+                  </span>
+                  <span className="text-[8.5px] font-extrabold text-[#BC6C25] uppercase tracking-wider">
+                    {userRole}
+                  </span>
+                </div>
+                <ChevronDown className={`w-3.5 h-3.5 text-[#283618] transition-transform duration-150 ${isUserDropdownOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              {/* Sleek Small Dropdown for Officer/User Details */}
+              {isUserDropdownOpen && (
+                <div className="absolute right-0 mt-2 w-64 bg-[#FEFAE0] rounded-2xl shadow-2xl border border-[#DDA15E]/70 py-2 z-50 animate-in fade-in zoom-in-95 duration-150">
+                  {/* User Overview */}
+                  <div className="px-4 py-2.5 border-b border-[#DDA15E]/30 bg-[#F4EED4]/60">
+                    <div className="text-xs font-black text-[#283618] truncate">
+                      {currentUser.name}
+                    </div>
+                    <div className="text-[10px] font-mono text-[#606C38] truncate">
+                      {currentUser.email}
+                    </div>
+                    <div className="mt-1 flex items-center gap-1.5">
+                      <span className="text-[9px] font-extrabold px-1.5 py-0.5 rounded-full bg-[#283618] text-[#FEFAE0] uppercase">
+                        {userRole}
+                      </span>
+                      {currentUser.badgeNumber && (
+                        <span className="text-[9px] font-mono text-[#BC6C25] font-bold">
+                          {currentUser.badgeNumber}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Dropdown Options */}
+                  <div className="py-1">
+                    <button
+                      onClick={() => {
+                        setIsUserDropdownOpen(false);
+                        setCurrentTab('profile');
+                      }}
+                      className="w-full px-4 py-2 text-left text-xs font-bold text-[#283618] hover:bg-[#EAE2C2] flex items-center gap-2.5 transition-colors cursor-pointer"
+                    >
+                      <UserIcon className="w-4 h-4 text-[#BC6C25]" />
+                      <span>{getTranslation('tab_profile', currentLang)}</span>
+                    </button>
+
+                    <button
+                      onClick={() => {
+                        setIsUserDropdownOpen(false);
+                        onOpenLogin?.();
+                      }}
+                      className="w-full px-4 py-2 text-left text-xs font-bold text-[#283618] hover:bg-[#EAE2C2] flex items-center gap-2.5 transition-colors cursor-pointer"
+                    >
+                      <Shield className="w-4 h-4 text-[#606C38]" />
+                      <span>Switch Role / Re-Authenticate</span>
+                    </button>
+                  </div>
+
+                  {/* Sign Out */}
+                  <div className="border-t border-[#DDA15E]/30 pt-1 mt-1">
+                    <button
+                      onClick={() => {
+                        setIsUserDropdownOpen(false);
+                        onSignOut();
+                      }}
+                      className="w-full px-4 py-2 text-left text-xs font-bold text-[#BC6C25] hover:bg-[#F4EED4] flex items-center gap-2.5 transition-colors cursor-pointer"
+                    >
+                      <LogOut className="w-4 h-4 text-[#BC6C25]" />
+                      <span>Sign Out</span>
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           ) : (
             <button
               onClick={onOpenLogin}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-[#00A651] hover:bg-emerald-600 text-white rounded-xl text-xs font-bold transition-all cursor-pointer shadow-xs"
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-[#283618] hover:bg-[#1c2610] text-[#FEFAE0] rounded-xl text-xs font-black transition-all cursor-pointer shadow-xs"
             >
               <KeyRound className="w-3.5 h-3.5" />
               <span>{getTranslation('sign_in_btn', currentLang)}</span>
             </button>
           )}
-
-          {/* Theme Mode Toggle */}
-          <button
-            onClick={() => setIsDarkMode(!isDarkMode)}
-            className="p-2 rounded-xl border border-slate-200 dark:border-zinc-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-zinc-300 transition-colors cursor-pointer"
-            title={isDarkMode ? 'Switch to Light Theme' : 'Switch to Dark Theme'}
-          >
-            {isDarkMode ? <Sun className="w-4 h-4 text-amber-400" /> : <Moon className="w-4 h-4 text-slate-600" />}
-          </button>
         </div>
       </div>
     </header>

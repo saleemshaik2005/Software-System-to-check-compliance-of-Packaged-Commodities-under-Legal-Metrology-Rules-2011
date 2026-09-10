@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Navbar } from './components/Navbar';
 import { LoginPage } from './components/LoginPage';
+import { HomePage } from './components/HomePage';
+import { ProfilePage } from './components/ProfilePage';
+import { CatalogBatchInspector } from './components/CatalogBatchInspector';
 import { DemoPresetSelector } from './components/DemoPresetSelector';
 import { LiveCameraScanner } from './components/LiveCameraScanner';
 import { EvidenceVisualizer } from './components/EvidenceVisualizer';
@@ -31,27 +34,8 @@ export function App() {
   const [currentUser, setCurrentUser] = useState<AuthUser | null>(() => getCurrentUser());
   const [userRole, setUserRole] = useState<UserRole>(() => currentUser?.role || 'OFFICER');
 
-  const getTabForRole = (role: UserRole): ActiveTab => {
-    switch (role) {
-      case 'OFFICER':
-        return 'analytics'; // Inspector lands directly in Dashboard
-      case 'CITIZEN':
-        return 'upload'; // Consumer lands directly in Upload / Scanner
-      case 'MANUFACTURER':
-        return 'manufacturer'; // Brand lands in Artwork Simulator
-      case 'SURVEILLANCE':
-        return 'surveillance'; // Surveillance lands in Hub
-      case 'ADMIN':
-        return 'admin'; // Admin lands in Control Center
-      default:
-        return 'analytics';
-    }
-  };
-
-  const [currentTab, setCurrentTab] = useState<ActiveTab>(() => {
-    const role = currentUser?.role || 'OFFICER';
-    return getTabForRole(role);
-  });
+  // User explicitly requested: default landing page is 'home' for all users after choosing role
+  const [currentTab, setCurrentTab] = useState<ActiveTab>('home');
 
   // Default preset is Pintola All Natural Peanut Butter (350g)
   const [activePresetId, setActivePresetId] = useState<string>('demo-pintola-peanut-butter');
@@ -62,7 +46,6 @@ export function App() {
   const [isRulebookOpen, setIsRulebookOpen] = useState(false);
   const [isVaultOpen, setIsVaultOpen] = useState(false);
   const [isLoginOpen, setIsLoginOpen] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(false);
   const [currentLang, setCurrentLang] = useState<Language>(() => getStoredLanguage());
 
   // Listen for language change events
@@ -76,11 +59,6 @@ export function App() {
     window.addEventListener(LANG_CHANGE_EVENT, handleLang);
     return () => window.removeEventListener(LANG_CHANGE_EVENT, handleLang);
   }, []);
-
-  // Sync dark mode class with root html element
-  useEffect(() => {
-    document.documentElement.classList.toggle('dark', isDarkMode);
-  }, [isDarkMode]);
 
   // Initialize with verified benchmark Pintola All Natural Peanut Butter
   const [currentReport, setCurrentReport] = useState<ComplianceReport>(() => {
@@ -110,7 +88,7 @@ export function App() {
     };
     window.addEventListener('focus', handleFocus);
 
-    // 3. Ultra-Fast Periodic cloud poll every 3.5 seconds (Real-time synchronization across all devices)
+    // 3. Periodic cloud poll every 3.5 seconds
     const interval = setInterval(() => {
       syncWithCloudDatabase();
     }, 3500);
@@ -121,7 +99,7 @@ export function App() {
     };
   }, []);
 
-  // Listen to DB changes (deletes & uploads) across all tabs and components
+  // Listen to DB changes across all tabs and components
   useEffect(() => {
     const handleDbChange = (e: Event) => {
       const customEvent = e as CustomEvent<{ deletedId?: string }>;
@@ -172,13 +150,12 @@ export function App() {
     const user = switchRole(newRole);
     setCurrentUser(user);
     setUserRole(newRole);
-    setCurrentTab(getTabForRole(newRole));
   };
 
   const handleLoginSuccess = (user: AuthUser) => {
     setCurrentUser(user);
     setUserRole(user.role);
-    setCurrentTab(getTabForRole(user.role));
+    setCurrentTab('home'); // Home page first for all visitors!
   };
 
   const handleSignOut = () => {
@@ -191,13 +168,11 @@ export function App() {
     setCurrentLang(lang);
   };
 
-  // If user signed out, display the dedicated full-page LoginPage outside the website chrome
+  // If user signed out or visiting for the first time, show LoginPage first
   if (!currentUser) {
     return (
       <LoginPage
         onLoginSuccess={handleLoginSuccess}
-        isDarkMode={isDarkMode}
-        setIsDarkMode={setIsDarkMode}
         currentLang={currentLang}
         onLanguageChange={handleLanguageChange}
       />
@@ -210,18 +185,14 @@ export function App() {
     DEMO_PRESETS[0].imageVisual.front;
 
   return (
-    <div className={`min-h-screen flex flex-col font-sans selection:bg-[#00A651] selection:text-white ${
-      isDarkMode ? 'dark bg-[#09090b] text-zinc-100' : 'bg-zinc-50 text-zinc-900'
-    }`}>
+    <div className="min-h-screen flex flex-col font-sans selection:bg-[#606C38] selection:text-white bg-[#FEFAE0] text-[#1F2416]">
       <Navbar
         currentTab={currentTab}
         setCurrentTab={setCurrentTab}
         userRole={userRole}
         setUserRole={handleSwitchRole}
         currentUser={currentUser}
-        isDarkMode={isDarkMode}
-        setIsDarkMode={setIsDarkMode}
-        onOpenRulebook={() => setIsRulebookOpen(true)}
+        onOpenRulebook={() => setCurrentTab('rulebook')}
         onOpenVault={() => setIsVaultOpen(true)}
         onOpenGrievance={() => setIsGrievanceOpen(true)}
         onOpenLogin={() => setIsLoginOpen(true)}
@@ -232,22 +203,63 @@ export function App() {
 
       <main className="flex-1 max-w-7xl w-full mx-auto px-4 py-6">
         {/* ========================================================================= */}
-        {/* TAB 1: DEDICATED UPLOAD & SCAN STUDIO */}
+        {/* TAB 0: DEDICATED HOME PAGE FOR ALL USERS */}
+        {/* ========================================================================= */}
+        {currentTab === 'home' && (
+          <HomePage
+            currentUser={currentUser}
+            userRole={userRole}
+            setCurrentTab={setCurrentTab}
+            onOpenVault={() => setIsVaultOpen(true)}
+            onOpenRulebook={() => setCurrentTab('rulebook')}
+            onOpenGrievance={() => setIsGrievanceOpen(true)}
+            currentLang={currentLang}
+          />
+        )}
+
+        {/* ========================================================================= */}
+        {/* TAB 1: DEDICATED USER PROFILE & JURISDICTION POWERS */}
+        {/* ========================================================================= */}
+        {currentTab === 'profile' && (
+          <ProfilePage
+            onBack={() => setCurrentTab('home')}
+            onSwitchRole={handleSwitchRole}
+            onSignOut={handleSignOut}
+            currentLang={currentLang}
+          />
+        )}
+
+        {/* ========================================================================= */}
+        {/* TAB 2: INDUSTRIAL BATCH CATALOG & SHELF AUTO-CROP INSPECTOR */}
+        {/* ========================================================================= */}
+        {currentTab === 'catalog' && (
+          <CatalogBatchInspector
+            onBack={() => setCurrentTab('home')}
+            onSelectReport={(report: ComplianceReport) => {
+              setCurrentReport(report);
+              setCurrentTab('scanner');
+            }}
+            currentLang={currentLang}
+          />
+        )}
+
+        {/* ========================================================================= */}
+        {/* TAB 3: DEDICATED UPLOAD & SCAN STUDIO */}
         {/* ========================================================================= */}
         {currentTab === 'upload' && (
           <div className="space-y-6 animate-in fade-in duration-200">
             {/* Studio Header */}
-            <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-3xl p-6 shadow-xs flex flex-wrap items-center justify-between gap-4 transition-colors">
+            <div className="bg-white border border-[#DDA15E]/50 rounded-3xl p-6 shadow-xs flex flex-wrap items-center justify-between gap-4 transition-colors">
               <div>
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="p-2 rounded-2xl bg-[#0A3663] dark:bg-zinc-800 text-white">
+                  <span className="p-2 rounded-2xl bg-[#283618] text-[#FEFAE0]">
                     <Camera className="w-5 h-5" />
                   </span>
-                  <h1 className="text-xl font-black text-zinc-900 dark:text-zinc-100 tracking-tight">
+                  <h1 className="text-xl font-black text-[#283618] tracking-tight">
                     {userRole === 'CITIZEN' ? 'Consumer Package Compliance Scanner' : 'Field Inspection Scan Studio'}
                   </h1>
                 </div>
-                <p className="text-xs text-zinc-500 dark:text-zinc-400">
+                <p className="text-xs text-[#606C38]">
                   {userRole === 'CITIZEN'
                     ? 'Upload front and back photos of any packaged product to check if the MRP, weight, and manufacturer details follow the law.'
                     : 'Upload multi-view photos or capture live camera images of Front, Back, and Side panels for automated LMPC 2011 compliance verification.'}
@@ -257,7 +269,7 @@ export function App() {
               {/* Quick Jump to latest audit report */}
               <button
                 onClick={() => setCurrentTab('scanner')}
-                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-800 dark:text-zinc-200 font-bold text-xs transition-colors cursor-pointer border border-zinc-200 dark:border-zinc-700"
+                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#F4EED4] hover:bg-[#EAE2C2] text-[#283618] font-bold text-xs transition-colors cursor-pointer border border-[#DDA15E]/50"
               >
                 <span>View Latest Audit Sheet</span>
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -275,8 +287,8 @@ export function App() {
             {/* Benchmark Demo Presets */}
             <div className="pt-2">
               <div className="flex items-center gap-2 mb-3">
-                <Sparkles className="w-4 h-4 text-[#00A651]" />
-                <span className="text-xs font-black uppercase tracking-wider text-zinc-800 dark:text-zinc-200">
+                <Sparkles className="w-4 h-4 text-[#BC6C25]" />
+                <span className="text-xs font-black uppercase tracking-wider text-[#283618]">
                   Or Test With Verified Benchmark Packaging Presets
                 </span>
               </div>
@@ -289,38 +301,38 @@ export function App() {
         )}
 
         {/* ========================================================================= */}
-        {/* TAB 2: CLEAN COMPLIANCE AUDIT REPORT VIEW */}
+        {/* TAB 4: CLEAN COMPLIANCE AUDIT REPORT VIEW */}
         {/* ========================================================================= */}
         {currentTab === 'scanner' && (
           <div className="space-y-6 animate-in fade-in duration-200">
             {/* Top Report Header & Action Bar */}
-            <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-4 shadow-xs flex flex-wrap items-center justify-between gap-4 transition-colors">
+            <div className="bg-white border border-[#DDA15E]/50 rounded-2xl p-4 shadow-xs flex flex-wrap items-center justify-between gap-4 transition-colors">
               <div className="flex items-center gap-3">
                 <div className={`p-2.5 rounded-2xl ${
                   currentReport.overallStatus === 'COMPLIANT'
-                    ? 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-600 border border-emerald-200 dark:border-emerald-800'
-                    : 'bg-red-50 dark:bg-red-950/50 text-red-600 border border-red-200 dark:border-red-800'
+                    ? 'bg-[#F4EED4] text-[#283618] border border-[#606C38]'
+                    : 'bg-red-50 text-red-700 border border-red-300'
                 }`}>
                   {currentReport.overallStatus === 'COMPLIANT' ? (
-                    <CheckCircle className="w-5 h-5" />
+                    <CheckCircle className="w-5 h-5 text-[#283618]" />
                   ) : (
-                    <AlertTriangle className="w-5 h-5" />
+                    <AlertTriangle className="w-5 h-5 text-red-600" />
                   )}
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-mono font-bold text-zinc-400 dark:text-zinc-500">
+                    <span className="text-xs font-mono font-bold text-[#606C38]">
                       ID: {currentReport.id}
                     </span>
                     <span className={`text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-wide ${
                       currentReport.overallStatus === 'COMPLIANT'
-                        ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800'
-                        : 'bg-red-100 dark:bg-red-950 text-red-800 dark:text-red-300 border border-red-300 dark:border-red-800'
+                        ? 'bg-[#283618] text-[#FEFAE0]'
+                        : 'bg-red-600 text-white'
                     }`}>
                       {currentReport.overallStatus === 'COMPLIANT' ? 'Statutory Compliant' : 'Non-Compliant (Violations Detected)'}
                     </span>
                   </div>
-                  <h2 className="text-base font-black text-zinc-900 dark:text-zinc-100 mt-0.5">
+                  <h2 className="text-base font-black text-[#283618] mt-0.5">
                     {currentReport.productInfo.productName || 'Inspected Packaged Commodity'}
                   </h2>
                 </div>
@@ -330,16 +342,16 @@ export function App() {
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setIsVaultOpen(true)}
-                  className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-zinc-100 hover:bg-zinc-200 dark:bg-zinc-800 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 font-bold text-xs transition-colors border border-zinc-200 dark:border-zinc-700 cursor-pointer"
+                  className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#F4EED4] hover:bg-[#EAE2C2] text-[#283618] font-bold text-xs transition-colors border border-[#DDA15E]/50 cursor-pointer"
                 >
-                  <Archive className="w-3.5 h-3.5 text-emerald-600" />
+                  <Archive className="w-3.5 h-3.5 text-[#283618]" />
                   <span>Stored Vault</span>
                 </button>
 
                 {userRole === 'MANUFACTURER' ? (
                   <button
                     onClick={() => setCurrentTab('manufacturer')}
-                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs transition-all cursor-pointer shadow-xs"
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#BC6C25] hover:bg-[#96551d] text-white font-bold text-xs transition-all cursor-pointer shadow-xs"
                   >
                     <Building2 className="w-4 h-4" />
                     <span>+ Test Another Artwork</span>
@@ -347,7 +359,7 @@ export function App() {
                 ) : (
                   <button
                     onClick={() => setCurrentTab('upload')}
-                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#00A651] hover:bg-emerald-600 text-white font-bold text-xs transition-all cursor-pointer shadow-xs shadow-emerald-700/20"
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#283618] hover:bg-[#1c2610] text-[#FEFAE0] font-bold text-xs transition-all cursor-pointer shadow-xs"
                   >
                     <Camera className="w-4 h-4" />
                     <span>+ Start New Scan / Upload</span>
@@ -370,18 +382,18 @@ export function App() {
                 />
 
                 {/* Statutory Regulatory Context Card */}
-                <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 rounded-2xl p-4 text-xs text-zinc-600 dark:text-zinc-400 shadow-xs space-y-2 transition-colors">
-                  <div className="font-black text-zinc-900 dark:text-zinc-100 uppercase tracking-wider text-[11px] flex items-center justify-between">
+                <div className="bg-white border border-[#DDA15E]/50 rounded-2xl p-4 text-xs text-[#606C38] shadow-xs space-y-2 transition-colors">
+                  <div className="font-black text-[#283618] uppercase tracking-wider text-[11px] flex items-center justify-between">
                     <span>
                       {userRole === 'MANUFACTURER'
                         ? 'Manufacturer Pre-Pack Verification Protocol'
                         : 'Statutory Inspection Protocol'}
                     </span>
-                    <span className="text-[#00A651] font-mono font-bold">
+                    <span className="text-[#BC6C25] font-mono font-bold">
                       {userRole === 'MANUFACTURER' ? 'Pre-Printing Validation' : 'Fifth Schedule Sampling'}
                     </span>
                   </div>
-                  <p className="leading-relaxed text-[11px]">
+                  <p className="leading-relaxed text-[11px] text-[#1F2416]">
                     {userRole === 'MANUFACTURER'
                       ? 'Pre-pack validation confirms all mandatory declarations under Rule 6, numeral heights under Rule 7 Table I, and Second Schedule standard sizes before printing runs to prevent market recalls.'
                       : 'Inspection conducted under Section 15 of Legal Metrology Act, 2009. Sample size determined per Fifth Schedule Table (32 samples for lot < 4000; 80 samples for lot > 4000). Tare weight deducted per Sixth Schedule Part-II.'}
@@ -406,7 +418,7 @@ export function App() {
         )}
 
         {/* ========================================================================= */}
-        {/* TAB 3: OFFICER ENFORCEMENT & ANALYTICS DASHBOARD */}
+        {/* TAB 5: OFFICER ENFORCEMENT & ANALYTICS DASHBOARD */}
         {/* ========================================================================= */}
         {currentTab === 'analytics' && (
           <OfficerAnalyticsDashboard
@@ -420,38 +432,38 @@ export function App() {
         )}
 
         {/* ========================================================================= */}
-        {/* TAB 4: E-COMMERCE / DARK STORE AUDIT */}
+        {/* TAB 6: E-COMMERCE / DARK STORE AUDIT */}
         {/* ========================================================================= */}
         {currentTab === 'ecommerce' && (
           <EcommerceAuditTab onAuditSelected={handleSelectReportFromDossier} />
         )}
 
         {/* ========================================================================= */}
-        {/* TAB 5: BRAND PRE-CHECK PORTAL (MANUFACTURER) */}
+        {/* TAB 7: BRAND PRE-CHECK PORTAL (MANUFACTURER) */}
         {/* ========================================================================= */}
         {currentTab === 'manufacturer' && (
           <ManufacturerSelfAudit onLoadAudit={handleSelectReportFromDossier} />
         )}
 
         {/* ========================================================================= */}
-        {/* TAB 6: NATIONAL SURVEILLANCE HUB (MINISTRY DIRECTORATE) */}
+        {/* TAB 8: NATIONAL SURVEILLANCE HUB (MINISTRY DIRECTORATE) */}
         {/* ========================================================================= */}
         {currentTab === 'surveillance' && (
           <NationalSurveillanceHub />
         )}
 
         {/* ========================================================================= */}
-        {/* TAB 7: ADMINISTRATOR CONTROL CENTER (SOFTWARE/PLATFORM ADMIN) */}
+        {/* TAB 9: ADMINISTRATOR CONTROL CENTER (SOFTWARE/PLATFORM ADMIN) */}
         {/* ========================================================================= */}
         {currentTab === 'admin' && (
           <AdminControlCenter />
         )}
 
         {/* ========================================================================= */}
-        {/* TAB 8: FULL-PAGE OFFICIAL LMPC 2011 RULEBOOK (43 PAGES) */}
+        {/* TAB 10: FULL-PAGE OFFICIAL LMPC 2011 RULEBOOK (43 PAGES) */}
         {/* ========================================================================= */}
         {currentTab === 'rulebook' && (
-          <RulebookPage onBack={() => setCurrentTab(getTabForRole(userRole))} />
+          <RulebookPage onBack={() => setCurrentTab('home')} />
         )}
       </main>
 

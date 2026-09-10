@@ -63,7 +63,7 @@ export function getCurrentUser(): AuthUser | null {
   } catch (err) {
     console.warn('Failed to load current user:', err);
   }
-  return TEST_ACCOUNTS.OFFICER; // Default to Officer for quick demonstration
+  return null; // Return null so every new visitor lands on the login page first
 }
 
 export function setCurrentUser(user: AuthUser): void {

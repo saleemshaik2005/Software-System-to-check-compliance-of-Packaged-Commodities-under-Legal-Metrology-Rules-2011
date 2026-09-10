@@ -59,6 +59,9 @@ const UI_DICTIONARY: Record<Language, Record<string, string>> = {
     official_portal: 'Official Portal',
 
     // Nav Tabs
+    tab_home: 'Home',
+    tab_profile: 'My Profile',
+    tab_catalog: 'Catalog Inspector',
     tab_scanner: 'Package Inspector',
     tab_ecommerce: 'E-Commerce Audit',
     tab_enforcement: 'Enforcement Hub',
@@ -66,7 +69,8 @@ const UI_DICTIONARY: Record<Language, Record<string, string>> = {
     tab_manufacturer: 'Brand Portal',
     tab_surveillance: 'National Surveillance',
     tab_admin: 'Platform Admin',
-    tab_rulebook: 'LMPC Rulebook',
+    tab_rulebook: 'Rulebook',
+    rulebook_concise: 'Rulebook',
     tab_scan_package: 'Scan / Snap Package',
     tab_fair_pack: 'Fair Pack & MRP Report',
     tab_artwork_precheck: 'Artwork Pre-Check Simulator',
@@ -214,6 +218,9 @@ const UI_DICTIONARY: Record<Language, Record<string, string>> = {
     official_portal: 'आधिकारिक पोर्टल',
 
     // Nav Tabs
+    tab_home: 'होम',
+    tab_profile: 'मेरी प्रोफ़ाइल',
+    tab_catalog: 'कैटलॉग बैच निरीक्षक',
     tab_scanner: 'पैकेज निरीक्षक',
     tab_ecommerce: 'ई-कॉमर्स ऑडिट',
     tab_enforcement: 'प्रवर्तन केंद्र',
@@ -221,7 +228,8 @@ const UI_DICTIONARY: Record<Language, Record<string, string>> = {
     tab_manufacturer: 'ब्रांड पोर्टल',
     tab_surveillance: 'राष्ट्रीय निगरानी',
     tab_admin: 'सिस्टम एडमिन',
-    tab_rulebook: 'एलएमपीसी नियम पुस्तिका',
+    tab_rulebook: 'नियम पुस्तिका',
+    rulebook_concise: 'नियम पुस्तिका',
     tab_scan_package: 'पैकेज स्कैन / फोटो लें',
     tab_fair_pack: 'उचित पैक व मूल्य रिपोर्ट',
     tab_artwork_precheck: 'आर्टवर्क प्री-चेक सिम्युलेटर',
@@ -369,6 +377,9 @@ const UI_DICTIONARY: Record<Language, Record<string, string>> = {
     official_portal: 'అధికారిక పోర్టల్',
 
     // Nav Tabs
+    tab_home: 'హోమ్',
+    tab_profile: 'నా ప్రొఫైల్',
+    tab_catalog: 'క్యాటలాగ్ బ్యాచ్ ఇన్‌స్పెక్టర్',
     tab_scanner: 'ప్యాకేజీ ఇన్‌స్పెక్టర్',
     tab_ecommerce: 'ఈ-కామర్స్ ఆడిట్',
     tab_enforcement: 'ఎన్‌ఫోర్స్‌మెంట్ హబ్',
@@ -376,7 +387,8 @@ const UI_DICTIONARY: Record<Language, Record<string, string>> = {
     tab_manufacturer: 'బ్రాండ్ పోర్టల్',
     tab_surveillance: 'జాతీయ నిఘా విభాగం',
     tab_admin: 'సిస్టమ్ అడ్మిన్',
-    tab_rulebook: 'ఎల్‌ఎమ్‌పీసీ రూల్‌బుక్',
+    tab_rulebook: 'రూల్‌బుక్',
+    rulebook_concise: 'రూల్‌బుక్',
     tab_scan_package: 'ప్యాకేజీ స్కాన్ / ఫోటో తీయండి',
     tab_fair_pack: 'సరైన ప్యాకింగ్ & ధర రిపోర్ట్',
     tab_artwork_precheck: 'ప్యాకేజింగ్ ఆర్ట్‌వర్క్ ప్రీ-చెక్',

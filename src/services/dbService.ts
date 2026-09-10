@@ -85,25 +85,22 @@ function getDefaultReports(): ComplianceReport[] {
 
 /**
  * Get all cached inspection reports (local-first)
+ * Returns empty array if no audits have been created (no sample data auto-seeded)
  */
 export function getScanReports(): ComplianceReport[] {
   try {
     const raw = localStorage.getItem(STORAGE_KEY) || localStorage.getItem(LEGACY_STORAGE_KEY);
     if (!raw) {
-      const seededReports = getDefaultReports();
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(seededReports));
-      return seededReports;
+      return [];
     }
     const parsed: ComplianceReport[] = JSON.parse(raw);
-    if (!Array.isArray(parsed) || parsed.length === 0) {
-      const seededReports = getDefaultReports();
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(seededReports));
-      return seededReports;
+    if (!Array.isArray(parsed)) {
+      return [];
     }
     return parsed;
   } catch (err) {
     console.warn('Error accessing localStorage:', err);
-    return getDefaultReports();
+    return [];
   }
 }
 
@@ -310,4 +307,45 @@ export function getInspectionStats() {
     totalFines,
     complianceRate: total > 0 ? Math.round((compliant / total) * 100) : 100
   };
+}
+
+/**
+ * Purge all reports from local database and Google Cloud Firestore
+ * Completely wipes past records for a 100% fresh slate
+ */
+export async function purgeAllDatabaseData(): Promise<{ success: boolean; count: number }> {
+  try {
+    const existing = getScanReports();
+    const count = existing.length;
+
+    // 1. Wipe local storage
+    localStorage.removeItem(STORAGE_KEY);
+    localStorage.removeItem(LEGACY_STORAGE_KEY);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify([]));
+
+    // 2. Fetch and purge all documents from Firestore
+    try {
+      const cloudReports = await fetchReportsFromFirestore();
+      for (const cr of cloudReports) {
+        if (cr.id) {
+          await deleteReportFromFirestore(cr.id).catch(() => {});
+        }
+      }
+    } catch (e) {
+      console.warn('Error purging Firestore:', e);
+    }
+
+    // 3. Clear deleted IDs cache
+    localStorage.removeItem(DELETED_IDS_KEY);
+    localStorage.removeItem('inspack_deleted_cloudinary_media_v1');
+
+    // 4. Notify across all open tabs and windows
+    notifyDbChange();
+    SYNC_CHANNEL?.postMessage({ type: 'DB_CHANGE' });
+
+    return { success: true, count };
+  } catch (err) {
+    console.error('Failed to purge database:', err);
+    return { success: false, count: 0 };
+  }
 }

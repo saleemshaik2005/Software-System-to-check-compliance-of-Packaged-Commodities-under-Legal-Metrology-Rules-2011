@@ -29,8 +29,36 @@ export type ProductCommodityCategory =
 export type ComplianceStatus = 'COMPLIANT' | 'NON_COMPLIANT' | 'NEEDS_REVIEW';
 export type RuleStatus = 'PASS' | 'FAIL' | 'WARNING' | 'EXEMPT';
 export type UserRole = 'OFFICER' | 'CITIZEN' | 'MANUFACTURER' | 'SURVEILLANCE' | 'ADMIN';
-export type ActiveTab = 'scanner' | 'upload' | 'analytics' | 'ecommerce' | 'manufacturer' | 'surveillance' | 'admin' | 'rulebook';
+export type ActiveTab =
+  | 'home'
+  | 'profile'
+  | 'catalog'
+  | 'scanner'
+  | 'upload'
+  | 'analytics'
+  | 'ecommerce'
+  | 'manufacturer'
+  | 'surveillance'
+  | 'admin'
+  | 'rulebook';
 export type Language = 'en' | 'hi' | 'te';
+
+export interface BatchCatalogProduct {
+  id: string;
+  name: string;
+  brand?: string;
+  category?: ProductCommodityCategory;
+  images: {
+    front?: string;
+    back?: string;
+    side?: string;
+  };
+  hasAllRequiredPanels: boolean;
+  missingPanelsWarning?: string;
+  verificationStatus: 'PENDING' | 'VERIFYING' | 'VERIFIED' | 'FAILED';
+  report?: ComplianceReport;
+  savedToDatabase?: boolean;
+}
 
 export interface FoodAdditiveInfo {
   name: string;
