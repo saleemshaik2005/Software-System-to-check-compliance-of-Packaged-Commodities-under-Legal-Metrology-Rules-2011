@@ -169,7 +169,7 @@ export function App() {
     DEMO_PRESETS[0].imageVisual.front;
 
   return (
-    <div className="min-h-screen flex flex-col font-sans selection:bg-[#A5A58D] selection:text-white bg-[#FEFAE0] text-[#6B705C]">
+    <div className="min-h-screen flex flex-col font-sans selection:bg-blue-600 selection:text-white bg-slate-50 text-slate-900">
       <Navbar
         currentTab={currentTab}
         setCurrentTab={setCurrentTab}
@@ -233,17 +233,17 @@ export function App() {
         {currentTab === 'upload' && (
           <div className="space-y-6 animate-in fade-in duration-200">
             {/* Studio Header */}
-            <div className="bg-white border border-[#DDBEA9]/50 rounded-3xl p-6 shadow-xs flex flex-wrap items-center justify-between gap-4 transition-colors">
+            <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-xs flex flex-wrap items-center justify-between gap-4 transition-colors">
               <div>
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="p-2 rounded-2xl bg-[#6B705C] text-[#FEFAE0]">
+                  <span className="p-2 rounded-2xl bg-blue-600 text-white">
                     <Camera className="w-5 h-5" />
                   </span>
-                  <h1 className="text-xl font-black text-[#6B705C] tracking-tight">
+                  <h1 className="text-xl font-black text-slate-900 tracking-tight">
                     {userRole === 'CITIZEN' ? 'Consumer Package Compliance Scanner' : 'Field Inspection Scan Studio'}
                   </h1>
                 </div>
-                <p className="text-xs text-[#A5A58D]">
+                <p className="text-xs text-slate-500">
                   {userRole === 'CITIZEN'
                     ? 'Upload front and back photos of any packaged product to check if the MRP, weight, and manufacturer details follow the law.'
                     : 'Upload multi-view photos or capture live camera images of Front, Back, and Side panels for automated LMPC 2011 compliance verification.'}
@@ -253,7 +253,7 @@ export function App() {
               {/* Quick Jump to latest audit report */}
               <button
                 onClick={() => setCurrentTab('scanner')}
-                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#FAEDCD] hover:bg-[#E9EDC9] text-[#6B705C] font-bold text-xs transition-colors cursor-pointer border border-[#DDBEA9]/50"
+                className="flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs transition-colors cursor-pointer border border-slate-200"
               >
                 <span>View Latest Audit Sheet</span>
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -271,8 +271,8 @@ export function App() {
             {/* Benchmark Demo Presets */}
             <div className="pt-2">
               <div className="flex items-center gap-2 mb-3">
-                <Sparkles className="w-4 h-4 text-[#CB997E]" />
-                <span className="text-xs font-black uppercase tracking-wider text-[#6B705C]">
+                <Sparkles className="w-4 h-4 text-amber-500" />
+                <span className="text-xs font-black uppercase tracking-wider text-slate-800">
                   Or Test With Verified Benchmark Packaging Presets
                 </span>
               </div>
@@ -290,33 +290,33 @@ export function App() {
         {currentTab === 'scanner' && (
           <div className="space-y-6 animate-in fade-in duration-200">
             {/* Top Report Header & Action Bar */}
-            <div className="bg-white border border-[#DDBEA9]/50 rounded-2xl p-4 shadow-xs flex flex-wrap items-center justify-between gap-4 transition-colors">
+            <div className="bg-white border border-slate-200 rounded-2xl p-4 shadow-xs flex flex-wrap items-center justify-between gap-4 transition-colors">
               <div className="flex items-center gap-3">
                 <div className={`p-2.5 rounded-2xl ${
                   currentReport.overallStatus === 'COMPLIANT'
-                    ? 'bg-[#FAEDCD] text-[#6B705C] border border-[#A5A58D]'
+                    ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                     : 'bg-red-50 text-red-700 border border-red-300'
                 }`}>
                   {currentReport.overallStatus === 'COMPLIANT' ? (
-                    <CheckCircle className="w-5 h-5 text-[#6B705C]" />
+                    <CheckCircle className="w-5 h-5 text-emerald-600" />
                   ) : (
                     <AlertTriangle className="w-5 h-5 text-red-600" />
                   )}
                 </div>
                 <div>
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-mono font-bold text-[#A5A58D]">
+                    <span className="text-xs font-mono font-bold text-slate-400">
                       ID: {currentReport.id}
                     </span>
                     <span className={`text-[10px] font-black px-2 py-0.5 rounded-full uppercase tracking-wide ${
                       currentReport.overallStatus === 'COMPLIANT'
-                        ? 'bg-[#6B705C] text-[#FEFAE0]'
+                        ? 'bg-emerald-600 text-white'
                         : 'bg-red-600 text-white'
                     }`}>
                       {currentReport.overallStatus === 'COMPLIANT' ? 'Statutory Compliant' : 'Non-Compliant (Violations Detected)'}
                     </span>
                   </div>
-                  <h2 className="text-base font-black text-[#6B705C] mt-0.5">
+                  <h2 className="text-base font-black text-slate-900 mt-0.5">
                     {currentReport.productInfo.productName || 'Inspected Packaged Commodity'}
                   </h2>
                 </div>
@@ -326,16 +326,16 @@ export function App() {
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => setIsVaultOpen(true)}
-                  className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#FAEDCD] hover:bg-[#E9EDC9] text-[#6B705C] font-bold text-xs transition-colors border border-[#DDBEA9]/50 cursor-pointer"
+                  className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs transition-colors border border-slate-200 cursor-pointer"
                 >
-                  <Archive className="w-3.5 h-3.5 text-[#6B705C]" />
+                  <Archive className="w-3.5 h-3.5 text-slate-700" />
                   <span>Stored Vault</span>
                 </button>
 
                 {userRole === 'MANUFACTURER' ? (
                   <button
                     onClick={() => setCurrentTab('manufacturer')}
-                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#CB997E] hover:bg-[#D4A373] text-white font-bold text-xs transition-all cursor-pointer shadow-xs"
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition-all cursor-pointer shadow-xs"
                   >
                     <Building2 className="w-4 h-4" />
                     <span>+ Test Another Artwork</span>
@@ -343,7 +343,7 @@ export function App() {
                 ) : (
                   <button
                     onClick={() => setCurrentTab('upload')}
-                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#6B705C] hover:bg-[#D4A373] text-[#FEFAE0] font-bold text-xs transition-all cursor-pointer shadow-xs"
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs transition-all cursor-pointer shadow-xs"
                   >
                     <Camera className="w-4 h-4" />
                     <span>+ Start New Scan / Upload</span>
@@ -366,18 +366,18 @@ export function App() {
                 />
 
                 {/* Statutory Regulatory Context Card */}
-                <div className="bg-white border border-[#DDBEA9]/50 rounded-2xl p-4 text-xs text-[#A5A58D] shadow-xs space-y-2 transition-colors">
-                  <div className="font-black text-[#6B705C] uppercase tracking-wider text-[11px] flex items-center justify-between">
+                <div className="bg-white border border-slate-200 rounded-2xl p-4 text-xs text-slate-600 shadow-xs space-y-2 transition-colors">
+                  <div className="font-black text-slate-900 uppercase tracking-wider text-[11px] flex items-center justify-between">
                     <span>
                       {userRole === 'MANUFACTURER'
                         ? 'Manufacturer Pre-Pack Verification Protocol'
                         : 'Statutory Inspection Protocol'}
                     </span>
-                    <span className="text-[#CB997E] font-mono font-bold">
+                    <span className="text-blue-600 font-mono font-bold">
                       {userRole === 'MANUFACTURER' ? 'Pre-Printing Validation' : 'Fifth Schedule Sampling'}
                     </span>
                   </div>
-                  <p className="leading-relaxed text-[11px] text-[#6B705C]">
+                  <p className="leading-relaxed text-[11px] text-slate-600">
                     {userRole === 'MANUFACTURER'
                       ? 'Pre-pack validation confirms all mandatory declarations under Rule 6, numeral heights under Rule 7 Table I, and Second Schedule standard sizes before printing runs to prevent market recalls.'
                       : 'Inspection conducted under Section 15 of Legal Metrology Act, 2009. Sample size determined per Fifth Schedule Table (32 samples for lot < 4000; 80 samples for lot > 4000). Tare weight deducted per Sixth Schedule Part-II.'}

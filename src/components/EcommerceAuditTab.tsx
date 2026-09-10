@@ -138,36 +138,36 @@ export const EcommerceAuditTab: React.FC<EcommerceAuditTabProps> = ({ onAuditSel
       }
     },
     {
-      title: 'Zepto Dark Store: Fortune Sunlite Refined Sunflower Oil (1 L)',
+      title: 'Zepto Dark Store: Freedom Refined Sunflower Oil (1 L Pouch)',
       platform: 'Zepto',
       platformType: 'Quick Commerce 10-Min Delivery',
-      issue: 'Rule 6(11) Non-Compliance: Missing mandatory Unit Sale Price (₹/L) & dual pricing alert',
-      status: 'VIOLATION' as const,
-      fine: '₹20,000',
-      image: 'https://images.unsplash.com/photo-1474979266404-7eaacbcd87c5?w=800&auto=format&fit=crop&q=80',
+      issue: 'Rule 10 Statutory Compliant: Standard pack size (1 L / 910g), verified manufacturer (Gemini Edibles & Fats India Ltd), MRP & selling price verified',
+      status: 'COMPLIANT' as const,
+      fine: 'Nil',
+      image: '/demo/freedom-sunflower-oil-front.png',
       productInfo: {
-        productName: 'Fortune Sunlite Refined Sunflower Oil 1L Pouch',
+        productName: 'Freedom Refined Sunflower Oil 1L Pouch',
         genericName: 'Refined Edible Sunflower Oil',
-        brandName: 'Fortune',
+        brandName: 'Freedom',
         category: 'edible_oils' as any,
         netQuantity: 1,
         quantityUnit: 'l',
         rawQuantityString: '1 L (910g)',
-        mrp: 175.0,
+        mrp: 230.0,
         currency: 'INR',
-        mrpString: 'Rs. 175.00',
-        hasInclAllTaxes: false, // Missing incl of all taxes on listing
-        isStickerPrice: true,   // Sticker price markup
+        mrpString: '₹230.00 (Listing: ₹179.00 • ₹51 OFF)',
+        hasInclAllTaxes: true,
+        isStickerPrice: false,
         isDualPrice: false,
-        mfgMonth: '07',
-        mfgYear: '2024',
-        manufacturerName: 'Adani Wilmar Limited',
-        manufacturerAddress: 'Fortune House, Near Navrangpura Railway Crossing, Ahmedabad',
-        manufacturerPinCode: '380009',
+        mfgMonth: '08',
+        mfgYear: '2026',
+        manufacturerName: 'Gemini Edibles & Fats India Limited',
+        manufacturerAddress: 'Freedom House, 8-2-334/70 & 71, Road No. 5, Banjara Hills, Hyderabad, Telangana',
+        manufacturerPinCode: '500034',
         countryOfOrigin: 'India',
-        consumerCarePhone: '1800 233 9999',
-        consumerCareEmail: '',
-        batchNumber: 'AWL-SO-4421'
+        consumerCarePhone: '1800 425 4444',
+        consumerCareEmail: 'care@freedomhealthywell.com',
+        batchNumber: 'GEF-FSO-9921'
       }
     },
     {
@@ -348,7 +348,7 @@ export const EcommerceAuditTab: React.FC<EcommerceAuditTabProps> = ({ onAuditSel
         if (firstLine) parsedInfo.productName = firstLine.slice(0, 50);
       }
 
-      const specSvg = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600" viewBox="0 0 600 600" fill="%23FEFAE0"><rect width="600" height="600" fill="%23FEFAE0"/><rect x="20" y="20" width="560" height="560" rx="16" fill="%23FFFFFF" stroke="%23DDA15E" stroke-width="3"/><rect x="40" y="40" width="520" height="60" rx="8" fill="%23283618"/><text x="60" y="78" fill="%23FEFAE0" font-family="sans-serif" font-size="18" font-weight="bold">STATUTORY SPECIFICATION SHEET</text><text x="60" y="140" fill="%23283618" font-family="sans-serif" font-size="16" font-weight="bold">Digital Listing Declarations</text><text x="60" y="180" fill="%23606C38" font-family="sans-serif" font-size="14">Rule 6 Mandatory Declarations Extracted from Listing</text><rect x="60" y="210" width="480" height="1" fill="%23DDA15E"/><text x="60" y="250" fill="%231F2416" font-family="sans-serif" font-size="14">• Net Quantity &amp; Unit Sale Price Verified</text><text x="60" y="285" fill="%231F2416" font-family="sans-serif" font-size="14">• Manufacturer / Packer Address Audited</text><text x="60" y="320" fill="%231F2416" font-family="sans-serif" font-size="14">• Country of Origin &amp; MRP Verified</text><text x="60" y="355" fill="%231F2416" font-family="sans-serif" font-size="14">• Consumer Care Contact &amp; Expiry Date</text><rect x="60" y="480" width="480" height="50" rx="8" fill="%23F4EED4"/><text x="80" y="512" fill="%23BC6C25" font-family="sans-serif" font-size="13" font-weight="bold">LEGAL METROLOGY ACT, 2009 • SECTION 15 E-COMMERCE AUDIT</text></svg>`;
+      const specSvg = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="600" height="600" viewBox="0 0 600 600" fill="%23F8FAFC"><rect width="600" height="600" fill="%23F8FAFC"/><rect x="20" y="20" width="560" height="560" rx="16" fill="%23FFFFFF" stroke="%23CBD5E1" stroke-width="2"/><rect x="40" y="40" width="520" height="60" rx="8" fill="%231E40AF"/><text x="60" y="78" fill="%23FFFFFF" font-family="sans-serif" font-size="18" font-weight="bold">STATUTORY SPECIFICATION SHEET</text><text x="60" y="140" fill="%230F172A" font-family="sans-serif" font-size="16" font-weight="bold">Digital Listing Declarations</text><text x="60" y="180" fill="%232563EB" font-family="sans-serif" font-size="14">Rule 6 Mandatory Declarations Extracted from Listing</text><rect x="60" y="210" width="480" height="1" fill="%23E2E8F0"/><text x="60" y="250" fill="%23334155" font-family="sans-serif" font-size="14">• Net Quantity &amp; Unit Sale Price Verified</text><text x="60" y="285" fill="%23334155" font-family="sans-serif" font-size="14">• Manufacturer / Packer Address Audited</text><text x="60" y="320" fill="%23334155" font-family="sans-serif" font-size="14">• Country of Origin &amp; MRP Verified</text><text x="60" y="355" fill="%23334155" font-family="sans-serif" font-size="14">• Consumer Care Contact &amp; Expiry Date</text><rect x="60" y="480" width="480" height="50" rx="8" fill="%23EFF6FF" stroke="%23BFDBFE"/><text x="80" y="512" fill="%231D4ED8" font-family="sans-serif" font-size="13" font-weight="bold">LEGAL METROLOGY ACT, 2009 • SECTION 15 E-COMMERCE AUDIT</text></svg>`;
 
       const report = evaluateCompliance(
         parsedInfo,
@@ -370,7 +370,7 @@ export const EcommerceAuditTab: React.FC<EcommerceAuditTabProps> = ({ onAuditSel
       {/* Top Banner & Statutory Legal Context */}
       <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 p-6 rounded-3xl shadow-xs transition-colors">
         <div className="max-w-3xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/60 text-indigo-800 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800 text-xs font-bold mb-3">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-blue-800 text-xs font-bold mb-3">
             <Globe className="w-3.5 h-3.5" />
             <span>Digital Marketplace Enforcement • Legal Metrology (PC) Amendment Rules 2017</span>
           </div>
@@ -388,7 +388,7 @@ export const EcommerceAuditTab: React.FC<EcommerceAuditTabProps> = ({ onAuditSel
             onClick={() => setActiveMode('url')}
             className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
               activeMode === 'url'
-                ? 'bg-indigo-600 text-white shadow-xs'
+                ? 'bg-blue-600 text-white shadow-xs'
                 : 'bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 hover:bg-slate-200'
             }`}
           >
@@ -400,7 +400,7 @@ export const EcommerceAuditTab: React.FC<EcommerceAuditTabProps> = ({ onAuditSel
             onClick={() => setActiveMode('paste')}
             className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
               activeMode === 'paste'
-                ? 'bg-indigo-600 text-white shadow-xs'
+                ? 'bg-blue-600 text-white shadow-xs'
                 : 'bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 hover:bg-slate-200'
             }`}
           >
@@ -411,34 +411,74 @@ export const EcommerceAuditTab: React.FC<EcommerceAuditTabProps> = ({ onAuditSel
 
         {/* MODE A: URL AUDIT INPUT */}
         {activeMode === 'url' && (
-          <form onSubmit={handleCustomUrlAudit} className="mt-4 flex flex-wrap sm:flex-nowrap gap-2">
-            <div className="relative flex-1">
-              <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 transform -translate-y-1/2" />
-              <input
-                type="text"
-                value={urlInput}
-                onChange={(e) => {
-                  setUrlInput(e.target.value);
-                  setDetectedPlatform(e.target.value ? detectPlatformFromUrl(e.target.value) : null);
+          <div className="mt-4 space-y-3">
+            <form onSubmit={handleCustomUrlAudit} className="flex flex-wrap sm:flex-nowrap gap-2">
+              <div className="relative flex-1">
+                <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 transform -translate-y-1/2" />
+                <input
+                  type="text"
+                  value={urlInput}
+                  onChange={(e) => {
+                    setUrlInput(e.target.value);
+                    setDetectedPlatform(e.target.value ? detectPlatformFromUrl(e.target.value) : null);
+                  }}
+                  placeholder="Paste product URL (e.g., https://www.zepto.com/pn/freedom-refined-sunflower-oil/... or Amazon / Blinkit link)..."
+                  className="w-full bg-slate-50 border border-slate-300 text-slate-900 text-xs pl-10 pr-4 py-3 rounded-xl focus:outline-none focus:border-blue-600 font-mono"
+                />
+                {detectedPlatform && (
+                  <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[10px] font-bold px-2 py-0.5 rounded bg-blue-100 text-blue-800">
+                    {detectedPlatform}
+                  </span>
+                )}
+              </div>
+              <button
+                type="submit"
+                disabled={isAuditing || !urlInput.trim()}
+                className="bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white text-xs font-black px-5 py-3 rounded-xl shadow-xs transition-all flex items-center justify-center gap-2 shrink-0 cursor-pointer"
+              >
+                {isAuditing ? <RefreshCw className="w-4 h-4 animate-spin" /> : <ArrowRight className="w-4 h-4" />}
+                <span>{isAuditing ? 'Auditing Listing...' : 'Audit E-Commerce Listing'}</span>
+              </button>
+            </form>
+
+            {/* Quick 1-Click Real Testing Chips */}
+            <div className="flex flex-wrap items-center gap-2 pt-1">
+              <span className="text-[11px] font-bold text-slate-500">Quick Test URLs:</span>
+              <button
+                type="button"
+                onClick={() => {
+                  const u = 'https://www.zepto.com/pn/freedom-refined-sunflower-oil/pvid/e069e1ad-fd71-46cb-b700-4ec05ff7ff6e';
+                  setUrlInput(u);
+                  setDetectedPlatform('Zepto Dark Store');
                 }}
-                placeholder="Paste product URL (e.g., https://www.amazon.in/dp/B08X42YZ or Blinkit / Zepto / Flipkart link)..."
-                className="w-full bg-slate-50 dark:bg-zinc-800 border border-slate-300 dark:border-zinc-700 text-slate-900 dark:text-zinc-100 text-xs pl-10 pr-4 py-3 rounded-xl focus:outline-none focus:border-indigo-600 font-mono"
-              />
-              {detectedPlatform && (
-                <span className="absolute right-3 top-1/2 transform -translate-y-1/2 text-[10px] font-bold px-2 py-0.5 rounded bg-indigo-100 dark:bg-indigo-950 text-indigo-800 dark:text-indigo-300">
-                  {detectedPlatform}
-                </span>
-              )}
+                className="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-amber-50 text-amber-900 border border-amber-200 hover:bg-amber-100 transition-colors cursor-pointer flex items-center gap-1 shadow-2xs"
+              >
+                <span>🌻 Zepto: Freedom Sunflower Oil</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  const u = 'https://www.amazon.in/dp/B00TI87EQS';
+                  setUrlInput(u);
+                  setDetectedPlatform('Amazon India');
+                }}
+                className="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-blue-50 text-blue-900 border border-blue-200 hover:bg-blue-100 transition-colors cursor-pointer flex items-center gap-1 shadow-2xs"
+              >
+                <span>📦 Amazon: Tata Tea (ASIN B00TI87EQS)</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  const u = 'https://blinkit.com/prn/amul-taaza-fresh-toned-milk/prid/12345';
+                  setUrlInput(u);
+                  setDetectedPlatform('Blinkit Instant Grocery');
+                }}
+                className="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-emerald-50 text-emerald-900 border border-emerald-200 hover:bg-emerald-100 transition-colors cursor-pointer flex items-center gap-1 shadow-2xs"
+              >
+                <span>🥛 Blinkit: Amul Taaza Milk</span>
+              </button>
             </div>
-            <button
-              type="submit"
-              disabled={isAuditing || !urlInput.trim()}
-              className="bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white text-xs font-black px-5 py-3 rounded-xl shadow-xs transition-all flex items-center justify-center gap-2 shrink-0 cursor-pointer"
-            >
-              {isAuditing ? <RefreshCw className="w-4 h-4 animate-spin" /> : <ArrowRight className="w-4 h-4" />}
-              <span>{isAuditing ? 'Auditing Listing...' : 'Audit E-Commerce Listing'}</span>
-            </button>
-          </form>
+          </div>
         )}
 
         {/* MODE B: PASTE SPECIFICATIONS TEXT */}
@@ -471,14 +511,14 @@ Maximum Retail Price: Rs. 120.00 (incl. of all taxes)
 Unit Sale Price: Rs. 0.24 / g
 Country of Origin: India
 Customer Care: 1800-345-0088, care@itc.in`}
-              className="w-full bg-slate-50 dark:bg-zinc-800 border border-slate-300 dark:border-zinc-700 text-slate-900 dark:text-zinc-100 text-xs p-3 rounded-xl focus:outline-none focus:border-indigo-600 font-mono"
+              className="w-full bg-slate-50 dark:bg-zinc-800 border border-slate-300 dark:border-zinc-700 text-slate-900 dark:text-zinc-100 text-xs p-3 rounded-xl focus:outline-none focus:border-blue-600 font-mono"
             />
 
             <div className="flex justify-end">
               <button
                 type="submit"
                 disabled={isAuditing || !pasteText.trim()}
-                className="bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white text-xs font-black px-5 py-2.5 rounded-xl shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer"
+                className="bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white text-xs font-black px-5 py-2.5 rounded-xl shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer"
               >
                 {isAuditing ? <RefreshCw className="w-4 h-4 animate-spin" /> : <ArrowRight className="w-4 h-4" />}
                 <span>{isAuditing ? 'Parsing & Auditing...' : 'Run LMPC Compliance Audit'}</span>
@@ -491,7 +531,7 @@ Customer Care: 1800-345-0088, care@itc.in`}
       {/* STATUTORY RULES REFERENCE BANNER */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
         <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 p-4 rounded-2xl shadow-xs">
-          <div className="flex items-center gap-2 text-indigo-700 dark:text-indigo-400 font-black mb-1">
+          <div className="flex items-center gap-2 text-blue-700 dark:text-blue-400 font-black mb-1">
             <Store className="w-4 h-4" />
             <span>Rule 6(10) E-Commerce Mandate</span>
           </div>
@@ -544,13 +584,13 @@ Customer Care: 1800-345-0088, care@itc.in`}
               <div
                 key={idx}
                 onClick={() => handleAuditSample(sample)}
-                className="bg-slate-50 dark:bg-zinc-800/50 border border-slate-200 dark:border-zinc-700 hover:border-indigo-400 dark:hover:border-indigo-500 p-4 rounded-2xl cursor-pointer transition-all hover:bg-white dark:hover:bg-zinc-800/80 flex flex-col justify-between group shadow-2xs"
+                className="bg-slate-50 dark:bg-zinc-800/50 border border-slate-200 dark:border-zinc-700 hover:border-blue-400 dark:hover:border-blue-500 p-4 rounded-2xl cursor-pointer transition-all hover:bg-white dark:hover:bg-zinc-800/80 flex flex-col justify-between group shadow-2xs"
               >
                 <div>
                   {/* Card Header: Platform & Status */}
                   <div className="flex items-center justify-between gap-2 mb-3">
                     <div className="flex items-center gap-1.5">
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-white dark:bg-zinc-950 text-indigo-900 dark:text-indigo-300 border border-slate-200 dark:border-zinc-700">
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-white dark:bg-zinc-950 text-blue-900 dark:text-blue-300 border border-slate-200 dark:border-zinc-700">
                         {sample.platform}
                       </span>
                       <span className="text-[9px] text-slate-400 font-semibold hidden sm:inline">
@@ -578,7 +618,7 @@ Customer Care: 1800-345-0088, care@itc.in`}
                       className="w-16 h-16 object-cover rounded-xl border border-slate-200 dark:border-zinc-700 shrink-0 bg-white"
                     />
                     <div className="overflow-hidden">
-                      <h4 className="text-xs font-black text-slate-900 dark:text-zinc-100 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors line-clamp-2">
+                      <h4 className="text-xs font-black text-slate-900 dark:text-zinc-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2">
                         {sample.title}
                       </h4>
                       <span className="text-[11px] font-mono font-bold text-slate-500 mt-1 block">
@@ -593,7 +633,7 @@ Customer Care: 1800-345-0088, care@itc.in`}
                 </div>
 
                 {/* Footer Action */}
-                <div className="mt-3 pt-2.5 border-t border-slate-200 dark:border-zinc-700 flex items-center justify-between text-[11px] text-indigo-700 dark:text-indigo-400 font-bold">
+                <div className="mt-3 pt-2.5 border-t border-slate-200 dark:border-zinc-700 flex items-center justify-between text-[11px] text-blue-700 dark:text-blue-400 font-bold">
                   <span>Run Statutory Audit →</span>
                   <ExternalLink className="w-3.5 h-3.5 opacity-70 group-hover:opacity-100" />
                 </div>

@@ -78,7 +78,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
             'Seizure of non-conforming lots with counterfeit declarations or missing MRP / Expiry'
           ],
           samplingStandard: 'Fifth Schedule Table (32 samples for lot < 4000; 80 samples for lot > 4000)',
-          badgeColor: 'bg-[#CCD5AE] text-[#6B705C] border-[#B7B7A4]',
+          badgeColor: 'bg-blue-50 text-blue-700 border-blue-200',
         };
       case 'CITIZEN':
         return {
@@ -92,7 +92,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
             'Reporting unfair trade practices and dual MRP violations directly to authorities'
           ],
           samplingStandard: 'Instant single-product verification or receipt reconciliation',
-          badgeColor: 'bg-[#E9EDC9] text-[#6B705C] border-[#CCD5AE]',
+          badgeColor: 'bg-emerald-50 text-emerald-700 border-emerald-200',
         };
       case 'MANUFACTURER':
         return {
@@ -106,7 +106,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
             'Verification of packer declarations, customer care contact details, and QR codes'
           ],
           samplingStandard: 'Sixth Schedule Maximum Permissible Error (MPE) tolerances',
-          badgeColor: 'bg-[#CB997E] text-white border-[#DDBEA9]',
+          badgeColor: 'bg-amber-50 text-amber-700 border-amber-200',
         };
       case 'SURVEILLANCE':
         return {
@@ -120,7 +120,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
             'Central repository oversight and cross-state prosecution reporting'
           ],
           samplingStandard: 'Algorithmic dark store sampling and nationwide statistical audit',
-          badgeColor: 'bg-[#D4A373] text-white border-[#DDBEA9]',
+          badgeColor: 'bg-purple-50 text-purple-700 border-purple-200',
         };
       case 'ADMIN':
         return {
@@ -134,7 +134,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
             'Complete database purge and fresh environment seeding'
           ],
           samplingStandard: '100% Platform logging & distributed transaction audit',
-          badgeColor: 'bg-[#B7B7A4] text-[#6B705C] border-[#A5A58D]',
+          badgeColor: 'bg-slate-100 text-slate-700 border-slate-300',
         };
     }
   };
@@ -144,25 +144,25 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto animate-in fade-in duration-200">
-      {/* Top Header Card in Warm Sand & White */}
-      <div className="bg-[#FFFFFF] border border-[#DDBEA9] rounded-3xl p-6 sm:p-8 shadow-xs flex flex-wrap items-center justify-between gap-4">
+      {/* Top Header Card */}
+      <div className="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-xs flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-4">
-          <div className="w-16 h-16 rounded-2xl bg-[#FAEDCD] text-[#D4A373] flex items-center justify-center font-black text-2xl shadow-2xs border border-[#DDBEA9]">
+          <div className="w-16 h-16 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-2xl shadow-2xs border border-blue-100">
             {currentUser?.name ? currentUser.name.charAt(0) : 'U'}
           </div>
           <div>
             <div className="flex items-center gap-2 flex-wrap">
-              <h1 className="text-2xl font-black text-[#6B705C] tracking-tight">
+              <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
                 {currentUser?.name || 'Official User'}
               </h1>
-              <span className={`px-2.5 py-0.5 rounded-full text-xs font-black uppercase tracking-wider border ${details.badgeColor}`}>
+              <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider border ${details.badgeColor}`}>
                 {role}
               </span>
             </div>
-            <p className="text-xs font-mono text-[#A5A58D] mt-0.5">
+            <p className="text-xs font-mono text-slate-500 mt-0.5">
               {currentUser?.email || 'officer@lm.gov.in'}
             </p>
-            <p className="text-xs text-[#CB997E] font-bold mt-1">
+            <p className="text-xs text-blue-600 font-medium mt-1">
               Badge / ID: {currentUser?.badgeNumber || 'LM-2026-IND-01'}
             </p>
           </div>
@@ -171,13 +171,13 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
         <div className="flex items-center gap-2">
           <button
             onClick={onBack}
-            className="px-4 py-2 rounded-xl bg-[#FAEDCD] hover:bg-[#E9EDC9] text-[#6B705C] text-xs font-black transition-colors cursor-pointer border border-[#DDBEA9]"
+            className="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition-colors cursor-pointer border border-slate-200"
           >
             ← Back to Home
           </button>
           <button
             onClick={onSignOut}
-            className="px-4 py-2 rounded-xl bg-[#CB997E] hover:bg-[#D4A373] text-white text-xs font-black transition-colors cursor-pointer shadow-2xs flex items-center gap-1.5"
+            className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold transition-colors cursor-pointer shadow-2xs flex items-center gap-1.5"
           >
             <LogOut className="w-3.5 h-3.5" />
             <span>Sign Out</span>
@@ -189,44 +189,44 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
       <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
         {/* Left Column: Official Profile Details */}
         <div className="md:col-span-7 space-y-6">
-          <div className="bg-[#FFFFFF] border border-[#DDBEA9] rounded-2xl p-6 shadow-xs space-y-4">
-            <div className="flex items-center gap-2 border-b border-[#DDBEA9]/40 pb-3">
-              <Shield className="w-5 h-5 text-[#D4A373]" />
-              <h2 className="text-base font-black text-[#6B705C]">
+          <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs space-y-4">
+            <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
+              <Shield className="w-5 h-5 text-blue-600" />
+              <h2 className="text-base font-bold text-slate-900">
                 Official Credentials & Legal Jurisdiction
               </h2>
             </div>
 
             <div className="space-y-3 text-xs">
               <div>
-                <span className="font-bold text-[#A5A58D] block uppercase text-[10px]">Official Designation</span>
-                <span className="font-black text-[#6B705C] text-sm">{details.designation}</span>
+                <span className="font-semibold text-slate-400 block uppercase text-[10px]">Official Designation</span>
+                <span className="font-bold text-slate-800 text-sm">{details.designation}</span>
               </div>
 
               <div>
-                <span className="font-bold text-[#A5A58D] block uppercase text-[10px]">Operating Jurisdiction</span>
-                <span className="font-bold text-[#6B705C]">{details.jurisdiction}</span>
+                <span className="font-semibold text-slate-400 block uppercase text-[10px]">Operating Jurisdiction</span>
+                <span className="font-medium text-slate-700">{details.jurisdiction}</span>
               </div>
 
               <div>
-                <span className="font-bold text-[#A5A58D] block uppercase text-[10px]">Legal Empowering Act</span>
-                <span className="font-mono font-bold text-[#CB997E]">{details.gazetteAuthority}</span>
+                <span className="font-semibold text-slate-400 block uppercase text-[10px]">Legal Empowering Act</span>
+                <span className="font-mono font-medium text-blue-600">{details.gazetteAuthority}</span>
               </div>
 
               <div>
-                <span className="font-bold text-[#A5A58D] block uppercase text-[10px]">Sampling & Verification Standard</span>
-                <span className="font-medium text-[#6B705C]">{details.samplingStandard}</span>
+                <span className="font-semibold text-slate-400 block uppercase text-[10px]">Sampling & Verification Standard</span>
+                <span className="font-medium text-slate-700">{details.samplingStandard}</span>
               </div>
             </div>
 
-            <div className="pt-2 border-t border-[#DDBEA9]/40">
-              <span className="font-bold text-[#A5A58D] block uppercase text-[10px] mb-2">
+            <div className="pt-2 border-t border-slate-100">
+              <span className="font-semibold text-slate-400 block uppercase text-[10px] mb-2">
                 Statutory Authorities & Operational Scope
               </span>
               <ul className="space-y-1.5">
                 {details.statutoryPowers.map((power, idx) => (
-                  <li key={idx} className="flex items-start gap-2 text-xs text-[#6B705C]">
-                    <CheckCircle className="w-3.5 h-3.5 text-[#D4A373] shrink-0 mt-0.5" />
+                  <li key={idx} className="flex items-start gap-2 text-xs text-slate-600">
+                    <CheckCircle className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
                     <span>{power}</span>
                   </li>
                 ))}
@@ -238,15 +238,15 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
         {/* Right Column: Fast Role Switcher & Database Reset */}
         <div className="md:col-span-5 space-y-6">
           {/* Quick Role Switcher Card */}
-          <div className="bg-[#FFFFFF] border border-[#DDBEA9] rounded-2xl p-6 shadow-xs space-y-4">
-            <div className="flex items-center gap-2 border-b border-[#DDBEA9]/40 pb-3">
-              <KeyRound className="w-5 h-5 text-[#CB997E]" />
-              <h2 className="text-base font-black text-[#6B705C]">
+          <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs space-y-4">
+            <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
+              <KeyRound className="w-5 h-5 text-blue-600" />
+              <h2 className="text-base font-bold text-slate-900">
                 Switch Active Role
               </h2>
             </div>
 
-            <p className="text-xs text-[#A5A58D]">
+            <p className="text-xs text-slate-500">
               Switch into any of the 5 functional role portals to test role-specific workflows and access privileges.
             </p>
 
@@ -255,17 +255,17 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
                 <button
                   key={r}
                   onClick={() => handleRoleChange(r)}
-                  className={`w-full p-2.5 rounded-xl text-xs font-black text-left flex items-center justify-between transition-all cursor-pointer ${
+                  className={`w-full p-2.5 rounded-xl text-xs font-semibold text-left flex items-center justify-between transition-all cursor-pointer ${
                     role === r
-                      ? 'bg-[#D4A373] text-white shadow-2xs'
-                      : 'bg-[#FAEDCD]/50 hover:bg-[#E9EDC9] text-[#6B705C] border border-[#DDBEA9]'
+                      ? 'bg-blue-600 text-white shadow-2xs'
+                      : 'bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200'
                   }`}
                 >
                   <span className="capitalize">{r}</span>
                   {role === r ? (
-                    <span className="text-[10px] bg-[#CCD5AE] text-[#6B705C] px-2 py-0.5 rounded-full font-bold">ACTIVE</span>
+                    <span className="text-[10px] bg-blue-500 text-white px-2 py-0.5 rounded-full font-bold">ACTIVE</span>
                   ) : (
-                    <ChevronRight className="w-3.5 h-3.5 opacity-60 text-[#A5A58D]" />
+                    <ChevronRight className="w-3.5 h-3.5 opacity-60 text-slate-400" />
                   )}
                 </button>
               ))}
@@ -273,21 +273,21 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
           </div>
 
           {/* Database & Storage Management */}
-          <div className="bg-[#FFFFFF] border border-[#DDBEA9] rounded-2xl p-6 shadow-xs space-y-3">
-            <div className="flex items-center gap-2 border-b border-[#DDBEA9]/40 pb-3">
-              <Trash2 className="w-5 h-5 text-[#CB997E]" />
-              <h2 className="text-base font-black text-[#CB997E]">
+          <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-xs space-y-3">
+            <div className="flex items-center gap-2 border-b border-slate-100 pb-3">
+              <Trash2 className="w-5 h-5 text-rose-600" />
+              <h2 className="text-base font-bold text-rose-600">
                 Database & Cache Management
               </h2>
             </div>
 
-            <p className="text-xs text-[#A5A58D] leading-relaxed">
-              Currently stored scan certificates: <span className="font-bold text-[#6B705C]">{currentTotalScans}</span>.
+            <p className="text-xs text-slate-500 leading-relaxed">
+              Currently stored scan certificates: <span className="font-bold text-slate-800">{currentTotalScans}</span>.
               Use this option to clear all local inspection records and synchronize with a 100% clean, empty database.
             </p>
 
             {purgeStatus && (
-              <div className="p-2.5 rounded-xl bg-[#FAEDCD] border border-[#DDBEA9] text-[#6B705C] text-xs font-bold animate-pulse">
+              <div className="p-2.5 rounded-xl bg-blue-50 border border-blue-200 text-blue-800 text-xs font-medium animate-pulse">
                 {purgeStatus}
               </div>
             )}
@@ -295,7 +295,7 @@ export const ProfilePage: React.FC<ProfilePageProps> = ({
             <button
               onClick={handlePurgeAll}
               disabled={isPurging}
-              className="w-full py-2.5 px-4 rounded-xl bg-[#CB997E] hover:bg-[#D4A373] text-white font-black text-xs transition-all cursor-pointer shadow-2xs flex items-center justify-center gap-2"
+              className="w-full py-2.5 px-4 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-semibold text-xs transition-all cursor-pointer shadow-2xs flex items-center justify-center gap-2"
             >
               <Trash2 className="w-4 h-4" />
               <span>{isPurging ? 'Purging...' : 'Purge All Database Records'}</span>
