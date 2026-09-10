@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="750" viewBox="0 0 600 750">
+  <rect width="600" height="750" fill="#F8FAFC" />
+
+  <!-- Pouch Back Canvas -->
+  <rect x="70" y="30" width="460" height="690" rx="36" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="3" />
+
+  <!-- Top Header Banner -->
+  <rect x="70" y="30" width="460" height="55" rx="36" fill="#0A3663" />
+  <rect x="70" y="60" width="460" height="25" fill="#0A3663" />
+  <text x="300" y="64" fill="#FFFFFF" font-family="sans-serif" font-size="14" font-weight="900" text-anchor="middle" letter-spacing="1">STATUTORY CONSUMER DECLARATIONS</text>
+  <text x="300" y="78" fill="#93C5FD" font-family="sans-serif" font-size="10" font-weight="bold" text-anchor="middle">THE LEGAL METROLOGY (PACKAGED COMMODITIES) RULES, 2011</text>
+
+  <!-- Rule 6(1)(a) & Rule 10 Manufacturer Block -->
+  <rect x="95" y="100" width="410" height="115" rx="12" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5" />
+  <rect x="105" y="108" width="230" height="20" rx="4" fill="#2563EB" />
+  <text x="220" y="122" fill="#FFFFFF" font-family="sans-serif" font-size="10" font-weight="bold" text-anchor="middle">RULE 6(1)(a) &amp; RULE 10 • MANUFACTURER</text>
+  <text x="105" y="145" fill="#0F172A" font-family="sans-serif" font-size="13" font-weight="900">Manufactured &amp; Packed by:</text>
+  <text x="105" y="163" fill="#1E293B" font-family="sans-serif" font-size="12" font-weight="bold">KALEESUWARI REFINERY PRIVATE LIMITED</text>
+  <text x="105" y="180" fill="#475569" font-family="sans-serif" font-size="11">Factory: Vandalur-Kelambakkam Road, Vengambakkam,</text>
+  <text x="105" y="197" fill="#15803D" font-family="sans-serif" font-size="11" font-weight="bold">Chennai, Tamil Nadu - PIN: 600081 (India)</text>
+  <text x="105" y="211" fill="#2563EB" font-family="sans-serif" font-size="10">FSSAI Central Lic. No.: 10012042000214</text>
+
+  <!-- Rule 6(1)(d), 6(1)(da) & 6(1)(g) Mfg Date, Expiry & Batch -->
+  <rect x="95" y="225" width="410" height="105" rx="12" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5" />
+  <rect x="105" y="233" width="240" height="20" rx="4" fill="#059669" />
+  <text x="225" y="247" fill="#FFFFFF" font-family="sans-serif" font-size="10" font-weight="bold" text-anchor="middle">RULE 6(1)(d), (da) &amp; (g) • DATES &amp; BATCH</text>
+  <text x="105" y="270" fill="#0F172A" font-family="sans-serif" font-size="12" font-weight="bold">Date of Packaging: 08 / 2026</text>
+  <text x="105" y="290" fill="#0F172A" font-family="sans-serif" font-size="12" font-weight="bold">Best Before / Expiry: 05 / 2027 (9 Months from Mfg)</text>
+  <text x="105" y="310" fill="#475569" font-family="sans-serif" font-size="11">Batch No: KRL-SO-8842 • Lot: L4-A</text>
+  <text x="105" y="325" fill="#15803D" font-family="sans-serif" font-size="10" font-weight="bold">✓ Formulated under strict food safety &amp; metrology norms</text>
+
+  <!-- Rule 6(1)(e) & Rule 6(11) Pricing Declarations -->
+  <rect x="95" y="340" width="410" height="95" rx="12" fill="#FEF2F2" stroke="#F87171" stroke-width="1.5" />
+  <rect x="105" y="348" width="210" height="20" rx="4" fill="#DC2626" />
+  <text x="210" y="362" fill="#FFFFFF" font-family="sans-serif" font-size="10" font-weight="bold" text-anchor="middle">RULE 6(1)(e) &amp; 6(11) • PRICE &amp; USP</text>
+  <text x="105" y="385" fill="#991B1B" font-family="sans-serif" font-size="14" font-weight="900">MAXIMUM RETAIL PRICE (MRP): ₹ 145.00</text>
+  <text x="105" y="402" fill="#7F1D1D" font-family="sans-serif" font-size="11">(Inclusive of all taxes • No stickers/alterations permitted)</text>
+  <text x="105" y="422" fill="#1E3A8A" font-family="sans-serif" font-size="12" font-weight="bold">UNIT SALE PRICE (USP): ₹ 0.145 / ml</text>
+
+  <!-- Rule 6(2) Consumer Care Cell -->
+  <rect x="95" y="445" width="410" height="105" rx="12" fill="#EFF6FF" stroke="#93C5FD" stroke-width="1.5" />
+  <rect x="105" y="453" width="220" height="20" rx="4" fill="#1D4ED8" />
+  <text x="215" y="467" fill="#FFFFFF" font-family="sans-serif" font-size="10" font-weight="bold" text-anchor="middle">RULE 6(2) • CONSUMER COMPLAINT CELL</text>
+  <text x="105" y="490" fill="#1E3A8A" font-family="sans-serif" font-size="12" font-weight="900">In case of consumer complaints, please contact:</text>
+  <text x="105" y="507" fill="#0F172A" font-family="sans-serif" font-size="11">Consumer Relations Manager, Kaleesuwari Refinery Pvt Ltd</text>
+  <text x="105" y="524" fill="#1E40AF" font-family="sans-serif" font-size="12" font-weight="bold">📞 Toll-Free Helpline: 1800 425 3333</text>
+  <text x="105" y="541" fill="#1E40AF" font-family="sans-serif" font-size="11" font-weight="bold">✉ Email: customercare@kaleesuwari.com</text>
+
+  <!-- Rule 6(10) Country of Origin & Barcode -->
+  <rect x="95" y="560" width="410" height="80" rx="12" fill="#F8FAFC" stroke="#94A3B8" stroke-width="1.5" />
+  <text x="105" y="585" fill="#0F172A" font-family="sans-serif" font-size="13" font-weight="900">COUNTRY OF ORIGIN: INDIA</text>
+  <text x="105" y="603" fill="#475569" font-family="sans-serif" font-size="11">Standard Pack Size conforms to Legal Metrology Second Schedule</text>
+  <!-- Mock Barcode -->
+  <rect x="105" y="612" width="2" height="20" fill="#000" /><rect x="110" y="612" width="3" height="20" fill="#000" /><rect x="116" y="612" width="1" height="20" fill="#000" /><rect x="120" y="612" width="4" height="20" fill="#000" /><rect x="128" y="612" width="2" height="20" fill="#000" /><rect x="133" y="612" width="3" height="20" fill="#000" /><rect x="140" y="612" width="2" height="20" fill="#000" /><rect x="145" y="612" width="4" height="20" fill="#000" /><rect x="152" y="612" width="1" height="20" fill="#000" /><rect x="156" y="612" width="3" height="20" fill="#000" /><rect x="162" y="612" width="2" height="20" fill="#000" />
+  <text x="175" y="627" fill="#475569" font-family="monospace" font-size="11" font-weight="bold">8906014640012</text>
+
+  <!-- Bottom Panel Tag -->
+  <rect x="95" y="650" width="410" height="45" rx="10" fill="#F1F5F9" stroke="#CBD5E1" stroke-width="1" />
+  <text x="300" y="675" fill="#475569" font-family="sans-serif" font-size="11" font-weight="bold" text-anchor="middle">STATUTORY DECLARATIONS PANEL • BACK VIEW</text>
+</svg>

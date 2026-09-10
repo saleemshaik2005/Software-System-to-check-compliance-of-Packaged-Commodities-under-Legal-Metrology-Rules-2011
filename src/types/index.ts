@@ -158,6 +158,7 @@ export interface ExtractedProductInfo {
   mrp: number;
   currency: string;
   mrpString: string;
+  unitSalePrice?: string | number;
   hasInclAllTaxes: boolean;
   isStickerPrice: boolean;
   isDualPrice: boolean;

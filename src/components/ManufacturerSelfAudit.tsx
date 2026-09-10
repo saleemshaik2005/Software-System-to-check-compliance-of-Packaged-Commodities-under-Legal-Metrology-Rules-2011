@@ -143,17 +143,17 @@ export const ManufacturerSelfAudit: React.FC<ManufacturerSelfAuditProps> = ({ on
   return (
     <div className="space-y-6 animate-in fade-in duration-200">
       {/* Top Banner & Regulatory Context */}
-      <div className="bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-6 rounded-3xl shadow-xs transition-colors">
+      <div className="bg-white border border-slate-200 p-6 rounded-3xl shadow-xs transition-colors">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-50 dark:bg-amber-950/50 text-amber-800 dark:text-amber-300 border border-amber-200 dark:border-amber-800 text-xs font-bold mb-3">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-50 text-amber-800 border border-amber-200 text-xs font-bold mb-3">
               <Building2 className="w-3.5 h-3.5" />
               <span>Brand Packaging Pre-Printing & QA Compliance Simulator</span>
             </div>
-            <h2 className="text-xl font-black text-zinc-900 dark:text-zinc-100 tracking-tight">
+            <h2 className="text-xl font-black text-slate-900 tracking-tight">
               Pre-Market Packaging Artwork & Die-Line Verification Lab
             </h2>
-            <p className="text-xs sm:text-sm text-zinc-600 dark:text-zinc-400 mt-1 leading-relaxed">
+            <p className="text-xs sm:text-sm text-slate-600 mt-1 leading-relaxed">
               Verify commodity specifications before ordering cylinder engraving or commercial batch printing runs. Automatically check <strong>The Second Schedule (Rule 5)</strong> standard pack sizes, <strong>Rule 7 Table I</strong> font heights, and <strong>Rule 6/10/18</strong> mandatory declarations to prevent market seizures and recall losses.
             </p>
           </div>
@@ -164,7 +164,7 @@ export const ManufacturerSelfAudit: React.FC<ManufacturerSelfAuditProps> = ({ on
               className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                 activeMode === 'simulator'
                   ? 'bg-amber-600 text-white shadow-xs'
-                  : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200'
+                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
               }`}
             >
               <span>Die-Line Spec Configurator</span>
@@ -174,7 +174,7 @@ export const ManufacturerSelfAudit: React.FC<ManufacturerSelfAuditProps> = ({ on
               className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                 activeMode === 'upload'
                   ? 'bg-amber-600 text-white shadow-xs'
-                  : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-700 dark:text-zinc-300 hover:bg-zinc-200'
+                  : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
               }`}
             >
               <Upload className="w-3.5 h-3.5" />
@@ -187,9 +187,9 @@ export const ManufacturerSelfAudit: React.FC<ManufacturerSelfAuditProps> = ({ on
       {/* Main Grid: Inputs (Left) and Live Digital Proof (Right) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* Left Column: Specifications Form & Second Schedule Rules */}
-        <div className="lg:col-span-7 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-6 rounded-3xl shadow-xs space-y-5 transition-colors">
-          <div className="flex items-center justify-between border-b border-zinc-100 dark:border-zinc-800 pb-3">
-            <h3 className="text-sm font-black text-zinc-900 dark:text-zinc-100 flex items-center gap-2">
+        <div className="lg:col-span-7 bg-white border border-slate-200 p-6 rounded-3xl shadow-xs space-y-5 transition-colors">
+          <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+            <h3 className="text-sm font-black text-slate-900 flex items-center gap-2">
               <Scale className="w-4 h-4 text-amber-600" />
               <span>Statutory Packaging Declarations (Rule 6, 7 & 10)</span>
             </h3>
@@ -200,15 +200,15 @@ export const ManufacturerSelfAudit: React.FC<ManufacturerSelfAuditProps> = ({ on
 
           {/* Mode Upload: File Selector */}
           {activeMode === 'upload' && (
-            <div className="p-4 rounded-2xl bg-zinc-50 dark:bg-zinc-950 border border-dashed border-zinc-300 dark:border-zinc-700 text-center space-y-3">
-              <div className="w-12 h-12 rounded-2xl bg-amber-50 dark:bg-amber-950/40 text-amber-600 mx-auto flex items-center justify-center">
+            <div className="p-4 rounded-2xl bg-slate-50 border border-dashed border-slate-300 text-center space-y-3">
+              <div className="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 mx-auto flex items-center justify-center">
                 <Upload className="w-6 h-6" />
               </div>
               <div>
-                <h4 className="text-xs font-bold text-zinc-900 dark:text-zinc-100">
+                <h4 className="text-xs font-bold text-slate-900">
                   Upload Packaging Label Artwork Proof (PDF / PNG / JPG)
                 </h4>
-                <p className="text-[11px] text-zinc-500 dark:text-zinc-400 mt-0.5">
+                <p className="text-[11px] text-slate-500 mt-0.5">
                   Select your print-ready die-line or artwork export to inspect statutory placements
                 </p>
               </div>
@@ -216,7 +216,7 @@ export const ManufacturerSelfAudit: React.FC<ManufacturerSelfAuditProps> = ({ on
                 type="file"
                 accept="image/*,.pdf"
                 onChange={handleImageUpload}
-                className="text-xs text-zinc-600 dark:text-zinc-400 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-amber-600 file:text-white hover:file:bg-amber-500 cursor-pointer"
+                className="text-xs text-slate-600 file:mr-3 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-xs file:font-bold file:bg-amber-600 file:text-white hover:file:bg-amber-500 cursor-pointer"
               />
               {uploadedImage && (
                 <div className="text-[11px] font-bold text-emerald-600">
@@ -230,13 +230,13 @@ export const ManufacturerSelfAudit: React.FC<ManufacturerSelfAuditProps> = ({ on
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
             {/* Commodity Category */}
             <div>
-              <label className="block text-zinc-700 dark:text-zinc-300 mb-1 font-bold">
+              <label className="block text-zinc-700 mb-1 font-bold">
                 Commodity Category (Second Schedule)
               </label>
               <select
                 value={formData.category}
                 onChange={(e) => handleChange('category', e.target.value)}
-                className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 p-2.5 rounded-xl focus:border-amber-500 focus:outline-none"
+                className="w-full bg-zinc-50 border border-zinc-300 text-zinc-900 p-2.5 rounded-xl focus:border-amber-500 focus:outline-none"
               >
                 <option value="general_fmcg">General FMCG (Any Standard SI Size)</option>
                 <option value="baby_food">Baby Food (Item #1)</option>
@@ -257,20 +257,20 @@ export const ManufacturerSelfAudit: React.FC<ManufacturerSelfAuditProps> = ({ on
 
             {/* Product Name */}
             <div>
-              <label className="block text-zinc-700 dark:text-zinc-300 mb-1 font-bold">
+              <label className="block text-zinc-700 mb-1 font-bold">
                 Product Commercial Name (Rule 6(1)(b))
               </label>
               <input
                 type="text"
                 value={formData.productName}
                 onChange={(e) => handleChange('productName', e.target.value)}
-                className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 p-2.5 rounded-xl focus:border-amber-500 focus:outline-none"
+                className="w-full bg-zinc-50 border border-zinc-300 text-zinc-900 p-2.5 rounded-xl focus:border-amber-500 focus:outline-none"
               />
             </div>
 
             {/* Net Quantity & Unit */}
             <div>
-              <label className="block text-zinc-700 dark:text-zinc-300 mb-1 font-bold">
+              <label className="block text-zinc-700 mb-1 font-bold">
                 Net Quantity & Unit (Rule 6(1)(c) & 13)
               </label>
               <div className="flex gap-2">
@@ -278,12 +278,12 @@ export const ManufacturerSelfAudit: React.FC<ManufacturerSelfAuditProps> = ({ on
                   type="number"
                   value={formData.netQuantity}
                   onChange={(e) => handleChange('netQuantity', parseFloat(e.target.value) || 0)}
-                  className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 p-2.5 rounded-xl focus:border-amber-500 focus:outline-none font-bold"
+                  className="w-full bg-zinc-50 border border-zinc-300 text-zinc-900 p-2.5 rounded-xl focus:border-amber-500 focus:outline-none font-bold"
                 />
                 <select
                   value={formData.quantityUnit}
                   onChange={(e) => handleChange('quantityUnit', e.target.value)}
-                  className="bg-zinc-50 dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 p-2.5 rounded-xl focus:border-amber-500 focus:outline-none font-bold"
+                  className="bg-zinc-50 border border-zinc-300 text-zinc-900 p-2.5 rounded-xl focus:border-amber-500 focus:outline-none font-bold"
                 >
                   <option value="g">g</option>
                   <option value="kg">kg</option>
@@ -299,25 +299,25 @@ export const ManufacturerSelfAudit: React.FC<ManufacturerSelfAuditProps> = ({ on
 
             {/* MRP */}
             <div>
-              <label className="block text-zinc-700 dark:text-zinc-300 mb-1 font-bold">
+              <label className="block text-zinc-700 mb-1 font-bold">
                 Maximum Retail Price (₹) (Rule 6(1)(e))
               </label>
               <input
                 type="number"
                 value={formData.mrp}
                 onChange={(e) => handleChange('mrp', parseFloat(e.target.value) || 0)}
-                className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 p-2.5 rounded-xl focus:border-amber-500 focus:outline-none font-bold"
+                className="w-full bg-zinc-50 border border-zinc-300 text-zinc-900 p-2.5 rounded-xl focus:border-amber-500 focus:outline-none font-bold"
               />
             </div>
 
             {/* Second Schedule Permissible Sizes Pill Showcase */}
             {selectedScheduleRule && selectedScheduleRule.allowedSizes?.exactValues && selectedScheduleRule.allowedSizes.exactValues.length > 0 && (
-              <div className="sm:col-span-2 bg-amber-50/60 dark:bg-zinc-950 p-3 rounded-2xl border border-amber-200 dark:border-zinc-800 space-y-1.5">
+              <div className="sm:col-span-2 bg-amber-50/60 p-3 rounded-2xl border border-amber-200 space-y-1.5">
                 <div className="flex items-center justify-between text-[11px]">
-                  <span className="font-black text-amber-800 dark:text-amber-400">
+                  <span className="font-black text-amber-800">
                     The Second Schedule (Item #{selectedScheduleRule.scheduleItemNo}): Permissible Sizes for {selectedScheduleRule.name}
                   </span>
-                  <span className="text-zinc-500 dark:text-zinc-400 font-mono">
+                  <span className="text-zinc-500 font-mono">
                     Unit: {selectedScheduleRule.allowedSizes.unit}
                   </span>
                 </div>
@@ -332,7 +332,7 @@ export const ManufacturerSelfAudit: React.FC<ManufacturerSelfAuditProps> = ({ on
                         className={`px-2 py-0.5 rounded-lg text-[10px] font-bold transition-all cursor-pointer ${
                           isCurrent
                             ? 'bg-amber-600 text-white shadow-xs'
-                            : 'bg-white dark:bg-zinc-900 text-zinc-700 dark:text-zinc-300 border border-zinc-200 dark:border-zinc-800 hover:border-amber-400'
+                            : 'bg-white text-zinc-700 border border-zinc-200 hover:border-amber-400'
                         }`}
                       >
                         {size}{selectedScheduleRule.allowedSizes.unit}
@@ -344,8 +344,8 @@ export const ManufacturerSelfAudit: React.FC<ManufacturerSelfAuditProps> = ({ on
             )}
 
             {/* Tax clause & Sticker price checkboxes */}
-            <div className="sm:col-span-2 flex flex-wrap items-center gap-4 bg-zinc-50 dark:bg-zinc-950 p-3 rounded-xl border border-zinc-200 dark:border-zinc-800">
-              <label className="flex items-center gap-2 cursor-pointer font-semibold text-zinc-800 dark:text-zinc-200">
+            <div className="sm:col-span-2 flex flex-wrap items-center gap-4 bg-zinc-50 p-3 rounded-xl border border-zinc-200">
+              <label className="flex items-center gap-2 cursor-pointer font-semibold text-zinc-800">
                 <input
                   type="checkbox"
                   checked={formData.hasInclAllTaxes}
@@ -355,7 +355,7 @@ export const ManufacturerSelfAudit: React.FC<ManufacturerSelfAuditProps> = ({ on
                 <span>Include "incl. of all taxes" clause (Rule 18)</span>
               </label>
 
-              <label className="flex items-center gap-2 cursor-pointer font-semibold text-red-600 dark:text-red-400">
+              <label className="flex items-center gap-2 cursor-pointer font-semibold text-red-600">
                 <input
                   type="checkbox"
                   checked={formData.isStickerPrice}
@@ -368,33 +368,33 @@ export const ManufacturerSelfAudit: React.FC<ManufacturerSelfAuditProps> = ({ on
 
             {/* Manufacturer Name */}
             <div className="sm:col-span-2">
-              <label className="block text-zinc-700 dark:text-zinc-300 mb-1 font-bold">
+              <label className="block text-zinc-700 mb-1 font-bold">
                 Manufacturer / Packer Legal Name (Rule 6(1)(a))
               </label>
               <input
                 type="text"
                 value={formData.manufacturerName}
                 onChange={(e) => handleChange('manufacturerName', e.target.value)}
-                className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 p-2.5 rounded-xl focus:border-amber-500 focus:outline-none"
+                className="w-full bg-zinc-50 border border-zinc-300 text-zinc-900 p-2.5 rounded-xl focus:border-amber-500 focus:outline-none"
               />
             </div>
 
             {/* Factory Address */}
             <div>
-              <label className="block text-zinc-700 dark:text-zinc-300 mb-1 font-bold">
+              <label className="block text-zinc-700 mb-1 font-bold">
                 Factory / Premises Address (Rule 10)
               </label>
               <input
                 type="text"
                 value={formData.manufacturerAddress}
                 onChange={(e) => handleChange('manufacturerAddress', e.target.value)}
-                className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 p-2.5 rounded-xl focus:border-amber-500 focus:outline-none"
+                className="w-full bg-zinc-50 border border-zinc-300 text-zinc-900 p-2.5 rounded-xl focus:border-amber-500 focus:outline-none"
               />
             </div>
 
             {/* PIN Code */}
             <div>
-              <label className="block text-zinc-700 dark:text-zinc-300 mb-1 font-bold">
+              <label className="block text-zinc-700 mb-1 font-bold">
                 Postal PIN Code (Rule 10(1) Explanation)
               </label>
               <input
@@ -403,53 +403,53 @@ export const ManufacturerSelfAudit: React.FC<ManufacturerSelfAuditProps> = ({ on
                 value={formData.manufacturerPinCode}
                 onChange={(e) => handleChange('manufacturerPinCode', e.target.value)}
                 placeholder="6-digit PIN code"
-                className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 p-2.5 rounded-xl focus:border-amber-500 focus:outline-none font-mono"
+                className="w-full bg-zinc-50 border border-zinc-300 text-zinc-900 p-2.5 rounded-xl focus:border-amber-500 focus:outline-none font-mono"
               />
             </div>
 
             {/* Customer Care Phone */}
             <div>
-              <label className="block text-zinc-700 dark:text-zinc-300 mb-1 font-bold">
+              <label className="block text-zinc-700 mb-1 font-bold">
                 Consumer Care Helpline Phone (Rule 6(2))
               </label>
               <input
                 type="text"
                 value={formData.consumerCarePhone}
                 onChange={(e) => handleChange('consumerCarePhone', e.target.value)}
-                className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 p-2.5 rounded-xl focus:border-amber-500 focus:outline-none"
+                className="w-full bg-zinc-50 border border-zinc-300 text-zinc-900 p-2.5 rounded-xl focus:border-amber-500 focus:outline-none"
               />
             </div>
 
             {/* Customer Care Email */}
             <div>
-              <label className="block text-zinc-700 dark:text-zinc-300 mb-1 font-bold">
+              <label className="block text-zinc-700 mb-1 font-bold">
                 Consumer Care Email (Rule 6(2))
               </label>
               <input
                 type="email"
                 value={formData.consumerCareEmail}
                 onChange={(e) => handleChange('consumerCareEmail', e.target.value)}
-                className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 p-2.5 rounded-xl focus:border-amber-500 focus:outline-none font-mono"
+                className="w-full bg-zinc-50 border border-zinc-300 text-zinc-900 p-2.5 rounded-xl focus:border-amber-500 focus:outline-none font-mono"
               />
             </div>
 
             {/* Numeral Height Verification (Rule 7 Table I) */}
-            <div className="sm:col-span-2 bg-zinc-50 dark:bg-zinc-950 p-3.5 rounded-2xl border border-zinc-200 dark:border-zinc-800 space-y-2">
+            <div className="sm:col-span-2 bg-zinc-50 p-3.5 rounded-2xl border border-zinc-200 space-y-2">
               <div className="flex items-center justify-between text-xs">
-                <span className="font-bold text-zinc-800 dark:text-zinc-200">
+                <span className="font-bold text-zinc-800">
                   Rule 7 Table I Numeral Height Verification
                 </span>
                 <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-full ${
                   isFontHeightCompliant
-                    ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800'
-                    : 'bg-red-100 dark:bg-red-950 text-red-800 dark:text-red-300 border border-red-300 dark:border-red-800'
+                    ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+                    : 'bg-red-100 text-red-800 border border-red-300'
                 }`}>
                   {isFontHeightCompliant ? 'Compliant Height' : `Height Violation (< ${minRequiredHeight}mm)`}
                 </span>
               </div>
               <div className="flex items-center gap-3">
                 <div className="flex-1">
-                  <label className="block text-[11px] text-zinc-500 dark:text-zinc-400 mb-1 font-semibold">
+                  <label className="block text-[11px] text-zinc-500 mb-1 font-semibold">
                     Intended Cylinder / Plate Print Height (mm)
                   </label>
                   <input
@@ -457,7 +457,7 @@ export const ManufacturerSelfAudit: React.FC<ManufacturerSelfAuditProps> = ({ on
                     step="0.1"
                     value={formData.measuredNumeralHeightMm}
                     onChange={(e) => handleChange('measuredNumeralHeightMm', parseFloat(e.target.value) || 0)}
-                    className="w-full bg-white dark:bg-zinc-900 border border-zinc-300 dark:border-zinc-700 text-zinc-900 dark:text-zinc-100 p-2 rounded-xl text-xs font-mono font-bold"
+                    className="w-full bg-white border border-zinc-300 text-zinc-900 p-2 rounded-xl text-xs font-mono font-bold"
                   />
                 </div>
                 <div className="text-right shrink-0">
@@ -472,18 +472,18 @@ export const ManufacturerSelfAudit: React.FC<ManufacturerSelfAuditProps> = ({ on
         </div>
 
         {/* Right Column: Live Simulated Die-Line Carton & Pre-Market Certificate */}
-        <div className="lg:col-span-5 bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-6 rounded-3xl shadow-xs flex flex-col justify-between space-y-4 transition-colors">
+        <div className="lg:col-span-5 bg-white border border-slate-200 p-6 rounded-3xl shadow-xs flex flex-col justify-between space-y-4 transition-colors">
           <div>
             {/* Header Status */}
-            <div className="flex items-center justify-between pb-3 border-b border-zinc-100 dark:border-zinc-800">
-              <h3 className="text-sm font-black text-zinc-900 dark:text-zinc-100">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <h3 className="text-sm font-black text-slate-900">
                 Pre-Printing Artwork Verdict
               </h3>
               <span
                 className={`text-xs font-black px-3 py-1 rounded-full uppercase ${
                   isPass
-                    ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800'
-                    : 'bg-red-100 dark:bg-red-950 text-red-800 dark:text-red-300 border border-red-300 dark:border-red-800'
+                    ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
+                    : 'bg-red-100 text-red-800 border border-red-300'
                 }`}
               >
                 {activeReport.overallStatus} ({activeReport.score}%)
@@ -491,13 +491,13 @@ export const ManufacturerSelfAudit: React.FC<ManufacturerSelfAuditProps> = ({ on
             </div>
 
             {/* Digital Die-Line Carton / Pouch Label Mockup */}
-            <div className="my-4 bg-zinc-950 text-zinc-100 p-4 rounded-2xl border-2 border-dashed border-amber-500/50 font-sans space-y-3 shadow-inner">
-              <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+            <div className="my-4 bg-amber-50/60 text-slate-900 p-4 rounded-2xl border-2 border-dashed border-amber-300 font-sans space-y-3 shadow-xs">
+              <div className="flex items-center justify-between border-b border-amber-200 pb-2">
                 <div>
-                  <span className="text-[9px] font-bold text-amber-400 uppercase tracking-widest block">
+                  <span className="text-[9px] font-bold text-amber-700 uppercase tracking-widest block">
                     Die-Line Proof Simulation
                   </span>
-                  <h4 className="font-black text-sm uppercase tracking-wide text-white">
+                  <h4 className="font-black text-sm uppercase tracking-wide text-slate-900">
                     {formData.productName || 'PRODUCT NAME'}
                   </h4>
                 </div>
@@ -507,34 +507,34 @@ export const ManufacturerSelfAudit: React.FC<ManufacturerSelfAuditProps> = ({ on
               </div>
 
               {/* PDP Highlight Region */}
-              <div className="grid grid-cols-2 gap-2 bg-zinc-900 p-2.5 rounded-xl border border-zinc-800 text-[11px]">
+              <div className="grid grid-cols-2 gap-2 bg-white p-2.5 rounded-xl border border-amber-200 text-[11px] shadow-2xs">
                 <div>
-                  <span className="text-[9px] text-zinc-400 block uppercase font-bold">Declared Net Mass / Vol</span>
-                  <span className="font-black text-white text-xs font-mono">
+                  <span className="text-[9px] text-slate-500 block uppercase font-bold">Declared Net Mass / Vol</span>
+                  <span className="font-black text-slate-900 text-xs font-mono">
                     {formData.netQuantity} {formData.quantityUnit}
                   </span>
                 </div>
                 <div>
-                  <span className="text-[9px] text-zinc-400 block uppercase font-bold">Statutory MRP (Incl. Taxes)</span>
-                  <span className="font-black text-emerald-400 text-xs font-mono">
+                  <span className="text-[9px] text-slate-500 block uppercase font-bold">Statutory MRP (Incl. Taxes)</span>
+                  <span className="font-black text-emerald-700 text-xs font-mono">
                     Rs. {Number(formData.mrp || 0).toFixed(2)}
                   </span>
-                  <span className="text-[9px] text-zinc-400 block">
+                  <span className="text-[9px] text-slate-500 block">
                     {formData.hasInclAllTaxes ? '(incl. of all taxes)' : '(NO TAX CLAUSE)'}
                   </span>
                 </div>
               </div>
 
-              <div className="text-[10px] text-zinc-300 leading-relaxed space-y-1">
+              <div className="text-[10px] text-slate-700 leading-relaxed space-y-1">
                 <div>
-                  <strong className="text-zinc-400">Mfg / Packer:</strong> {formData.manufacturerName}, {formData.manufacturerAddress}
+                  <strong className="text-slate-500">Mfg / Packer:</strong> {formData.manufacturerName}, {formData.manufacturerAddress}
                   {formData.manufacturerPinCode ? ` - PIN: ${formData.manufacturerPinCode}` : ' [NO PIN CODE]'}
                 </div>
                 <div>
-                  <strong className="text-zinc-400">Mfg Month/Year:</strong> {formData.mfgMonth}/{formData.mfgYear}
+                  <strong className="text-slate-500">Mfg Month/Year:</strong> {formData.mfgMonth}/{formData.mfgYear}
                 </div>
                 <div>
-                  <strong className="text-zinc-400">Consumer Care:</strong> Tel: {formData.consumerCarePhone || 'N/A'} | Email: {formData.consumerCareEmail || 'N/A'}
+                  <strong className="text-slate-500">Consumer Care:</strong> Tel: {formData.consumerCarePhone || 'N/A'} | Email: {formData.consumerCareEmail || 'N/A'}
                 </div>
               </div>
             </div>
@@ -546,20 +546,20 @@ export const ManufacturerSelfAudit: React.FC<ManufacturerSelfAuditProps> = ({ on
                 .map((err, i) => (
                   <div
                     key={i}
-                    className="p-3 rounded-xl bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/40 text-red-900 dark:text-red-300 text-[11px] font-semibold space-y-0.5"
+                    className="p-3 rounded-xl bg-red-50 border border-red-200 text-red-900 text-[11px] font-semibold space-y-0.5"
                   >
-                    <div className="flex items-center gap-1.5 font-black text-red-700 dark:text-red-400">
+                    <div className="flex items-center gap-1.5 font-black text-red-700">
                       <AlertOctagon className="w-3.5 h-3.5" />
                       <span>{err.ruleNumber}: {err.ruleTitle}</span>
                     </div>
-                    <p className="text-[10px] text-zinc-600 dark:text-zinc-400 font-normal">
+                    <p className="text-[10px] text-slate-600 font-normal">
                       {err.explanation}
                     </p>
                   </div>
                 ))}
 
               {activeReport.evaluations.filter((e) => e.status !== 'PASS').length === 0 && (
-                <div className="p-3.5 rounded-xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-300 dark:border-emerald-800 text-emerald-900 dark:text-emerald-300 text-xs flex items-center gap-2 font-semibold">
+                <div className="p-3.5 rounded-xl bg-emerald-50 border border-emerald-300 text-emerald-900 text-xs flex items-center gap-2 font-semibold">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
                   <span>Artwork conforms to all LMPC Rules 2011! Approved for print run.</span>
                 </div>
@@ -568,7 +568,7 @@ export const ManufacturerSelfAudit: React.FC<ManufacturerSelfAuditProps> = ({ on
           </div>
 
           {/* Action Buttons: Save & View Certificate */}
-          <div className="pt-3 border-t border-zinc-100 dark:border-zinc-800 space-y-2">
+          <div className="pt-3 border-t border-zinc-200 space-y-2">
             <button
               onClick={handleSaveAndCertify}
               className="w-full bg-amber-600 hover:bg-amber-500 text-white text-xs font-bold py-3 px-4 rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"

@@ -367,80 +367,80 @@ Government of India`;
     <div className="space-y-6 animate-in fade-in duration-200">
       {/* Top Stat KPI Cards - Matte Black & Neutral Gray */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 p-5 rounded-2xl shadow-xs transition-colors">
-          <div className="flex items-center justify-between text-slate-500 dark:text-zinc-400 text-xs mb-1 font-bold uppercase tracking-wider">
+        <div className="bg-white border border-slate-200 p-5 rounded-2xl shadow-xs transition-colors">
+          <div className="flex items-center justify-between text-slate-500 text-xs mb-1 font-bold uppercase tracking-wider">
             <span>Total Inspected</span>
-            <Layers className="w-4 h-4 text-zinc-700 dark:text-zinc-300" />
+            <Layers className="w-4 h-4 text-zinc-700" />
           </div>
-          <div className="text-2xl font-black text-slate-900 dark:text-zinc-100">{stats.total} Packages</div>
-          <div className="text-[11px] text-slate-500 dark:text-zinc-400 mt-1">Across retail & dark stores</div>
+          <div className="text-2xl font-black text-slate-900">{stats.total} Packages</div>
+          <div className="text-[11px] text-slate-500 mt-1">Across retail & dark stores</div>
         </div>
 
-        <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 p-5 rounded-2xl shadow-xs transition-colors">
-          <div className="flex items-center justify-between text-slate-500 dark:text-zinc-400 text-xs mb-1 font-bold uppercase tracking-wider">
+        <div className="bg-white border border-slate-200 p-5 rounded-2xl shadow-xs transition-colors">
+          <div className="flex items-center justify-between text-slate-500 text-xs mb-1 font-bold uppercase tracking-wider">
             <span>Compliance Rate</span>
-            <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+            <ShieldCheck className="w-4 h-4 text-emerald-600" />
           </div>
-          <div className="text-2xl font-black text-emerald-600 dark:text-emerald-400">{stats.complianceRate}%</div>
-          <div className="text-[11px] text-slate-500 dark:text-zinc-400 mt-1">{stats.compliant} fully conforming</div>
+          <div className="text-2xl font-black text-emerald-600">{stats.complianceRate}%</div>
+          <div className="text-[11px] text-slate-500 mt-1">{stats.compliant} fully conforming</div>
         </div>
 
-        <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 p-5 rounded-2xl shadow-xs transition-colors">
-          <div className="flex items-center justify-between text-slate-500 dark:text-zinc-400 text-xs mb-1 font-bold uppercase tracking-wider">
+        <div className="bg-white border border-slate-200 p-5 rounded-2xl shadow-xs transition-colors">
+          <div className="flex items-center justify-between text-slate-500 text-xs mb-1 font-bold uppercase tracking-wider">
             <span>Flagged for Seizure</span>
-            <AlertOctagon className="w-4 h-4 text-red-600 dark:text-red-400" />
+            <AlertOctagon className="w-4 h-4 text-red-600" />
           </div>
-          <div className="text-2xl font-black text-red-600 dark:text-red-400">{stats.nonCompliant} Packages</div>
-          <div className="text-[11px] text-slate-500 dark:text-zinc-400 mt-1">Under Rule 20(1) & 21(3)</div>
+          <div className="text-2xl font-black text-red-600">{stats.nonCompliant} Packages</div>
+          <div className="text-[11px] text-slate-500 mt-1">Under Rule 20(1) & 21(3)</div>
         </div>
 
-        <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 p-5 rounded-2xl shadow-xs transition-colors">
-          <div className="flex items-center justify-between text-slate-500 dark:text-zinc-400 text-xs mb-1 font-bold uppercase tracking-wider">
+        <div className="bg-white border border-slate-200 p-5 rounded-2xl shadow-xs transition-colors">
+          <div className="flex items-center justify-between text-slate-500 text-xs mb-1 font-bold uppercase tracking-wider">
             <span>Compounding Fines</span>
-            <IndianRupee className="w-4 h-4 text-amber-600 dark:text-amber-400" />
+            <IndianRupee className="w-4 h-4 text-amber-600" />
           </div>
-          <div className="text-2xl font-black text-amber-600 dark:text-amber-400">
+          <div className="text-2xl font-black text-amber-600">
             ₹{stats.totalFines.toLocaleString('en-IN')}
           </div>
-          <div className="text-[11px] text-slate-500 dark:text-zinc-400 mt-1">Under Section 32 & 48</div>
+          <div className="text-[11px] text-slate-500 mt-1">Under Section 32 & 48</div>
         </div>
       </div>
 
       {/* FIFTH SCHEDULE STATISTICAL SAMPLING & MPE CALCULATOR ACCORDION */}
-      <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl shadow-xs overflow-hidden transition-colors">
+      <div className="bg-white border border-slate-200 rounded-2xl shadow-xs overflow-hidden transition-colors">
         <button
           onClick={() => setIsCalcOpen(!isCalcOpen)}
-          className="w-full p-4 sm:p-5 flex items-center justify-between text-left hover:bg-slate-50 dark:hover:bg-zinc-800/60 transition-colors cursor-pointer"
+          className="w-full p-4 sm:p-5 flex items-center justify-between text-left hover:bg-slate-50 transition-colors cursor-pointer"
         >
           <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-800 dark:text-zinc-200 border border-zinc-200 dark:border-zinc-700">
-              <Calculator className="w-5 h-5 text-emerald-600 dark:text-emerald-400" />
+            <div className="p-2.5 rounded-xl bg-zinc-100 text-zinc-800 border border-zinc-200">
+              <Calculator className="w-5 h-5 text-emerald-600" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h3 className="text-sm font-black text-slate-900 dark:text-zinc-100">
+                <h3 className="text-sm font-black text-slate-900">
                   Fifth Schedule Statistical Sampling & Fourth Schedule MPE Calculator
                 </h3>
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300">
+                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
                   Official Rule 24 Engine
                 </span>
               </div>
-              <p className="text-xs text-slate-500 dark:text-zinc-400 mt-0.5">
+              <p className="text-xs text-slate-500 mt-0.5">
                 Calculate required statistical sample size $n$, acceptable defect limit $c$, Maximum Permissible Error (MPE), and run batch tests
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-2 text-xs font-bold text-slate-500 dark:text-zinc-400">
+          <div className="flex items-center gap-2 text-xs font-bold text-slate-500">
             <span>{isCalcOpen ? 'Hide Tool' : 'Open Field Tool'}</span>
             {isCalcOpen ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
           </div>
         </button>
 
         {isCalcOpen && (
-          <div className="p-5 border-t border-slate-200 dark:border-zinc-800 bg-slate-50/50 dark:bg-zinc-950/60 space-y-4">
+          <div className="p-5 border-t border-slate-200 bg-slate-50/50 space-y-4">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               <div>
-                <label className="block text-xs font-bold text-slate-700 dark:text-zinc-300 mb-1">
+                <label className="block text-xs font-bold text-slate-700 mb-1">
                   Lot Size ($N$) in Consignment
                 </label>
                 <input
@@ -449,15 +449,15 @@ Government of India`;
                   value={lotSizeInput}
                   onChange={(e) => setLotSizeInput(e.target.value)}
                   onFocus={(e) => e.target.select()}
-                  className="w-full bg-white dark:bg-zinc-800 border border-slate-300 dark:border-zinc-700 p-2.5 rounded-xl text-xs font-bold text-slate-900 dark:text-zinc-100 focus:outline-none focus:border-[#00A651]"
+                  className="w-full bg-white border border-slate-300 p-2.5 rounded-xl text-xs font-bold text-slate-900 focus:outline-none focus:border-[#00A651]"
                 />
-                <span className="text-[10px] text-slate-400 dark:text-zinc-500 mt-1 block">
+                <span className="text-[10px] text-slate-400 mt-1 block">
                   Fifth Schedule Table 1 Mandate
                 </span>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 dark:text-zinc-300 mb-1">
+                <label className="block text-xs font-bold text-slate-700 mb-1">
                   Declared Net Quantity ($Q_n$)
                 </label>
                 <div className="flex gap-2">
@@ -468,12 +468,12 @@ Government of India`;
                     value={declaredQtyInput}
                     onChange={(e) => setDeclaredQtyInput(e.target.value)}
                     onFocus={(e) => e.target.select()}
-                    className="w-full bg-white dark:bg-zinc-800 border border-slate-300 dark:border-zinc-700 p-2.5 rounded-xl text-xs font-bold text-slate-900 dark:text-zinc-100 focus:outline-none focus:border-[#00A651]"
+                    className="w-full bg-white border border-slate-300 p-2.5 rounded-xl text-xs font-bold text-slate-900 focus:outline-none focus:border-[#00A651]"
                   />
                   <select
                     value={qtyUnit}
                     onChange={(e) => setQtyUnit(e.target.value)}
-                    className="bg-white dark:bg-zinc-800 border border-slate-300 dark:border-zinc-700 p-2.5 rounded-xl text-xs font-bold text-slate-900 dark:text-zinc-100"
+                    className="bg-white border border-slate-300 p-2.5 rounded-xl text-xs font-bold text-slate-900"
                   >
                     <option value="g">g</option>
                     <option value="kg">kg</option>
@@ -481,13 +481,13 @@ Government of India`;
                     <option value="l">L</option>
                   </select>
                 </div>
-                <span className="text-[10px] text-slate-400 dark:text-zinc-500 mt-1 block">
+                <span className="text-[10px] text-slate-400 mt-1 block">
                   Fourth Schedule MPE standard
                 </span>
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-slate-700 dark:text-zinc-300 mb-1">
+                <label className="block text-xs font-bold text-slate-700 mb-1">
                   Packaging Tare Wt ($T$) ({qtyUnit})
                 </label>
                 <input
@@ -497,21 +497,21 @@ Government of India`;
                   value={tareWeightInput}
                   onChange={(e) => setTareWeightInput(e.target.value)}
                   onFocus={(e) => e.target.select()}
-                  className="w-full bg-white dark:bg-zinc-800 border border-slate-300 dark:border-zinc-700 p-2.5 rounded-xl text-xs font-bold text-slate-900 dark:text-zinc-100 focus:outline-none focus:border-[#00A651]"
+                  className="w-full bg-white border border-slate-300 p-2.5 rounded-xl text-xs font-bold text-slate-900 focus:outline-none focus:border-[#00A651]"
                 />
-                <span className="text-[10px] text-slate-400 dark:text-zinc-500 mt-1 block">
+                <span className="text-[10px] text-slate-400 mt-1 block">
                   Sixth Schedule Part II Deduction
                 </span>
               </div>
 
               <div className="flex flex-col justify-end">
-                <div className="p-3 bg-zinc-100 dark:bg-zinc-800/80 border border-zinc-200 dark:border-zinc-700 rounded-xl text-xs">
-                  <div className="font-bold text-slate-900 dark:text-zinc-200">Legal Acceptance Test:</div>
-                  <div className="text-[11px] font-mono text-[#00A651] dark:text-emerald-400 mt-0.5 font-bold">
+                <div className="p-3 bg-zinc-100 border border-zinc-200 rounded-xl text-xs">
+                  <div className="font-bold text-slate-900">Legal Acceptance Test:</div>
+                  <div className="text-[11px] font-mono text-[#00A651] mt-0.5 font-bold">
                     Avg Net ≥ Qn - ({sampling.tFactor} × s)
                   </div>
                   {tareWeight > 0 && (
-                    <div className="text-[10px] text-slate-500 dark:text-zinc-400 mt-1 font-mono">
+                    <div className="text-[10px] text-slate-500 mt-1 font-mono">
                       Gross Target: {(declaredQty + tareWeight).toFixed(2)} {qtyUnit}
                     </div>
                   )}
@@ -521,48 +521,48 @@ Government of India`;
 
             {/* Calculator Results Grid */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-2">
-              <div className="bg-white dark:bg-zinc-800 p-3.5 rounded-xl border border-slate-200 dark:border-zinc-700">
-                <span className="text-[10px] uppercase font-bold text-slate-400 dark:text-zinc-400 block">Required Sample Size ($n$)</span>
-                <span className="text-xl font-black text-slate-900 dark:text-zinc-100 mt-0.5 block">
+              <div className="bg-white p-3.5 rounded-xl border border-slate-200">
+                <span className="text-[10px] uppercase font-bold text-slate-400 block">Required Sample Size ($n$)</span>
+                <span className="text-xl font-black text-slate-900 mt-0.5 block">
                   {sampling.sampleSize} Packs
                 </span>
-                <span className="text-[10px] text-slate-500 dark:text-zinc-400">Rule 24 Table 1 Mandate</span>
+                <span className="text-[10px] text-slate-500">Rule 24 Table 1 Mandate</span>
               </div>
 
-              <div className="bg-white dark:bg-zinc-800 p-3.5 rounded-xl border border-slate-200 dark:border-zinc-700">
-                <span className="text-[10px] uppercase font-bold text-slate-400 dark:text-zinc-400 block">Max Defective Units ($c$)</span>
-                <span className="text-xl font-black text-amber-600 dark:text-amber-400 mt-0.5 block">
+              <div className="bg-white p-3.5 rounded-xl border border-slate-200">
+                <span className="text-[10px] uppercase font-bold text-slate-400 block">Max Defective Units ($c$)</span>
+                <span className="text-xl font-black text-amber-600 mt-0.5 block">
                   ≤ {sampling.maxDefective} Packs
                 </span>
-                <span className="text-[10px] text-slate-500 dark:text-zinc-400">Allowed exceeding MPE</span>
+                <span className="text-[10px] text-slate-500">Allowed exceeding MPE</span>
               </div>
 
-              <div className="bg-white dark:bg-zinc-800 p-3.5 rounded-xl border border-slate-200 dark:border-zinc-700">
-                <span className="text-[10px] uppercase font-bold text-slate-400 dark:text-zinc-400 block">Max Permissible Error (MPE)</span>
-                <span className="text-xl font-black text-emerald-600 dark:text-emerald-400 mt-0.5 block">
+              <div className="bg-white p-3.5 rounded-xl border border-slate-200">
+                <span className="text-[10px] uppercase font-bold text-slate-400 block">Max Permissible Error (MPE)</span>
+                <span className="text-xl font-black text-emerald-600 mt-0.5 block">
                   {mpe.mpeText} ({mpe.mpeVal} {qtyUnit})
                 </span>
-                <span className="text-[10px] text-slate-500 dark:text-zinc-400">Fourth Schedule Table</span>
+                <span className="text-[10px] text-slate-500">Fourth Schedule Table</span>
               </div>
 
-              <div className="bg-white dark:bg-zinc-800 p-3.5 rounded-xl border border-slate-200 dark:border-zinc-700">
-                <span className="text-[10px] uppercase font-bold text-slate-400 dark:text-zinc-400 block">Single Unit Defect Limit</span>
-                <span className="text-xl font-black text-red-600 dark:text-red-400 mt-0.5 block">
+              <div className="bg-white p-3.5 rounded-xl border border-slate-200">
+                <span className="text-[10px] uppercase font-bold text-slate-400 block">Single Unit Defect Limit</span>
+                <span className="text-xl font-black text-red-600 mt-0.5 block">
                   &lt; {minPermittedDefectiveBoundary.toFixed(2)} {qtyUnit}
                 </span>
-                <span className="text-[10px] text-slate-500 dark:text-zinc-400">Classified as short-weight</span>
+                <span className="text-[10px] text-slate-500">Classified as short-weight</span>
               </div>
             </div>
 
             {/* INTERACTIVE BATCH VERIFICATION TESTER */}
-            <div className="mt-3 p-4 bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-700 rounded-xl space-y-3">
+            <div className="mt-3 p-4 bg-white border border-slate-200 rounded-xl space-y-3">
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div>
-                  <h4 className="text-xs font-black uppercase tracking-wider text-slate-900 dark:text-zinc-100 flex items-center gap-1.5">
-                    <Scale className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                  <h4 className="text-xs font-black uppercase tracking-wider text-slate-900 flex items-center gap-1.5">
+                    <Scale className="w-4 h-4 text-emerald-600" />
                     <span>Live Batch Net Weight Sampling Test</span>
                   </h4>
-                  <p className="text-[11px] text-slate-500 dark:text-zinc-400">
+                  <p className="text-[11px] text-slate-500">
                     Test a sample of {sampling.sampleSize} packages drawn randomly from lot size {lotSize}
                   </p>
                 </div>
@@ -589,43 +589,43 @@ Government of India`;
               {batchVerdict && (
                 <div className={`p-4 rounded-xl border ${
                   batchVerdict.passedOverall
-                    ? 'bg-emerald-50 dark:bg-emerald-950/40 border-emerald-300 dark:border-emerald-800'
-                    : 'bg-red-50 dark:bg-red-950/40 border-red-300 dark:border-red-800'
+                    ? 'bg-emerald-50 border-emerald-300'
+                    : 'bg-red-50 border-red-300'
                 } space-y-2 animate-in fade-in duration-150`}>
                   <div className="flex items-center justify-between">
                     <span className={`text-xs font-black uppercase px-2.5 py-0.5 rounded-full ${
                       batchVerdict.passedOverall
-                        ? 'bg-emerald-200 dark:bg-emerald-900 text-emerald-900 dark:text-emerald-200'
-                        : 'bg-red-200 dark:bg-red-900 text-red-900 dark:text-red-200'
+                        ? 'bg-emerald-200 text-emerald-900'
+                        : 'bg-red-200 text-red-900'
                     }`}>
                       {batchVerdict.passedOverall ? '✓ BATCH STATUTORILY COMPLIANT' : '⚠ BATCH FAILED — SEIZURE ACTION REQUIRED'}
                     </span>
-                    <span className="text-xs font-mono font-bold text-slate-700 dark:text-zinc-300">
+                    <span className="text-xs font-mono font-bold text-slate-700">
                       Sample: {sampling.sampleSize} Packs
                     </span>
                   </div>
 
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs font-semibold pt-1">
                     <div>
-                      <span className="text-[10px] text-slate-500 dark:text-zinc-400 block">Sample Average Net (x̄)</span>
-                      <span className="font-mono font-black text-slate-900 dark:text-zinc-100">{batchVerdict.avg} {qtyUnit}</span>
+                      <span className="text-[10px] text-slate-500 block">Sample Average Net (x̄)</span>
+                      <span className="font-mono font-black text-slate-900">{batchVerdict.avg} {qtyUnit}</span>
                       {tareWeight > 0 && (
                         <span className="text-[9px] text-slate-400 block">Gross: {batchVerdict.avgGross} {qtyUnit}</span>
                       )}
                     </div>
                     <div>
-                      <span className="text-[10px] text-slate-500 dark:text-zinc-400 block">Min Required Average</span>
-                      <span className="font-mono font-black text-slate-900 dark:text-zinc-100">{batchVerdict.minAvgRequired} {qtyUnit}</span>
+                      <span className="text-[10px] text-slate-500 block">Min Required Average</span>
+                      <span className="font-mono font-black text-slate-900">{batchVerdict.minAvgRequired} {qtyUnit}</span>
                     </div>
                     <div>
-                      <span className="text-[10px] text-slate-500 dark:text-zinc-400 block">Defective Units Count</span>
+                      <span className="text-[10px] text-slate-500 block">Defective Units Count</span>
                       <span className={`font-mono font-black ${batchVerdict.passedDefectives ? 'text-emerald-600' : 'text-red-600'}`}>
                         {batchVerdict.defectiveCount} (Max Allowed: {sampling.maxDefective})
                       </span>
                     </div>
                     <div>
-                      <span className="text-[10px] text-slate-500 dark:text-zinc-400 block">Standard Deviation (s)</span>
-                      <span className="font-mono font-black text-slate-900 dark:text-zinc-100">{batchVerdict.stdDev}</span>
+                      <span className="text-[10px] text-slate-500 block">Standard Deviation (s)</span>
+                      <span className="font-mono font-black text-slate-900">{batchVerdict.stdDev}</span>
                     </div>
                   </div>
                 </div>
@@ -637,27 +637,27 @@ Government of India`;
 
       {/* REPEAT OFFENDER ESCALATION TRACKER */}
       {repeatOffenders.length > 0 && (
-        <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900/60 rounded-2xl p-5">
-          <div className="flex items-center gap-2 text-red-800 dark:text-red-300 font-black text-sm mb-2">
+        <div className="bg-red-50 border border-red-200 rounded-2xl p-5">
+          <div className="flex items-center gap-2 text-red-800 font-black text-sm mb-2">
             <AlertTriangle className="w-4 h-4 text-red-600" />
             <span>Repeat Offender Escalation Tracker — Section 36(2) Enhanced Penalty</span>
           </div>
-          <p className="text-xs text-red-700 dark:text-red-400 mb-3">
+          <p className="text-xs text-red-700 mb-3">
             Establishments with multiple recorded violations face statutory enhancement from ₹25,000 to ₹50,000 compounding or 1-year imprisonment.
           </p>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
             {repeatOffenders.map((offender, idx) => (
-              <div key={idx} className="bg-white dark:bg-zinc-900 border border-red-200 dark:border-zinc-800 p-3.5 rounded-xl">
+              <div key={idx} className="bg-white border border-red-200 p-3.5 rounded-xl">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-black text-slate-900 dark:text-zinc-100 truncate">{offender.name}</span>
-                  <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200">
+                  <span className="text-xs font-black text-slate-900 truncate">{offender.name}</span>
+                  <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-red-100 text-red-800">
                     {offender.count} Violations
                   </span>
                 </div>
-                <div className="text-[11px] text-slate-500 dark:text-zinc-400 mt-1">
-                  Last commodity: <span className="text-slate-700 dark:text-zinc-200 font-semibold">{offender.lastViolation}</span>
+                <div className="text-[11px] text-slate-500 mt-1">
+                  Last commodity: <span className="text-slate-700 font-semibold">{offender.lastViolation}</span>
                 </div>
-                <div className="text-[10px] font-mono text-red-600 dark:text-red-400 font-bold mt-1">
+                <div className="text-[10px] font-mono text-red-600 font-bold mt-1">
                   Mandatory Action: Section 36(2) Escalation
                 </div>
               </div>
@@ -667,66 +667,66 @@ Government of India`;
       )}
 
       {/* Category Risk Breakdown */}
-      <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 p-5 rounded-2xl shadow-xs transition-colors">
-        <h3 className="text-sm font-black text-slate-900 dark:text-zinc-100 mb-3 flex items-center gap-2">
-          <BarChart3 className="w-4 h-4 text-zinc-700 dark:text-zinc-300" />
+      <div className="bg-white border border-slate-200 p-5 rounded-2xl shadow-xs transition-colors">
+        <h3 className="text-sm font-black text-slate-900 mb-3 flex items-center gap-2">
+          <BarChart3 className="w-4 h-4 text-zinc-700" />
           <span>Category Risk Heatmap (LMPC Enforcement Hotspots)</span>
         </h3>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
-          <div className="bg-slate-50 dark:bg-zinc-800/60 p-3 rounded-xl border border-slate-200 dark:border-zinc-700">
+          <div className="bg-slate-50 p-3 rounded-xl border border-slate-200">
             <div className="flex justify-between items-center mb-1">
-              <span className="font-bold text-slate-800 dark:text-zinc-200">Edible Oils</span>
+              <span className="font-bold text-slate-800">Edible Oils</span>
               <span className="text-[10px] text-red-600 font-bold">High Risk</span>
             </div>
-            <div className="w-full bg-slate-200 dark:bg-zinc-700 h-1.5 rounded-full overflow-hidden mb-1">
+            <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden mb-1">
               <div className="bg-red-500 h-full w-[72%]"></div>
             </div>
-            <span className="text-[10px] text-slate-500 dark:text-zinc-400">Sticker tampering & Dual unit issues</span>
+            <span className="text-[10px] text-slate-500">Sticker tampering & Dual unit issues</span>
           </div>
 
-          <div className="bg-slate-50 dark:bg-zinc-800/60 p-3 rounded-xl border border-slate-200 dark:border-zinc-700">
+          <div className="bg-slate-50 p-3 rounded-xl border border-slate-200">
             <div className="flex justify-between items-center mb-1">
-              <span className="font-bold text-slate-800 dark:text-zinc-200">Biscuits & Bakery</span>
+              <span className="font-bold text-slate-800">Biscuits & Bakery</span>
               <span className="text-[10px] text-amber-600 font-bold">Medium Risk</span>
             </div>
-            <div className="w-full bg-slate-200 dark:bg-zinc-700 h-1.5 rounded-full overflow-hidden mb-1">
+            <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden mb-1">
               <div className="bg-amber-500 h-full w-[45%]"></div>
             </div>
-            <span className="text-[10px] text-slate-500 dark:text-zinc-400">Second Schedule size non-compliance</span>
+            <span className="text-[10px] text-slate-500">Second Schedule size non-compliance</span>
           </div>
 
-          <div className="bg-slate-50 dark:bg-zinc-800/60 p-3 rounded-xl border border-slate-200 dark:border-zinc-700">
+          <div className="bg-slate-50 p-3 rounded-xl border border-slate-200">
             <div className="flex justify-between items-center mb-1">
-              <span className="font-bold text-slate-800 dark:text-zinc-200">Dairy & Milk</span>
+              <span className="font-bold text-slate-800">Dairy & Milk</span>
               <span className="text-[10px] text-amber-600 font-bold">Medium Risk</span>
             </div>
-            <div className="w-full bg-slate-200 dark:bg-zinc-700 h-1.5 rounded-full overflow-hidden mb-1">
+            <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden mb-1">
               <div className="bg-amber-500 h-full w-[38%]"></div>
             </div>
-            <span className="text-[10px] text-slate-500 dark:text-zinc-400">Font size on PDP below Table-I</span>
+            <span className="text-[10px] text-slate-500">Font size on PDP below Table-I</span>
           </div>
 
-          <div className="bg-slate-50 dark:bg-zinc-800/60 p-3 rounded-xl border border-slate-200 dark:border-zinc-700">
+          <div className="bg-slate-50 p-3 rounded-xl border border-slate-200">
             <div className="flex justify-between items-center mb-1">
-              <span className="font-bold text-slate-800 dark:text-zinc-200">Foodgrains / Atta</span>
+              <span className="font-bold text-slate-800">Foodgrains / Atta</span>
               <span className="text-[10px] text-emerald-600 font-bold">Low Risk</span>
             </div>
-            <div className="w-full bg-slate-200 dark:bg-zinc-700 h-1.5 rounded-full overflow-hidden mb-1">
+            <div className="w-full bg-slate-200 h-1.5 rounded-full overflow-hidden mb-1">
               <div className="bg-emerald-500 h-full w-[15%]"></div>
             </div>
-            <span className="text-[10px] text-slate-500 dark:text-zinc-400">Standard 1kg/5kg packs conforming</span>
+            <span className="text-[10px] text-slate-500">Standard 1kg/5kg packs conforming</span>
           </div>
         </div>
       </div>
 
       {/* Inspection History & Case Repository */}
-      <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl p-5 shadow-xs transition-colors">
+      <div className="bg-white border border-slate-200 rounded-2xl p-5 shadow-xs transition-colors">
         <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
           <div>
-            <h3 className="text-base font-black text-slate-900 dark:text-zinc-100 tracking-tight">
+            <h3 className="text-base font-black text-slate-900 tracking-tight">
               Inspection Dossier & Seizure Log
             </h3>
-            <p className="text-xs text-slate-500 dark:text-zinc-400">
+            <p className="text-xs text-slate-500">
               Click any record to load in inspection view, preview PDF sheet, or generate Section 18/36 statutory notices
             </p>
           </div>
@@ -740,14 +740,14 @@ Government of India`;
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search product, manufacturer..."
-                className="bg-slate-50 dark:bg-zinc-800 border border-slate-300 dark:border-zinc-700 text-slate-900 dark:text-zinc-100 text-xs pl-8 pr-3 py-1.5 rounded-xl w-48 sm:w-64 focus:outline-none focus:border-[#00A651]"
+                className="bg-slate-50 border border-slate-300 text-slate-900 text-xs pl-8 pr-3 py-1.5 rounded-xl w-48 sm:w-64 focus:outline-none focus:border-[#00A651]"
               />
             </div>
 
             <select
               value={statusFilter}
               onChange={(e: any) => setStatusFilter(e.target.value)}
-              className="bg-slate-50 dark:bg-zinc-800 border border-slate-300 dark:border-zinc-700 text-slate-900 dark:text-zinc-100 text-xs px-3 py-1.5 rounded-xl focus:outline-none focus:border-[#00A651]"
+              className="bg-slate-50 border border-slate-300 text-slate-900 text-xs px-3 py-1.5 rounded-xl focus:outline-none focus:border-[#00A651]"
             >
               <option value="ALL">All Status</option>
               <option value="COMPLIANT">Compliant Only</option>
@@ -758,9 +758,9 @@ Government of India`;
         </div>
 
         {/* Table of Scans */}
-        <div className="overflow-x-auto rounded-xl border border-slate-200 dark:border-zinc-800">
-          <table className="w-full text-left text-xs text-slate-700 dark:text-zinc-300">
-            <thead className="bg-slate-50 dark:bg-zinc-800/80 text-[11px] uppercase font-bold text-slate-600 dark:text-zinc-400 border-b border-slate-200 dark:border-zinc-800">
+        <div className="overflow-x-auto rounded-xl border border-slate-200">
+          <table className="w-full text-left text-xs text-slate-700">
+            <thead className="bg-slate-50 text-[11px] uppercase font-bold text-slate-600 border-b border-slate-200">
               <tr>
                 <th className="py-3 px-4">Inspection ID</th>
                 <th className="py-3 px-4">Commodity / Manufacturer</th>
@@ -770,7 +770,7 @@ Government of India`;
                 <th className="py-3 px-4 text-right">Statutory Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-zinc-800">
+            <tbody className="divide-y divide-slate-100">
               {filteredReports.map((report) => {
                 const isPass = report.overallStatus === 'COMPLIANT';
                 const isWarn = report.overallStatus === 'NEEDS_REVIEW';
@@ -779,27 +779,27 @@ Government of India`;
                   <tr
                     key={report.id}
                     onClick={() => onSelectReport(report)}
-                    className="hover:bg-slate-50 dark:hover:bg-zinc-800/50 cursor-pointer transition-colors"
+                    className="hover:bg-slate-50 cursor-pointer transition-colors"
                   >
-                    <td className="py-3 px-4 font-mono font-bold text-slate-900 dark:text-zinc-100">
+                    <td className="py-3 px-4 font-mono font-bold text-slate-900">
                       {report.id}
-                      <span className="block text-[10px] text-slate-500 dark:text-zinc-400 font-normal">
+                      <span className="block text-[10px] text-slate-500 font-normal">
                         {new Date(report.scanTimestamp).toLocaleDateString('en-IN')}
                       </span>
                     </td>
 
                     <td className="py-3 px-4">
-                      <div className="font-black text-slate-900 dark:text-zinc-100">{report.productInfo.productName}</div>
-                      <div className="text-[11px] text-slate-500 dark:text-zinc-400 truncate max-w-xs">
+                      <div className="font-black text-slate-900">{report.productInfo.productName}</div>
+                      <div className="text-[11px] text-slate-500 truncate max-w-xs">
                         {report.productInfo.manufacturerName}
                       </div>
                     </td>
 
                     <td className="py-3 px-4">
-                      <div className="font-bold text-slate-900 dark:text-zinc-100">
+                      <div className="font-bold text-slate-900">
                         {report.productInfo.netQuantity} {report.productInfo.quantityUnit}
                       </div>
-                      <div className="text-[11px] text-slate-500 dark:text-zinc-400">
+                      <div className="text-[11px] text-slate-500">
                         {report.productInfo.mrpString}
                       </div>
                     </td>
@@ -808,10 +808,10 @@ Government of India`;
                       <span
                         className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase ${
                           isPass
-                            ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800'
+                            ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
                             : isWarn
-                            ? 'bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300 border border-amber-300 dark:border-amber-800'
-                            : 'bg-red-100 dark:bg-red-950 text-red-800 dark:text-red-300 border border-red-300 dark:border-red-800'
+                            ? 'bg-amber-100 text-amber-800 border border-amber-300'
+                            : 'bg-red-100 text-red-800 border border-red-300'
                         }`}
                       >
                         {isPass ? 'COMPLIANT' : isWarn ? 'WARNINGS' : 'NON-COMPLIANT'}
@@ -819,7 +819,7 @@ Government of India`;
                       </span>
                     </td>
 
-                    <td className="py-3 px-4 font-bold text-red-600 dark:text-red-400">
+                    <td className="py-3 px-4 font-bold text-red-600">
                       {report.totalCompoundingFine > 0
                         ? `₹${report.totalCompoundingFine.toLocaleString('en-IN')}`
                         : 'Nil'}
@@ -830,7 +830,7 @@ Government of India`;
                         {/* Interactive In-Website PDF Preview */}
                         <button
                           onClick={(e) => handleOpenPreview(report, e)}
-                          className="p-1.5 bg-slate-100 hover:bg-emerald-600 hover:text-white dark:bg-zinc-800 dark:hover:bg-emerald-600 rounded-lg text-slate-600 dark:text-zinc-300 transition-colors cursor-pointer"
+                          className="p-1.5 bg-slate-100 hover:bg-emerald-600 hover:text-white rounded-lg text-slate-600 transition-colors cursor-pointer"
                           title="Preview Inspection Sheet in Website"
                         >
                           <Eye className="w-3.5 h-3.5" />
@@ -840,7 +840,7 @@ Government of India`;
                         {!isPass && (
                           <button
                             onClick={(e) => handleOpenNotice(report, e)}
-                            className="p-1.5 bg-red-50 hover:bg-red-600 hover:text-white dark:bg-red-950/50 dark:hover:bg-red-600 rounded-lg text-red-600 dark:text-red-400 transition-colors cursor-pointer border border-red-200 dark:border-red-800"
+                            className="p-1.5 bg-red-50 hover:bg-red-600 hover:text-white rounded-lg text-red-600 transition-colors cursor-pointer border border-red-200"
                             title="Generate Statutory Notice / Seizure Memo"
                           >
                             <FileText className="w-3.5 h-3.5" />
@@ -850,7 +850,7 @@ Government of India`;
                         {/* Direct PDF Download */}
                         <button
                           onClick={(e) => handleDownloadPDF(report, e)}
-                          className="p-1.5 bg-slate-100 hover:bg-zinc-800 hover:text-white dark:bg-zinc-800 dark:hover:bg-zinc-700 rounded-lg text-slate-600 dark:text-zinc-300 transition-colors cursor-pointer"
+                          className="p-1.5 bg-slate-100 hover:bg-zinc-800 hover:text-white rounded-lg text-slate-600 transition-colors cursor-pointer"
                           title="Download Form A/B PDF"
                         >
                           <Download className="w-3.5 h-3.5" />
@@ -859,7 +859,7 @@ Government of India`;
                         {/* Delete Record */}
                         <button
                           onClick={(e) => handleDelete(report.id, e)}
-                          className="p-1.5 bg-slate-100 hover:bg-red-600 hover:text-white dark:bg-zinc-800 dark:hover:bg-red-600 rounded-lg text-slate-500 transition-colors cursor-pointer"
+                          className="p-1.5 bg-slate-100 hover:bg-red-600 hover:text-white rounded-lg text-slate-500 transition-colors cursor-pointer"
                           title="Delete record"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
@@ -872,7 +872,7 @@ Government of India`;
 
               {filteredReports.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="py-8 text-center text-slate-400 dark:text-zinc-500">
+                  <td colSpan={6} className="py-8 text-center text-slate-400">
                     No inspection records found.
                   </td>
                 </tr>
@@ -893,33 +893,33 @@ Government of India`;
 
       {/* STATUTORY NOTICE GENERATOR MODAL */}
       {noticeReport && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in duration-150">
-          <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-3xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-xs animate-in fade-in duration-150">
+          <div className="bg-white border border-slate-200 rounded-3xl max-w-3xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
             {/* Top Bar */}
-            <div className="px-6 py-4 bg-zinc-950 text-white flex items-center justify-between border-b border-zinc-800">
+            <div className="px-6 py-4 bg-[#0A3663] text-white flex items-center justify-between border-b border-blue-900">
               <div className="flex items-center gap-2.5">
-                <FileText className="w-5 h-5 text-red-400" />
+                <FileText className="w-5 h-5 text-cyan-300" />
                 <div>
                   <h3 className="text-sm font-black tracking-tight">Statutory Legal Metrology Notice Generator</h3>
-                  <p className="text-[11px] text-zinc-400 font-mono">Case: {noticeReport.id} • {noticeReport.productInfo.productName}</p>
+                  <p className="text-[11px] text-blue-200 font-mono">Case: {noticeReport.id} • {noticeReport.productInfo.productName}</p>
                 </div>
               </div>
               <button
                 onClick={() => setNoticeReport(null)}
-                className="p-1.5 text-zinc-400 hover:text-white rounded-xl hover:bg-zinc-800 transition-colors cursor-pointer"
+                className="p-1.5 text-blue-200 hover:text-white rounded-xl hover:bg-blue-800 transition-colors cursor-pointer"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
 
             {/* Notice Selector Tabs */}
-            <div className="flex border-b border-slate-200 dark:border-zinc-800 px-6 pt-3 gap-2 bg-slate-50 dark:bg-zinc-950">
+            <div className="flex border-b border-slate-200 px-6 pt-3 gap-2 bg-slate-50">
               <button
                 onClick={() => setNoticeType('SHOW_CAUSE')}
                 className={`px-3 py-1.5 text-xs font-bold rounded-t-xl transition-all cursor-pointer ${
                   noticeType === 'SHOW_CAUSE'
-                    ? 'bg-white dark:bg-zinc-900 text-red-600 dark:text-red-400 border-t border-x border-slate-200 dark:border-zinc-800'
-                    : 'text-slate-600 dark:text-zinc-400 hover:text-slate-900'
+                    ? 'bg-white text-red-600 border-t border-x border-slate-200'
+                    : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
                 Section 18/36 Show Cause Notice
@@ -928,8 +928,8 @@ Government of India`;
                 onClick={() => setNoticeType('SEIZURE_MEMO')}
                 className={`px-3 py-1.5 text-xs font-bold rounded-t-xl transition-all cursor-pointer ${
                   noticeType === 'SEIZURE_MEMO'
-                    ? 'bg-white dark:bg-zinc-900 text-red-600 dark:text-red-400 border-t border-x border-slate-200 dark:border-zinc-800'
-                    : 'text-slate-600 dark:text-zinc-400 hover:text-slate-900'
+                    ? 'bg-white text-red-600 border-t border-x border-slate-200'
+                    : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
                 Form B: Seizure & Detention Order
@@ -938,8 +938,8 @@ Government of India`;
                 onClick={() => setNoticeType('COMPOUNDING')}
                 className={`px-3 py-1.5 text-xs font-bold rounded-t-xl transition-all cursor-pointer ${
                   noticeType === 'COMPOUNDING'
-                    ? 'bg-white dark:bg-zinc-900 text-amber-600 dark:text-amber-400 border-t border-x border-slate-200 dark:border-zinc-800'
-                    : 'text-slate-600 dark:text-zinc-400 hover:text-slate-900'
+                    ? 'bg-white text-amber-600 border-t border-x border-slate-200'
+                    : 'text-slate-600 hover:text-slate-900'
                 }`}
               >
                 Section 48 Compounding Offer
@@ -947,21 +947,21 @@ Government of India`;
             </div>
 
             {/* Generated Notice Body */}
-            <div className="flex-1 overflow-y-auto p-6 bg-slate-100 dark:bg-zinc-950">
-              <pre className="whitespace-pre-wrap font-mono text-xs bg-white dark:bg-zinc-900 p-5 rounded-2xl border border-slate-200 dark:border-zinc-800 text-slate-800 dark:text-zinc-200 leading-relaxed shadow-inner">
+            <div className="flex-1 overflow-y-auto p-6 bg-slate-100">
+              <pre className="whitespace-pre-wrap font-mono text-xs bg-white p-5 rounded-2xl border border-slate-200 text-slate-800 leading-relaxed shadow-xs">
                 {generateStatutoryNoticeText()}
               </pre>
             </div>
 
             {/* Notice Footer Actions */}
-            <div className="px-6 py-3.5 bg-white dark:bg-zinc-900 border-t border-slate-200 dark:border-zinc-800 flex items-center justify-between">
-              <span className="text-xs text-slate-500 dark:text-zinc-400">
+            <div className="px-6 py-3.5 bg-white border-t border-slate-200 flex items-center justify-between">
+              <span className="text-xs text-slate-500">
                 Official document ready for service under Section 18 of LM Act, 2009
               </span>
               <div className="flex items-center gap-2">
                 <button
                   onClick={() => window.print()}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-zinc-700 hover:bg-slate-100 dark:hover:bg-zinc-800 text-xs font-bold text-slate-700 dark:text-zinc-300 transition-colors cursor-pointer"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 hover:bg-slate-100 text-xs font-bold text-slate-700 transition-colors cursor-pointer"
                 >
                   <Printer className="w-3.5 h-3.5" />
                   <span>Print</span>

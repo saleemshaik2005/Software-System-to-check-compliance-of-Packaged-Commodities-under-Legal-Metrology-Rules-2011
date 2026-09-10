@@ -450,7 +450,7 @@ export const CatalogBatchInspector: React.FC<CatalogBatchInspectorProps> = ({
           <button
             onClick={() => shelfInputRef.current?.click()}
             disabled={isProcessingUpload}
-            className="w-full py-3 rounded-2xl bg-slate-800 hover:bg-slate-900 text-white font-semibold text-xs transition-all shadow-xs cursor-pointer flex items-center justify-center gap-2"
+            className="w-full py-3 rounded-2xl bg-[#0A3663] hover:bg-blue-900 text-white font-semibold text-xs transition-all shadow-xs cursor-pointer flex items-center justify-center gap-2"
           >
             <Camera className="w-4 h-4" />
             <span>Upload Shelf / Pallet Photo</span>
@@ -492,7 +492,7 @@ export const CatalogBatchInspector: React.FC<CatalogBatchInspectorProps> = ({
           <button
             onClick={saveAllVerified}
             disabled={queue.filter((q) => q.verificationStatus === 'VERIFIED').length === 0}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-slate-800 hover:bg-slate-900 text-white font-semibold text-xs transition-all shadow-xs cursor-pointer disabled:opacity-50"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-[#00A651] hover:bg-emerald-600 text-white font-semibold text-xs transition-all shadow-xs cursor-pointer disabled:opacity-50"
           >
             <Save className="w-4 h-4" />
             <span>Save All Verified to Database</span>
@@ -561,7 +561,7 @@ export const CatalogBatchInspector: React.FC<CatalogBatchInspectorProps> = ({
                       }}
                     />
                     {item.images.back && (
-                      <span className="absolute bottom-0 right-0 bg-slate-800 text-white text-[8px] font-bold px-1 rounded-tl-md">
+                      <span className="absolute bottom-0 right-0 bg-[#0A3663] text-white text-[8px] font-bold px-1 rounded-tl-md">
                         2 PANELS
                       </span>
                     )}
@@ -648,7 +648,7 @@ export const CatalogBatchInspector: React.FC<CatalogBatchInspectorProps> = ({
                       {!item.savedToDatabase && (
                         <button
                           onClick={() => saveSingleItem(item)}
-                          className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-900 text-white font-semibold text-xs transition-colors cursor-pointer"
+                          className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#00A651] hover:bg-emerald-600 text-white font-semibold text-xs transition-colors cursor-pointer"
                         >
                           <Save className="w-3.5 h-3.5" />
                           <span>Save to DB</span>

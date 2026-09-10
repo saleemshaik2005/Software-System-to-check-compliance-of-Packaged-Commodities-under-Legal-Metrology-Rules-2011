@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark-mode-never-active));
+
 @layer base {
   body {
     background-color: #F8FAFC;

@@ -195,13 +195,13 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onConfig
       )}
 
       {/* Sub Tabs */}
-      <div className="flex border-b border-slate-200 dark:border-zinc-800 bg-white dark:bg-zinc-900 rounded-2xl p-1.5 shadow-xs gap-1 text-xs font-bold overflow-x-auto">
+      <div className="flex border-b border-slate-200 bg-white rounded-2xl p-1.5 shadow-xs gap-1 text-xs font-bold overflow-x-auto">
         <button
           onClick={() => setActiveSubTab('rules')}
           className={`flex items-center gap-1.5 px-4 py-2 rounded-xl transition-all cursor-pointer shrink-0 ${
             activeSubTab === 'rules'
               ? 'bg-[#0A3663] text-white shadow-xs'
-              : 'text-slate-600 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-zinc-800'
+              : 'text-slate-600 hover:bg-slate-100'
           }`}
         >
           <Sliders className="w-3.5 h-3.5" />
@@ -212,7 +212,7 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onConfig
           className={`flex items-center gap-1.5 px-4 py-2 rounded-xl transition-all cursor-pointer shrink-0 ${
             activeSubTab === 'amendment'
               ? 'bg-purple-700 text-white shadow-xs'
-              : 'text-slate-600 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-zinc-800'
+              : 'text-slate-600 hover:bg-slate-100'
           }`}
         >
           <BookOpen className="w-3.5 h-3.5 text-purple-400" />
@@ -223,7 +223,7 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onConfig
           className={`flex items-center gap-1.5 px-4 py-2 rounded-xl transition-all cursor-pointer shrink-0 ${
             activeSubTab === 'banner'
               ? 'bg-[#0A3663] text-white shadow-xs'
-              : 'text-slate-600 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-zinc-800'
+              : 'text-slate-600 hover:bg-slate-100'
           }`}
         >
           <Megaphone className="w-3.5 h-3.5" />
@@ -234,7 +234,7 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onConfig
           className={`flex items-center gap-1.5 px-4 py-2 rounded-xl transition-all cursor-pointer shrink-0 ${
             activeSubTab === 'database'
               ? 'bg-[#0A3663] text-white shadow-xs'
-              : 'text-slate-600 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-zinc-800'
+              : 'text-slate-600 hover:bg-slate-100'
           }`}
         >
           <Database className="w-3.5 h-3.5" />
@@ -245,7 +245,7 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onConfig
           className={`flex items-center gap-1.5 px-4 py-2 rounded-xl transition-all cursor-pointer shrink-0 ${
             activeSubTab === 'officers'
               ? 'bg-[#0A3663] text-white shadow-xs'
-              : 'text-slate-600 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-zinc-800'
+              : 'text-slate-600 hover:bg-slate-100'
           }`}
         >
           <Users className="w-3.5 h-3.5" />
@@ -257,19 +257,19 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onConfig
       {activeSubTab === 'rules' && (
         <div className="space-y-6">
           {/* Statutory Rule Registry Table with Inline Edit */}
-          <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-3xl p-5 shadow-xs space-y-4">
-            <div className="flex items-center justify-between border-b border-slate-100 dark:border-zinc-800 pb-3 flex-wrap gap-2">
+          <div className="bg-white border border-slate-200 rounded-3xl p-5 shadow-xs space-y-4">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3 flex-wrap gap-2">
               <div>
-                <div className="flex items-center gap-2 text-sm font-black text-slate-900 dark:text-zinc-100">
+                <div className="flex items-center gap-2 text-sm font-black text-slate-900">
                   <ShieldAlert className="w-4 h-4 text-emerald-600" />
                   <span>Statutory Rule Registry & Compounding Penalties Editor</span>
                 </div>
-                <p className="text-xs text-slate-500 dark:text-zinc-400 mt-0.5">
+                <p className="text-xs text-slate-500 mt-0.5">
                   Click the edit icon on any rule to customize the compounding fine (INR), statutory legal section, or rule title.
                 </p>
               </div>
 
-              <span className="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 text-xs font-bold">
+              <span className="px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold">
                 {rulesList.length} Active Rules
               </span>
             </div>
@@ -280,9 +280,9 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onConfig
 
                 if (isCurrentEditing && ruleDraft) {
                   return (
-                    <div key={rule.id} className="p-4 rounded-2xl border-2 border-emerald-500 bg-emerald-50/20 dark:bg-emerald-950/20 space-y-3 text-xs">
-                      <div className="flex items-center justify-between font-bold text-slate-900 dark:text-zinc-100">
-                        <span className="text-xs font-black text-emerald-700 dark:text-emerald-400">
+                    <div key={rule.id} className="p-4 rounded-2xl border-2 border-emerald-500 bg-emerald-50/20 space-y-3 text-xs">
+                      <div className="flex items-center justify-between font-bold text-slate-900">
+                        <span className="text-xs font-black text-emerald-700">
                           Editing Rule: {ruleDraft.ruleNumber}
                         </span>
                         <div className="flex items-center gap-2">
@@ -291,7 +291,7 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onConfig
                               setEditingRuleId(null);
                               setRuleDraft(null);
                             }}
-                            className="px-2.5 py-1 rounded-lg bg-slate-200 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 text-xs font-bold"
+                            className="px-2.5 py-1 rounded-lg bg-slate-200 text-slate-700 text-xs font-bold"
                           >
                             Cancel
                           </button>
@@ -312,7 +312,7 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onConfig
                             type="text"
                             value={ruleDraft.ruleTitle}
                             onChange={(e) => setRuleDraft({ ...ruleDraft, ruleTitle: e.target.value })}
-                            className="w-full px-3 py-1.5 rounded-xl border border-slate-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 font-semibold"
+                            className="w-full px-3 py-1.5 rounded-xl border border-slate-300 bg-white font-semibold text-slate-900"
                           />
                         </div>
 
@@ -322,7 +322,7 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onConfig
                             type="number"
                             value={ruleDraft.compoundingFine}
                             onChange={(e) => setRuleDraft({ ...ruleDraft, compoundingFine: Number(e.target.value) })}
-                            className="w-full px-3 py-1.5 rounded-xl border border-slate-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 font-mono font-bold text-emerald-700"
+                            className="w-full px-3 py-1.5 rounded-xl border border-slate-300 bg-white font-mono font-bold text-emerald-700"
                           />
                         </div>
 
@@ -332,7 +332,7 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onConfig
                             type="text"
                             value={ruleDraft.section}
                             onChange={(e) => setRuleDraft({ ...ruleDraft, section: e.target.value })}
-                            className="w-full px-3 py-1.5 rounded-xl border border-slate-300 dark:border-zinc-700 bg-white dark:bg-zinc-900 font-mono"
+                            className="w-full px-3 py-1.5 rounded-xl border border-slate-300 bg-white font-mono text-slate-900"
                           />
                         </div>
 
@@ -342,7 +342,7 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onConfig
                             type="text"
                             value={ruleDraft.description}
                             onChange={(e) => setRuleDraft({ ...ruleDraft, description: e.target.value })}
-                            className="w-full px-3 py-1.5 rounded-xl border border-slate-300 dark:border-zinc-700 bg-white dark:bg-zinc-900"
+                            className="w-full px-3 py-1.5 rounded-xl border border-slate-300 bg-white text-slate-900"
                           />
                         </div>
                       </div>
@@ -353,24 +353,24 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onConfig
                 return (
                   <div
                     key={rule.id}
-                    className="p-3.5 rounded-2xl border border-slate-200 dark:border-zinc-800 bg-slate-50/70 dark:bg-zinc-950 flex flex-wrap items-center justify-between gap-3 text-xs transition-colors hover:border-slate-300 dark:hover:border-zinc-700"
+                    className="p-3.5 rounded-2xl border border-slate-200 bg-slate-50/70 flex flex-wrap items-center justify-between gap-3 text-xs transition-colors hover:border-slate-300"
                   >
                     <div className="flex-1 min-w-[240px]">
                       <div className="flex items-center gap-2">
-                        <span className="font-mono font-bold text-[#0A3663] dark:text-blue-400">
+                        <span className="font-mono font-bold text-[#0A3663]">
                           {rule.ruleNumber}
                         </span>
                         <span className="text-slate-400">•</span>
-                        <span className="font-bold text-slate-900 dark:text-zinc-100">
+                        <span className="font-bold text-slate-900">
                           {rule.ruleTitle}
                         </span>
                         {rule.isAmended && (
-                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-100 text-purple-800 dark:bg-purple-950 dark:text-purple-300">
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-purple-100 text-purple-800">
                             Amended ({rule.amendmentRef || '2026'})
                           </span>
                         )}
                       </div>
-                      <p className="text-[11px] text-slate-500 dark:text-zinc-400 mt-1">
+                      <p className="text-[11px] text-slate-500 mt-1">
                         {rule.description}
                       </p>
                       <span className="text-[10px] font-mono text-slate-400 mt-0.5 block">
@@ -381,14 +381,14 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onConfig
                     <div className="flex items-center gap-4">
                       <div className="text-right">
                         <span className="text-[10px] text-slate-400 block uppercase font-bold">Compounding Fine</span>
-                        <span className="font-mono font-black text-sm text-emerald-700 dark:text-emerald-400">
+                        <span className="font-mono font-black text-sm text-emerald-700">
                           ₹{rule.compoundingFine.toLocaleString('en-IN')}
                         </span>
                       </div>
 
                       <button
                         onClick={() => handleEditRule(rule)}
-                        className="p-2 rounded-xl bg-white dark:bg-zinc-800 border border-slate-200 dark:border-zinc-700 hover:bg-slate-100 dark:hover:bg-zinc-700 text-slate-700 dark:text-zinc-300 transition-colors cursor-pointer"
+                        className="p-2 rounded-xl bg-white border border-slate-200 hover:bg-slate-100 text-slate-700 transition-colors cursor-pointer"
                         title="Edit rule parameters"
                       >
                         <Edit3 className="w-3.5 h-3.5" />
@@ -405,19 +405,19 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onConfig
       {/* Tab 2: Gazette Amendment PDF / Document Upload */}
       {activeSubTab === 'amendment' && (
         <div className="space-y-6">
-          <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-3xl p-6 shadow-xs space-y-6">
-            <div className="border-b border-slate-100 dark:border-zinc-800 pb-4">
-              <div className="flex items-center gap-2 text-sm font-black text-purple-700 dark:text-purple-400 mb-1">
+          <div className="bg-white border border-slate-200 rounded-3xl p-6 shadow-xs space-y-6">
+            <div className="border-b border-slate-100 pb-4">
+              <div className="flex items-center gap-2 text-sm font-black text-purple-700 mb-1">
                 <BookOpen className="w-4 h-4" />
                 <span>Official Gazette Notification Amendment Uploader</span>
               </div>
-              <p className="text-xs text-slate-600 dark:text-zinc-400 max-w-2xl">
+              <p className="text-xs text-slate-600 max-w-2xl">
                 Upload new Gazette Notifications (GSR circulars) or legislative amendments enacted by the Ministry. The platform's AI parser reads the amendment clauses, identifies revised compounding fines or new statutory rules, and updates the compliance engine automatically.
               </p>
             </div>
 
             {/* Dropzone */}
-            <div className="p-6 rounded-2xl border-2 border-dashed border-purple-300 dark:border-purple-800 bg-purple-50/40 dark:bg-zinc-950 text-center hover:border-purple-500 transition-colors">
+            <div className="p-6 rounded-2xl border-2 border-dashed border-purple-300 bg-purple-50/40 text-center hover:border-purple-500 transition-colors">
               <input
                 ref={gazetteFileRef}
                 type="file"
@@ -427,14 +427,14 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onConfig
               />
 
               <div className="flex flex-col items-center justify-center space-y-3">
-                <div className="w-12 h-12 rounded-2xl bg-purple-100 dark:bg-purple-950 text-purple-600 flex items-center justify-center">
+                <div className="w-12 h-12 rounded-2xl bg-purple-100 text-purple-600 flex items-center justify-center">
                   <Upload className="w-6 h-6" />
                 </div>
                 <div>
-                  <h4 className="text-sm font-bold text-slate-900 dark:text-zinc-100">
+                  <h4 className="text-sm font-bold text-slate-900">
                     {gazetteFileName ? gazetteFileName : 'Upload Gazette Notification PDF or Document'}
                   </h4>
-                  <p className="text-xs text-slate-500 dark:text-zinc-400 mt-0.5">
+                  <p className="text-xs text-slate-500 mt-0.5">
                     Supports .pdf, .txt, .doc (e.g. GSR_782_E_Legal_Metrology_Amendment_2026.pdf)
                   </p>
                 </div>
@@ -455,7 +455,7 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onConfig
                       const parsed = parseGazetteAmendment('GSR_782_E_Legal_Metrology_Amendment_2026.pdf', sampleText);
                       setParsedAmendment(parsed);
                     }}
-                    className="px-3.5 py-2 rounded-xl bg-slate-100 dark:bg-zinc-800 hover:bg-slate-200 dark:hover:bg-zinc-700 text-slate-700 dark:text-zinc-300 text-xs font-bold transition-all cursor-pointer"
+                    className="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold transition-all cursor-pointer"
                   >
                     Load Sample 2026 Gazette
                   </button>
@@ -465,7 +465,7 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onConfig
 
             {/* Manual Gazette Notification Textarea */}
             <div className="space-y-2">
-              <label className="block text-xs font-bold text-slate-700 dark:text-zinc-300">
+              <label className="block text-xs font-bold text-slate-700">
                 Or Paste Gazette Notification Text:
               </label>
               <textarea
@@ -473,7 +473,7 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onConfig
                 value={gazetteRawText}
                 onChange={(e) => setGazetteRawText(e.target.value)}
                 placeholder="Paste Gazette Notification GSR text here..."
-                className="w-full px-3 py-2 rounded-xl border border-slate-200 dark:border-zinc-800 bg-slate-50 dark:bg-zinc-950 text-xs font-mono text-slate-800 dark:text-zinc-200 focus:ring-2 focus:ring-purple-600"
+                className="w-full px-3 py-2 rounded-xl border border-slate-200 bg-slate-50 text-xs font-mono text-slate-800 focus:ring-2 focus:ring-purple-600"
               />
               <div className="flex justify-end">
                 <button
@@ -489,16 +489,16 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onConfig
 
             {/* Parsed Gazette Notification Impact Diff */}
             {parsedAmendment && (
-              <div className="p-5 rounded-2xl border border-purple-200 dark:border-purple-800 bg-purple-50/30 dark:bg-purple-950/20 space-y-4 animate-in fade-in">
-                <div className="flex items-center justify-between border-b border-purple-200 dark:border-purple-800 pb-3">
+              <div className="p-5 rounded-2xl border border-purple-200 bg-purple-50/30 space-y-4 animate-in fade-in">
+                <div className="flex items-center justify-between border-b border-purple-200 pb-3">
                   <div>
-                    <span className="text-[10px] font-bold uppercase tracking-widest text-purple-600 dark:text-purple-400">
+                    <span className="text-[10px] font-bold uppercase tracking-widest text-purple-600">
                       Gazette Notification Extracted
                     </span>
-                    <h3 className="text-base font-black text-slate-900 dark:text-zinc-100">
+                    <h3 className="text-base font-black text-slate-900">
                       {parsedAmendment.gazetteNumber} • {parsedAmendment.title}
                     </h3>
-                    <p className="text-xs text-slate-500 dark:text-zinc-400">
+                    <p className="text-xs text-slate-500">
                       {parsedAmendment.ministry} • Enacted: {parsedAmendment.effectiveDate}
                     </p>
                   </div>
@@ -514,22 +514,22 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onConfig
 
                 {/* Rules Amended Diff Table */}
                 <div className="space-y-2">
-                  <span className="text-xs font-bold text-slate-700 dark:text-zinc-300 block">
+                  <span className="text-xs font-bold text-slate-700 block">
                     Statutory Rule & Penalty Amendments to be Applied:
                   </span>
 
                   <div className="space-y-2">
                     {parsedAmendment.rulesAmended.map((r, i) => (
-                      <div key={i} className="p-3 bg-white dark:bg-zinc-900 rounded-xl border border-slate-200 dark:border-zinc-800 text-xs grid grid-cols-1 md:grid-cols-2 gap-3">
+                      <div key={i} className="p-3 bg-white rounded-xl border border-slate-200 text-xs grid grid-cols-1 md:grid-cols-2 gap-3">
                         <div>
                           <span className="font-bold text-red-600 block mb-0.5">Prior Standard:</span>
-                          <p className="text-slate-600 dark:text-zinc-400 line-through">{r.priorText}</p>
+                          <p className="text-slate-600 line-through">{r.priorText}</p>
                         </div>
                         <div>
                           <span className="font-bold text-emerald-600 block mb-0.5">New Gazette Standard ({r.ruleNumber}):</span>
-                          <p className="text-slate-900 dark:text-zinc-100 font-semibold">{r.amendedText}</p>
+                          <p className="text-slate-900 font-semibold">{r.amendedText}</p>
                           {r.revisedFine && (
-                            <span className="inline-block mt-1 font-mono font-bold text-purple-700 dark:text-purple-400">
+                            <span className="inline-block mt-1 font-mono font-bold text-purple-700">
                               Revised Penalty: ₹{r.revisedFine.toLocaleString('en-IN')}
                             </span>
                           )}
@@ -546,8 +546,8 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onConfig
 
       {/* Tab 3: Banner Announcement */}
       {activeSubTab === 'banner' && (
-        <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-3xl p-5 shadow-xs space-y-4">
-          <div className="flex items-center gap-2 text-sm font-black text-slate-900 dark:text-zinc-100 border-b border-slate-100 dark:border-zinc-800 pb-3">
+        <div className="bg-white border border-slate-200 rounded-3xl p-5 shadow-xs space-y-4">
+          <div className="flex items-center gap-2 text-sm font-black text-slate-900 border-b border-slate-100 pb-3">
             <Megaphone className="w-4 h-4 text-amber-600" />
             <span>Ministry Special Drive Announcement Banner</span>
           </div>
@@ -580,9 +580,9 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onConfig
 
       {/* Tab 4: Cloud Database & Export */}
       {activeSubTab === 'database' && (
-        <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-3xl p-5 shadow-xs space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-100 dark:border-zinc-800 pb-3">
-            <div className="flex items-center gap-2 text-sm font-black text-slate-900 dark:text-zinc-100">
+        <div className="bg-white border border-slate-200 rounded-3xl p-5 shadow-xs space-y-4">
+          <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div className="flex items-center gap-2 text-sm font-black text-slate-900">
               <Database className="w-4 h-4 text-blue-600" />
               <span>Inspection Dossiers & Cloud Sync Operations</span>
             </div>
@@ -597,17 +597,17 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onConfig
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="p-4 bg-slate-50 dark:bg-zinc-950 rounded-2xl border border-slate-200 dark:border-zinc-800">
+            <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200">
               <span className="text-[10px] font-bold text-slate-500 uppercase block">Local Dossiers</span>
-              <span className="text-xl font-black text-slate-900 dark:text-zinc-100">{getScanReports().length} Records</span>
+              <span className="text-xl font-black text-slate-900">{getScanReports().length} Records</span>
               <span className="text-[11px] text-emerald-600 font-bold block mt-1">IndexedDB Persistent</span>
             </div>
-            <div className="p-4 bg-slate-50 dark:bg-zinc-950 rounded-2xl border border-slate-200 dark:border-zinc-800">
+            <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200">
               <span className="text-[10px] font-bold text-slate-500 uppercase block">Cloud Firestore</span>
               <span className="text-xl font-black text-amber-900">Live Active</span>
               <span className="text-[11px] text-slate-500 block mt-1">sih-2026-project-229ad</span>
             </div>
-            <div className="p-4 bg-slate-50 dark:bg-zinc-950 rounded-2xl border border-slate-200 dark:border-zinc-800">
+            <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200">
               <span className="text-[10px] font-bold text-slate-500 uppercase block">Cloudinary Media</span>
               <span className="text-xl font-black text-sky-900">CDN Connected</span>
               <span className="text-[11px] text-slate-500 block mt-1">dq17ske9m • Preset Ready</span>
@@ -618,9 +618,9 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onConfig
 
       {/* Tab 5: Field Inspectors */}
       {activeSubTab === 'officers' && (
-        <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-3xl p-5 shadow-xs space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-100 dark:border-zinc-800 pb-3">
-            <div className="flex items-center gap-2 text-sm font-black text-slate-900 dark:text-zinc-100">
+        <div className="bg-white border border-slate-200 rounded-3xl p-5 shadow-xs space-y-4">
+          <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div className="flex items-center gap-2 text-sm font-black text-slate-900">
               <Users className="w-4 h-4 text-purple-600" />
               <span>Authorized Legal Metrology Officers Registry</span>
             </div>
@@ -632,9 +632,9 @@ export const AdminControlCenter: React.FC<AdminControlCenterProps> = ({ onConfig
               { name: 'Insp. Sunita Deshmukh', badge: 'LM-MH-8812', zone: 'Mumbai Port & Dark Stores', status: 'ACTIVE ON FIELD' },
               { name: 'Insp. Arvind Swaminathan', badge: 'LM-TN-3104', zone: 'Chennai Industrial Area', status: 'ACTIVE ON FIELD' },
             ].map((o) => (
-              <div key={o.badge} className="p-3 border border-slate-200 dark:border-zinc-800 rounded-xl flex items-center justify-between bg-slate-50 dark:bg-zinc-950 text-xs">
+              <div key={o.badge} className="p-3 border border-slate-200 rounded-xl flex items-center justify-between bg-slate-50 text-xs">
                 <div>
-                  <span className="font-black text-slate-900 dark:text-zinc-100 block">{o.name}</span>
+                  <span className="font-black text-slate-900 block">{o.name}</span>
                   <span className="text-slate-500 text-[11px]">Badge: {o.badge} • Jurisdiction: {o.zone}</span>
                 </div>
                 <span className="bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-bold text-[10px]">

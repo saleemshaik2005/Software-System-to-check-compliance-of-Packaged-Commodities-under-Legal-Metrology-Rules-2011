@@ -34,8 +34,43 @@ export const EcommerceAuditTab: React.FC<EcommerceAuditTabProps> = ({ onAuditSel
   const [isAuditing, setIsAuditing] = useState(false);
   const [detectedPlatform, setDetectedPlatform] = useState<string | null>(null);
 
-  // 5 Realistic Indian E-Commerce / Quick Commerce Test Cases with high-res authentic product listing visuals
+  // 6 Realistic Indian E-Commerce / Quick Commerce Test Cases with high-res authentic product listing visuals
   const ecomSamples = [
+    {
+      title: 'Zepto Dark Store: Gold Winner Refined Sunflower Oil Pouch (1 L)',
+      platform: 'Zepto',
+      platformType: 'Quick Commerce 10-Min Delivery',
+      issue: 'Full statutory compliance: 1 L (910g) net quantity, manufacturer Kaleesuwari Refinery, MRP ₹145, USP ₹0.145/ml, FSSAI',
+      status: 'COMPLIANT' as const,
+      fine: 'Nil',
+      image: '/demo/gold-winner-front.svg',
+      backImage: '/demo/gold-winner-back.svg',
+      productInfo: {
+        productName: 'Gold Winner Refined Sunflower Oil Pouch 1L',
+        genericName: 'Refined Sunflower Oil',
+        brandName: 'Gold Winner',
+        category: 'edible_oils' as any,
+        netQuantity: 1,
+        quantityUnit: 'l',
+        rawQuantityString: '1 L (910g)',
+        mrp: 145.0,
+        currency: 'INR',
+        mrpString: '₹145.00 (incl. of all taxes)',
+        hasInclAllTaxes: true,
+        isStickerPrice: false,
+        isDualPrice: false,
+        mfgMonth: '08',
+        mfgYear: '2026',
+        expiryDate: '05/2027',
+        manufacturerName: 'Kaleesuwari Refinery Private Limited',
+        manufacturerAddress: '53, Rajasekaran Street, Radhakrishnan Salai, Mylapore, Chennai, Tamil Nadu',
+        manufacturerPinCode: '600081',
+        countryOfOrigin: 'India',
+        consumerCarePhone: '1800 425 3333',
+        consumerCareEmail: 'customercare@kaleesuwari.com',
+        batchNumber: 'KRL-SO-8842'
+      }
+    },
     {
       title: 'Zepto Dark Store: Amul Taaza Homogenised Toned Milk (1 L Tetra Pack)',
       platform: 'Zepto',
@@ -44,6 +79,7 @@ export const EcommerceAuditTab: React.FC<EcommerceAuditTabProps> = ({ onAuditSel
       status: 'COMPLIANT' as const,
       fine: 'Nil',
       image: '/demo/amul-taaza-front.png',
+      backImage: '/demo/amul-taaza-back.png',
       productInfo: {
         productName: 'Amul Taaza Homogenised Toned Milk (Tetra Pack)',
         genericName: 'UHT Treated Homogenised Toned Milk',
@@ -145,6 +181,7 @@ export const EcommerceAuditTab: React.FC<EcommerceAuditTabProps> = ({ onAuditSel
       status: 'COMPLIANT' as const,
       fine: 'Nil',
       image: '/demo/freedom-sunflower-oil-front.png',
+      backImage: '/demo/freedom-sunflower-oil-back.svg',
       productInfo: {
         productName: 'Freedom Refined Sunflower Oil 1L Pouch',
         genericName: 'Refined Edible Sunflower Oil',
@@ -223,7 +260,7 @@ export const EcommerceAuditTab: React.FC<EcommerceAuditTabProps> = ({ onAuditSel
       const pathSegments = parsed.pathname.split('/').filter(Boolean);
       for (const seg of pathSegments) {
         if (seg.length > 5 && !seg.match(/^(dp|gp|prn|item|p|product|itm)$/i)) {
-          const clean = seg.replace(/[-_]/g, ' ').replace(/\w/g, c => c.toUpperCase());
+          const clean = seg.replace(/[-_]/g, ' ').replace(/ \w/g, c => c.toUpperCase());
           if (clean.length > 3) return clean;
         }
       }
@@ -234,30 +271,21 @@ export const EcommerceAuditTab: React.FC<EcommerceAuditTabProps> = ({ onAuditSel
   const handleAuditSample = (sample: typeof ecomSamples[0]) => {
     setIsAuditing(true);
     setTimeout(() => {
+      const images: { front?: string; back?: string } = {
+        front: sample.image,
+        ...((sample as any).backImage ? { back: (sample as any).backImage } : {})
+      };
       const report = evaluateCompliance(
         sample.productInfo,
         'front',
-        { front: sample.image },
+        images,
         {
           name: 'Legal Metrology Inspector',
           badge: 'LM-ECOM-01',
           location: `Digital Marketplace Audit: ${sample.platform}`
         }
       );
-      report.capturedImages = { front: sample.image };
-      report.boundingBoxes = [
-        {
-          id: 'ecom-sample-front',
-          x: 10,
-          y: 10,
-          width: 80,
-          height: 80,
-          label: `Rule 10 - ${sample.platform} Digital PDP`,
-          ruleRef: 'Rule 10',
-          status: sample.status === 'COMPLIANT' ? 'PASS' : 'WARNING',
-          message: sample.issue
-        }
-      ];
+      report.capturedImages = images;
       setIsAuditing(false);
       onAuditSelected(report);
     }, 400);
@@ -291,20 +319,23 @@ export const EcommerceAuditTab: React.FC<EcommerceAuditTabProps> = ({ onAuditSel
       );
       report.capturedImages = authenticImages;
 
-      // Clean digital overlay indicator for e-commerce audit listing
-      report.boundingBoxes = [
-        {
-          id: 'ecom-pdp-front',
-          x: 8,
-          y: 8,
-          width: 84,
-          height: 84,
-          label: `Rule 10 - ${platform} Digital PDP`,
-          ruleRef: 'Rule 10',
-          status: digital.isRule10Compliant ? 'PASS' : 'WARNING',
-          message: `Product extracted from ${platform}. Verified pre-sale declarations against Legal Metrology Rules, 2011.`
-        }
-      ];
+      // Ensure at least a digital overlay indicator exists if no boxes were generated
+      if (!report.boundingBoxes || report.boundingBoxes.length === 0) {
+        report.boundingBoxes = [
+          {
+            id: 'ecom-pdp-front',
+            x: 8,
+            y: 8,
+            width: 84,
+            height: 84,
+            view: 'front',
+            label: `Rule 10 - ${platform} Digital PDP`,
+            ruleRef: 'Rule 10',
+            status: digital.isRule10Compliant ? 'PASS' : 'WARNING',
+            message: `Product extracted from ${platform}. Verified pre-sale declarations against Legal Metrology Rules, 2011.`
+          }
+        ];
+      }
 
       // Add Rule 10 digital platform evaluation
       if (!digital.isRule10Compliant && digital.missingDeclarations.length > 0) {
@@ -368,28 +399,28 @@ export const EcommerceAuditTab: React.FC<EcommerceAuditTabProps> = ({ onAuditSel
   return (
     <div className="space-y-6 animate-in fade-in duration-200">
       {/* Top Banner & Statutory Legal Context */}
-      <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 p-6 rounded-3xl shadow-xs transition-colors">
+      <div className="bg-white border border-slate-200 p-6 rounded-3xl shadow-xs transition-colors">
         <div className="max-w-3xl">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-950/60 text-blue-800 dark:text-blue-300 border border-blue-200 dark:border-blue-800 text-xs font-bold mb-3">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-blue-800 border border-blue-200 text-xs font-bold mb-3">
             <Globe className="w-3.5 h-3.5" />
             <span>Digital Marketplace Enforcement • Legal Metrology (PC) Amendment Rules 2017</span>
           </div>
-          <h2 className="text-xl font-black text-slate-900 dark:text-zinc-100 tracking-tight">
+          <h2 className="text-xl font-black text-slate-900 tracking-tight">
             Automated E-Commerce & Dark Store Listing Auditor
           </h2>
-          <p className="text-xs sm:text-sm text-slate-600 dark:text-zinc-400 mt-1 leading-relaxed">
+          <p className="text-xs sm:text-sm text-slate-600 mt-1 leading-relaxed">
             Under <strong>Rule 6(10)</strong> and <strong>Rule 6(11)</strong> of Legal Metrology (Packaged Commodities) Rules, every e-commerce platform and quick-commerce dark store (Amazon, Flipkart, Blinkit, Zepto, Swiggy Instamart) is legally required to display <strong>Manufacturer Details, Country of Origin, Net Quantity, MRP, Expiry Date</strong>, and <strong>Unit Sale Price (USP)</strong> directly on the digital product page before checkout.
           </p>
         </div>
 
         {/* Audit Mode Switcher */}
-        <div className="mt-5 pt-4 border-t border-slate-100 dark:border-zinc-800 flex flex-wrap items-center gap-2">
+        <div className="mt-5 pt-4 border-t border-slate-100 flex flex-wrap items-center gap-2">
           <button
             onClick={() => setActiveMode('url')}
             className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
               activeMode === 'url'
                 ? 'bg-blue-600 text-white shadow-xs'
-                : 'bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 hover:bg-slate-200'
+                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
             }`}
           >
             <Globe className="w-3.5 h-3.5" />
@@ -401,7 +432,7 @@ export const EcommerceAuditTab: React.FC<EcommerceAuditTabProps> = ({ onAuditSel
             className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
               activeMode === 'paste'
                 ? 'bg-blue-600 text-white shadow-xs'
-                : 'bg-slate-100 dark:bg-zinc-800 text-slate-700 dark:text-zinc-300 hover:bg-slate-200'
+                : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
             }`}
           >
             <ClipboardPaste className="w-3.5 h-3.5" />
@@ -422,7 +453,7 @@ export const EcommerceAuditTab: React.FC<EcommerceAuditTabProps> = ({ onAuditSel
                     setUrlInput(e.target.value);
                     setDetectedPlatform(e.target.value ? detectPlatformFromUrl(e.target.value) : null);
                   }}
-                  placeholder="Paste product URL (e.g., https://www.zepto.com/pn/freedom-refined-sunflower-oil/... or Amazon / Blinkit link)..."
+                  placeholder="Paste product URL (e.g., https://www.zepto.com/pn/gold-winner-refined-sunflower-oil-pouch/... or Amazon / Blinkit link)..."
                   className="w-full bg-slate-50 border border-slate-300 text-slate-900 text-xs pl-10 pr-4 py-3 rounded-xl focus:outline-none focus:border-blue-600 font-mono"
                 />
                 {detectedPlatform && (
@@ -444,6 +475,17 @@ export const EcommerceAuditTab: React.FC<EcommerceAuditTabProps> = ({ onAuditSel
             {/* Quick 1-Click Real Testing Chips */}
             <div className="flex flex-wrap items-center gap-2 pt-1">
               <span className="text-[11px] font-bold text-slate-500">Quick Test URLs:</span>
+              <button
+                type="button"
+                onClick={() => {
+                  const u = 'https://www.zepto.com/pn/gold-winner-refined-sunflower-oil-pouch/pvid/ca6cbb22-8ea5-4148-912f-98782aee6618';
+                  setUrlInput(u);
+                  setDetectedPlatform('Zepto Dark Store');
+                }}
+                className="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-amber-50 text-amber-900 border border-amber-200 hover:bg-amber-100 transition-colors cursor-pointer flex items-center gap-1 shadow-2xs"
+              >
+                <span>🌻 Zepto: Gold Winner Sunflower Oil</span>
+              </button>
               <button
                 type="button"
                 onClick={() => {
@@ -485,13 +527,13 @@ export const EcommerceAuditTab: React.FC<EcommerceAuditTabProps> = ({ onAuditSel
         {activeMode === 'paste' && (
           <form onSubmit={handleCustomTextAudit} className="mt-4 space-y-3">
             <div className="flex items-center justify-between text-xs">
-              <span className="font-bold text-slate-700 dark:text-zinc-300">
+              <span className="font-bold text-slate-700">
                 Copy and paste the Product Details / Specifications section from any e-commerce page:
               </span>
               <select
                 value={pastedCategory}
                 onChange={(e) => setPastedCategory(e.target.value)}
-                className="bg-slate-50 dark:bg-zinc-800 border border-slate-300 dark:border-zinc-700 text-slate-900 dark:text-zinc-100 px-2 py-1 rounded-lg text-xs"
+                className="bg-slate-50 border border-slate-300 text-slate-900 px-2 py-1 rounded-lg text-xs"
               >
                 <option value="general_packaged">General FMCG</option>
                 <option value="biscuits">Biscuits (Item #3)</option>
@@ -511,7 +553,7 @@ Maximum Retail Price: Rs. 120.00 (incl. of all taxes)
 Unit Sale Price: Rs. 0.24 / g
 Country of Origin: India
 Customer Care: 1800-345-0088, care@itc.in`}
-              className="w-full bg-slate-50 dark:bg-zinc-800 border border-slate-300 dark:border-zinc-700 text-slate-900 dark:text-zinc-100 text-xs p-3 rounded-xl focus:outline-none focus:border-blue-600 font-mono"
+              className="w-full bg-slate-50 border border-slate-300 text-slate-900 text-xs p-3 rounded-xl focus:outline-none focus:border-blue-600 font-mono"
             />
 
             <div className="flex justify-end">
@@ -530,50 +572,50 @@ Customer Care: 1800-345-0088, care@itc.in`}
 
       {/* STATUTORY RULES REFERENCE BANNER */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-        <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 p-4 rounded-2xl shadow-xs">
-          <div className="flex items-center gap-2 text-blue-700 dark:text-blue-400 font-black mb-1">
+        <div className="bg-white border border-slate-200 p-4 rounded-2xl shadow-xs">
+          <div className="flex items-center gap-2 text-blue-700 font-black mb-1">
             <Store className="w-4 h-4" />
             <span>Rule 6(10) E-Commerce Mandate</span>
           </div>
-          <p className="text-[11px] text-slate-600 dark:text-zinc-400 leading-relaxed">
+          <p className="text-[11px] text-slate-600 leading-relaxed">
             Marketplace must display Manufacturer, Country of Origin, Net Qty, MRP & Expiry date directly on digital display before purchase.
           </p>
         </div>
 
-        <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 p-4 rounded-2xl shadow-xs">
-          <div className="flex items-center gap-2 text-emerald-700 dark:text-emerald-400 font-black mb-1">
+        <div className="bg-white border border-slate-200 p-4 rounded-2xl shadow-xs">
+          <div className="flex items-center gap-2 text-emerald-700 font-black mb-1">
             <Tag className="w-4 h-4" />
             <span>Rule 6(11) Unit Sale Price (USP)</span>
           </div>
-          <p className="text-[11px] text-slate-600 dark:text-zinc-400 leading-relaxed">
+          <p className="text-[11px] text-slate-600 leading-relaxed">
             Mandatory display of unit price (e.g. ₹/g, ₹/ml) alongside MRP to prevent deceptive sizing and facilitate fair price comparisons.
           </p>
         </div>
 
-        <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 p-4 rounded-2xl shadow-xs">
-          <div className="flex items-center gap-2 text-red-700 dark:text-red-400 font-black mb-1">
+        <div className="bg-white border border-slate-200 p-4 rounded-2xl shadow-xs">
+          <div className="flex items-center gap-2 text-red-700 font-black mb-1">
             <ShieldAlert className="w-4 h-4" />
             <span>Section 36 & Dark Store Liability</span>
           </div>
-          <p className="text-[11px] text-slate-600 dark:text-zinc-400 leading-relaxed">
+          <p className="text-[11px] text-slate-600 leading-relaxed">
             Quick-commerce dark stores selling non-compliant goods or charging above package MRP face fines up to ₹50,000 or prosecution.
           </p>
         </div>
       </div>
 
       {/* BENCHMARK E-COMMERCE LISTINGS SHOWCASE */}
-      <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 p-6 rounded-3xl shadow-xs transition-colors">
+      <div className="bg-white border border-slate-200 p-6 rounded-3xl shadow-xs transition-colors">
         <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
           <div>
-            <h3 className="text-base font-black text-slate-900 dark:text-zinc-100 tracking-tight">
+            <h3 className="text-base font-black text-slate-900 tracking-tight">
               Live Tested Marketplace & Quick-Commerce Listings
             </h3>
-            <p className="text-xs text-slate-500 dark:text-zinc-400">
+            <p className="text-xs text-slate-500">
               Click any product listing below to run an immediate LMPC 2017 compliance evaluation
             </p>
           </div>
-          <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-slate-100 dark:bg-zinc-800 text-slate-600 dark:text-zinc-300">
-            5 Indian Platforms Audited
+          <span className="text-[11px] font-bold px-2.5 py-1 rounded-full bg-slate-100 text-slate-600">
+            6 Indian Platforms Audited
           </span>
         </div>
 
@@ -584,13 +626,13 @@ Customer Care: 1800-345-0088, care@itc.in`}
               <div
                 key={idx}
                 onClick={() => handleAuditSample(sample)}
-                className="bg-slate-50 dark:bg-zinc-800/50 border border-slate-200 dark:border-zinc-700 hover:border-blue-400 dark:hover:border-blue-500 p-4 rounded-2xl cursor-pointer transition-all hover:bg-white dark:hover:bg-zinc-800/80 flex flex-col justify-between group shadow-2xs"
+                className="bg-slate-50 border border-slate-200 hover:border-blue-400 p-4 rounded-2xl cursor-pointer transition-all hover:bg-white flex flex-col justify-between group shadow-2xs"
               >
                 <div>
                   {/* Card Header: Platform & Status */}
                   <div className="flex items-center justify-between gap-2 mb-3">
                     <div className="flex items-center gap-1.5">
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-white dark:bg-zinc-950 text-blue-900 dark:text-blue-300 border border-slate-200 dark:border-zinc-700">
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-white text-blue-900 border border-slate-200">
                         {sample.platform}
                       </span>
                       <span className="text-[9px] text-slate-400 font-semibold hidden sm:inline">
@@ -601,8 +643,8 @@ Customer Care: 1800-345-0088, care@itc.in`}
                     <span
                       className={`text-[10px] font-black px-2.5 py-0.5 rounded-full flex items-center gap-1 ${
                         isViolation
-                          ? 'bg-red-100 dark:bg-red-950 text-red-800 dark:text-red-300 border border-red-300 dark:border-red-800'
-                          : 'bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-800'
+                          ? 'bg-red-100 text-red-800 border border-red-300'
+                          : 'bg-emerald-100 text-emerald-800 border border-emerald-300'
                       }`}
                     >
                       {isViolation ? <AlertOctagon className="w-3 h-3 text-red-600" /> : <CheckCircle2 className="w-3 h-3 text-emerald-600" />}
@@ -615,10 +657,10 @@ Customer Care: 1800-345-0088, care@itc.in`}
                     <img
                       src={sample.image}
                       alt={sample.title}
-                      className="w-16 h-16 object-cover rounded-xl border border-slate-200 dark:border-zinc-700 shrink-0 bg-white"
+                      className="w-16 h-16 object-cover rounded-xl border border-slate-200 shrink-0 bg-white"
                     />
                     <div className="overflow-hidden">
-                      <h4 className="text-xs font-black text-slate-900 dark:text-zinc-100 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors line-clamp-2">
+                      <h4 className="text-xs font-black text-slate-900 group-hover:text-blue-600 transition-colors line-clamp-2">
                         {sample.title}
                       </h4>
                       <span className="text-[11px] font-mono font-bold text-slate-500 mt-1 block">
@@ -627,13 +669,13 @@ Customer Care: 1800-345-0088, care@itc.in`}
                     </div>
                   </div>
 
-                  <p className="text-[11px] text-slate-600 dark:text-zinc-400 leading-relaxed line-clamp-2">
+                  <p className="text-[11px] text-slate-600 leading-relaxed line-clamp-2">
                     {sample.issue}
                   </p>
                 </div>
 
                 {/* Footer Action */}
-                <div className="mt-3 pt-2.5 border-t border-slate-200 dark:border-zinc-700 flex items-center justify-between text-[11px] text-blue-700 dark:text-blue-400 font-bold">
+                <div className="mt-3 pt-2.5 border-t border-slate-200 flex items-center justify-between text-[11px] text-blue-700 font-bold">
                   <span>Run Statutory Audit →</span>
                   <ExternalLink className="w-3.5 h-3.5 opacity-70 group-hover:opacity-100" />
                 </div>

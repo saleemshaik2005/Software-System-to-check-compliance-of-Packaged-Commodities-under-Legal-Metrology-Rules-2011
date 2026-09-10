@@ -67,44 +67,44 @@ export const EvidenceVisualizer: React.FC<EvidenceVisualizerProps> = ({
   };
 
   return (
-    <div className="bg-white dark:bg-zinc-900 border border-slate-200 dark:border-zinc-800 rounded-2xl overflow-hidden shadow-sm flex flex-col transition-colors">
+    <div className="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm flex flex-col transition-colors">
       {/* Visualizer Header */}
-      <div className="px-4 py-3 bg-slate-50 dark:bg-zinc-950 border-b border-slate-200 dark:border-zinc-800 flex flex-wrap items-center justify-between gap-3">
+      <div className="px-4 py-3 bg-slate-50 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3">
         <div className="flex items-center gap-2">
           <Eye className="w-4 h-4 text-[#00A651]" />
-          <span className="text-sm font-black text-slate-900 dark:text-zinc-100 tracking-wide">{getTranslation('visual_overlay_title', currentLang)}</span>
-          <span className="text-xs bg-white dark:bg-zinc-800 text-slate-700 dark:text-zinc-200 font-bold px-2 py-0.5 rounded-full border border-slate-200 dark:border-zinc-700 shadow-2xs">
+          <span className="text-sm font-black text-slate-900 tracking-wide">{getTranslation('visual_overlay_title', currentLang)}</span>
+          <span className="text-xs bg-white text-slate-700 font-bold px-2 py-0.5 rounded-full border border-slate-200 shadow-2xs">
             {visibleBoxes.length} {currentLang === 'hi' ? 'क्षेत्र' : currentLang === 'te' ? 'ప్రాంతాలు' : (visibleBoxes.length === 1 ? 'Region' : 'Regions')} ({activeView.toUpperCase()})
           </span>
         </div>
 
         {/* Multi-View Toggle (Front / Back / Side) */}
-        <div className="flex items-center gap-1 bg-white dark:bg-zinc-800 p-1 rounded-xl border border-slate-200 dark:border-zinc-700 text-xs shadow-2xs">
+        <div className="flex items-center gap-1 bg-white p-1 rounded-xl border border-slate-200 text-xs shadow-2xs">
           <button
             onClick={() => {
               setActiveView('front');
               setSelectedBox(null);
             }}
-            className={`px-2.5 py-1 rounded-lg font-bold transition-all cursor-pointer ${
+            className={`px-3 py-1 rounded-lg font-bold transition-all cursor-pointer ${
               activeView === 'front'
                 ? 'bg-[#00A651] text-white shadow-xs'
-                : 'text-slate-600 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
             }`}
           >
-            Front
+            Front View
           </button>
           <button
             onClick={() => {
               setActiveView('back');
               setSelectedBox(null);
             }}
-            className={`px-2.5 py-1 rounded-lg font-bold transition-all cursor-pointer ${
+            className={`px-3 py-1 rounded-lg font-bold transition-all cursor-pointer ${
               activeView === 'back'
                 ? 'bg-[#00A651] text-white shadow-xs'
-                : 'text-slate-600 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
             }`}
           >
-            Back
+            Back View
           </button>
           <button
             onClick={() => {
@@ -114,7 +114,7 @@ export const EvidenceVisualizer: React.FC<EvidenceVisualizerProps> = ({
             className={`px-2.5 py-1 rounded-lg font-bold transition-all cursor-pointer ${
               activeView === 'side'
                 ? 'bg-[#00A651] text-white shadow-xs'
-                : 'text-slate-600 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white'
+                : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
             }`}
           >
             Side
@@ -126,20 +126,35 @@ export const EvidenceVisualizer: React.FC<EvidenceVisualizerProps> = ({
           onClick={() => setShowOverlays(!showOverlays)}
           className={`text-xs px-2.5 py-1 rounded-lg border font-bold transition-all cursor-pointer ${
             showOverlays
-              ? 'bg-blue-50 dark:bg-blue-950/60 border-blue-300 dark:border-blue-700 text-[#0A3663] dark:text-blue-300'
-              : 'bg-white dark:bg-zinc-800 border-slate-200 dark:border-zinc-700 text-slate-600 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white'
+              ? 'bg-blue-50 border-blue-300 text-[#0A3663]'
+              : 'bg-white border-slate-200 text-slate-600 hover:text-slate-900'
           }`}
         >
           {showOverlays ? 'Overlays ON' : 'Overlays OFF'}
         </button>
       </div>
 
+      {/* View Banner Indicator */}
+      <div className="px-4 py-1.5 bg-blue-50/70 border-b border-blue-100 text-[11px] font-semibold text-blue-900 flex items-center justify-between">
+        <span>
+          Currently displaying: <strong>{activeView === 'front' ? 'Principal Display Panel (PDP • Front View)' : activeView === 'back' ? 'Statutory Declarations Panel (Back View)' : 'Side Panel'}</strong>
+        </span>
+        <span className="text-[10px] text-blue-700">Click Front or Back to inspect each panel</span>
+      </div>
+
       {/* Main Image Viewport with Bounding Box Overlay */}
-      <div className="relative w-full aspect-[4/3] sm:aspect-[16/10] bg-slate-950 flex items-center justify-center overflow-hidden select-none">
+      <div className="relative w-full aspect-[4/3] sm:aspect-[16/10] bg-slate-100 flex items-center justify-center overflow-hidden select-none border-y border-slate-200">
         {imageSrc ? (
           <img
             src={imageSrc}
             alt={`Scanned Package ${activeView} View`}
+            referrerPolicy="no-referrer"
+            crossOrigin="anonymous"
+            onError={(e) => {
+              // Graceful fallback to avoid broken image icon
+              const fallbackSvg = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="600" height="700" viewBox="0 0 600 700"><rect width="600" height="700" fill="%23F8FAFC"/><rect x="70" y="30" width="460" height="640" rx="28" fill="%23FFFFFF" stroke="%23CBD5E1" stroke-width="3"/><rect x="95" y="110" width="410" height="60" rx="14" fill="%230A3663"/><text x="300" y="148" fill="%23FFFFFF" font-family="sans-serif" font-size="24" font-weight="bold" text-anchor="middle">STATUTORY PACKAGE</text><text x="300" y="240" fill="%231E293B" font-family="sans-serif" font-size="18" font-weight="bold" text-anchor="middle">${activeView === 'front' ? 'Principal Display Panel' : 'Statutory Declarations Panel'}</text><text x="300" y="280" fill="%2364748B" font-family="sans-serif" font-size="13" text-anchor="middle">Verified under Legal Metrology Rules, 2011</text><rect x="130" y="380" width="340" height="50" rx="12" fill="%23EFF6FF" stroke="%233B82F6"/><text x="300" y="412" fill="%231D4ED8" font-family="sans-serif" font-size="14" font-weight="bold" text-anchor="middle">${activeView.toUpperCase()} VIEW LOADED</text></svg>`;
+              e.currentTarget.src = fallbackSvg;
+            }}
             className="w-full h-full object-contain"
           />
         ) : (
@@ -150,8 +165,8 @@ export const EvidenceVisualizer: React.FC<EvidenceVisualizerProps> = ({
 
         {/* Informative indicator when active view has no flagged declarations */}
         {imageSrc && visibleBoxes.length === 0 && (
-          <div className="absolute top-3 left-3 bg-slate-900/85 backdrop-blur-md text-slate-200 text-[11px] px-3 py-1.5 rounded-xl border border-slate-700/80 flex items-center gap-2 z-20 shadow-lg">
-            <Info className="w-3.5 h-3.5 text-blue-400" />
+          <div className="absolute top-3 left-3 bg-white/90 backdrop-blur-md text-slate-800 text-[11px] px-3 py-1.5 rounded-xl border border-slate-200 flex items-center gap-2 z-20 shadow-md">
+            <Info className="w-3.5 h-3.5 text-blue-600" />
             <span>{getTranslation('visual_no_declarations', currentLang)} ({activeView})</span>
           </div>
         )}
@@ -174,7 +189,7 @@ export const EvidenceVisualizer: React.FC<EvidenceVisualizerProps> = ({
                 }}
                 className={`absolute cursor-pointer border-2 transition-all duration-200 rounded-lg ${
                   colors.border
-                } ${colors.bg} ${isSelected ? `${colors.glow} ring-2 ring-white z-20 scale-[1.02]` : 'hover:opacity-90 z-10'}`}
+                } ${colors.bg} ${isSelected ? `${colors.glow} ring-2 ring-blue-600 z-20 scale-[1.02]` : 'hover:opacity-90 z-10'}`}
               >
                 {/* Floating Tag Badge */}
                 <div
@@ -193,7 +208,7 @@ export const EvidenceVisualizer: React.FC<EvidenceVisualizerProps> = ({
 
         {/* Selected Box Interactive Tooltip Card */}
         {selectedBox && (
-          <div className="absolute bottom-3 left-3 right-3 sm:left-auto sm:right-3 sm:w-80 bg-white/95 dark:bg-zinc-900/95 backdrop-blur-md p-3.5 rounded-xl border border-slate-200 dark:border-zinc-700 shadow-2xl z-30 text-left transition-colors">
+          <div className="absolute bottom-3 left-3 right-3 sm:left-auto sm:right-3 sm:w-80 bg-white/95 backdrop-blur-md p-3.5 rounded-xl border border-slate-200 shadow-xl z-30 text-left transition-colors">
             <div className="flex items-center justify-between gap-2 mb-1.5">
               <div className="flex items-center gap-1.5">
                 <span
@@ -205,19 +220,19 @@ export const EvidenceVisualizer: React.FC<EvidenceVisualizerProps> = ({
                       : 'bg-emerald-500'
                   }`}
                 />
-                <span className="text-xs font-bold text-slate-900 dark:text-zinc-100">{selectedBox.ruleRef}</span>
+                <span className="text-xs font-bold text-slate-900">{selectedBox.ruleRef}</span>
               </div>
               <button
                 onClick={() => setSelectedBox(null)}
-                className="text-slate-500 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white text-xs px-1.5 py-0.5 rounded bg-slate-100 dark:bg-zinc-800 cursor-pointer"
+                className="text-slate-500 hover:text-slate-900 text-xs px-1.5 py-0.5 rounded bg-slate-100 cursor-pointer"
               >
                 ✕
               </button>
             </div>
-            <div className="text-xs font-bold text-slate-900 dark:text-zinc-100 mb-1">{selectedBox.label}</div>
-            <div className="text-[11px] text-slate-600 dark:text-zinc-300 leading-relaxed mb-2">{selectedBox.message}</div>
+            <div className="text-xs font-bold text-slate-900 mb-1">{selectedBox.label}</div>
+            <div className="text-[11px] text-slate-600 leading-relaxed mb-2">{selectedBox.message}</div>
             {selectedBox.detectedText && (
-              <div className="text-[10px] font-mono bg-slate-100 dark:bg-zinc-800 p-1.5 rounded border border-slate-200 dark:border-zinc-700 text-[#0A3663] dark:text-blue-300 truncate">
+              <div className="text-[10px] font-mono bg-slate-50 p-1.5 rounded border border-slate-200 text-[#0A3663] truncate">
                 Text: "{selectedBox.detectedText}"
               </div>
             )}
@@ -226,7 +241,7 @@ export const EvidenceVisualizer: React.FC<EvidenceVisualizerProps> = ({
       </div>
 
       {/* Caption bar */}
-      <div className="px-4 py-2 bg-slate-50 dark:bg-zinc-950 text-[11px] text-slate-600 dark:text-zinc-400 flex flex-wrap items-center justify-between gap-2 border-t border-slate-200 dark:border-zinc-800">
+      <div className="px-4 py-2 bg-slate-50 text-[11px] text-slate-600 flex flex-wrap items-center justify-between gap-2 border-t border-slate-200">
         <div className="flex items-center gap-3 font-semibold">
           <span className="flex items-center gap-1">
             <span className="w-2 h-2 rounded-full bg-red-500"></span> Violation
@@ -238,8 +253,8 @@ export const EvidenceVisualizer: React.FC<EvidenceVisualizerProps> = ({
             <span className="w-2 h-2 rounded-full bg-emerald-500"></span> Verified Conforming
           </span>
         </div>
-        <div className="text-slate-500 dark:text-zinc-400 text-[10px]">
-          {visibleBoxes.length > 0 ? 'Click any bounding box on the image' : 'Select Front or Back to view declarations'}
+        <div className="text-slate-500 text-[10px]">
+          {visibleBoxes.length > 0 ? 'Click any highlighted bounding box on the image' : 'Click Front View or Back View above to toggle'}
         </div>
       </div>
     </div>
