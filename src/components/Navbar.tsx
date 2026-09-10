@@ -112,35 +112,35 @@ export const Navbar: React.FC<NavbarProps> = ({
   };
 
   return (
-    <header className="sticky top-0 z-40 bg-[#FEFAE0] border-b border-[#DDA15E]/40 shadow-xs transition-colors">
-      {/* Top Govt of India & SIH Strip in Deep Forest Olive (#283618) */}
-      <div className="bg-[#283618] text-[#FEFAE0] px-4 py-1 text-[11px] border-b border-[#606C38]/40 flex flex-wrap items-center justify-between gap-2">
+    <header className="sticky top-0 z-40 bg-[#FEFAE0] border-b border-[#DDBEA9] shadow-xs transition-colors">
+      {/* Top Govt of India & SIH Strip in Meadow Sage (#CCD5AE) - Completely Light, Zero Dark Colors */}
+      <div className="bg-[#CCD5AE] text-[#6B705C] px-4 py-1.5 text-[11px] border-b border-[#B7B7A4]/60 flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-2">
-          <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#DDA15E] animate-pulse"></span>
-          <span className="font-bold text-[#DDA15E] tracking-wide">SMART INDIA HACKATHON 2026</span>
-          <span className="text-[#DDA15E]/60">•</span>
-          <span className="font-mono font-bold text-white">PS ID: SIH-26034</span>
-          <span className="hidden md:inline text-[#DDA15E]/60">•</span>
-          <span className="hidden md:inline text-[#FEFAE0]/80">
+          <span className="inline-block w-2 h-2 rounded-full bg-[#D4A373] animate-pulse"></span>
+          <span className="font-extrabold text-[#6B705C] tracking-wide">SMART INDIA HACKATHON 2026</span>
+          <span className="text-[#A5A58D]">•</span>
+          <span className="font-mono font-bold bg-[#E9EDC9] px-2 py-0.5 rounded text-[#6B705C] border border-[#B7B7A4]/50">PS ID: SIH-26034</span>
+          <span className="hidden md:inline text-[#A5A58D]">•</span>
+          <span className="hidden md:inline font-semibold text-[#6B705C]">
             {adminConfig.specialDriveBanner || 'Ministry of Consumer Affairs, Food & Public Distribution'}
           </span>
         </div>
         <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
-          {/* Real-time Cloud Sync Trigger */}
+          {/* Cloud Sync Status */}
           <button
             onClick={handleManualSync}
             disabled={isSyncing}
-            className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#1c2610] border border-[#606C38] text-[#DDA15E] hover:bg-[#283618] font-medium text-[10px] transition-all cursor-pointer shadow-2xs"
-            title={`Google Cloud Firestore Synced. Click to refresh. Last Synced: ${lastSyncedTime}`}
+            className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-[#E9EDC9] border border-[#B7B7A4] text-[#6B705C] hover:bg-[#FAEDCD] font-bold text-[10px] transition-all cursor-pointer shadow-2xs"
+            title={`Local & Cloud Synced. Click to refresh. Last Synced: ${lastSyncedTime}`}
           >
-            <RefreshCw className={`w-3 h-3 text-[#DDA15E] ${isSyncing ? 'animate-spin' : ''}`} />
-            <span>{isSyncing ? getTranslation('syncing', currentLang) : (currentLang === 'hi' ? 'क्लाउड सिंक' : currentLang === 'te' ? 'క్లౌడ్ సింక్' : '☁️ Synced')}</span>
-            <span className="text-[9px] text-[#FEFAE0]/70">({lastSyncedTime})</span>
+            <RefreshCw className={`w-3 h-3 text-[#D4A373] ${isSyncing ? 'animate-spin' : ''}`} />
+            <span>{isSyncing ? getTranslation('syncing', currentLang) : (currentLang === 'hi' ? 'सिंक स्थिति' : currentLang === 'te' ? 'సింక్ స్థితి' : '☁️ Synced')}</span>
+            <span className="text-[9px] text-[#A5A58D]">({lastSyncedTime})</span>
           </button>
 
           {/* Language Switcher Pill */}
-          <div className="flex items-center rounded-lg bg-[#1c2610] p-0.5 border border-[#606C38] text-[10px] font-bold">
-            <Globe className="w-3 h-3 text-[#DDA15E] ml-1 mr-1" />
+          <div className="flex items-center rounded-lg bg-[#E9EDC9] p-0.5 border border-[#B7B7A4] text-[10px] font-bold">
+            <Globe className="w-3 h-3 text-[#D4A373] ml-1 mr-1" />
             {SUPPORTED_LANGUAGES.map((opt) => (
               <button
                 key={opt.code}
@@ -150,8 +150,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                 }}
                 className={`px-1.5 py-0.5 rounded-md transition-all cursor-pointer ${
                   currentLang === opt.code
-                    ? 'bg-[#606C38] text-[#FEFAE0] font-black shadow-xs'
-                    : 'text-[#FEFAE0]/70 hover:text-white'
+                    ? 'bg-[#D4A373] text-white font-black shadow-2xs'
+                    : 'text-[#6B705C] hover:text-[#CB997E]'
                 }`}
                 title={opt.nativeLabel}
               >
@@ -160,59 +160,59 @@ export const Navbar: React.FC<NavbarProps> = ({
             ))}
           </div>
 
-          <div className="hidden lg:flex items-center gap-1 text-[#DDA15E] font-semibold">
-            <CheckCircle className="w-3 h-3" />
+          <div className="hidden lg:flex items-center gap-1 text-[#6B705C] font-bold">
+            <CheckCircle className="w-3 h-3 text-[#D4A373]" />
             <span>LMPC Rules 2011</span>
           </div>
-          <span className="hidden lg:inline text-[#606C38]">|</span>
-          <div className="hidden lg:block text-[#FEFAE0] font-mono font-bold">Team: Neural Knights</div>
+          <span className="hidden lg:inline text-[#B7B7A4]">|</span>
+          <div className="hidden lg:block text-[#6B705C] font-mono font-bold">Team: Neural Knights</div>
         </div>
       </div>
 
-      {/* Main Navbar - Guaranteed Single Minimal Line Layout */}
+      {/* Main Navbar - Single Minimal Line Layout in Palette Colors */}
       <div className="max-w-7xl mx-auto px-4 py-2 flex items-center justify-between gap-3">
         {/* Left Section: Hamburger Menu + Inspack Logo */}
         <div className="flex items-center gap-2.5 shrink-0">
-          {/* 3-Bars Hamburger Button */}
+          {/* Hamburger Button */}
           <div className="relative">
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="p-2 rounded-xl bg-[#F4EED4] hover:bg-[#EAE2C2] text-[#283618] transition-all cursor-pointer border border-[#DDA15E]/40 shadow-xs flex items-center justify-center"
+              className="p-2 rounded-xl bg-[#FAEDCD] hover:bg-[#E9EDC9] text-[#6B705C] transition-all cursor-pointer border border-[#DDBEA9] shadow-xs flex items-center justify-center"
               title="Quick Menu"
             >
               {isMenuOpen ? (
-                <X className="w-4 h-4 text-[#283618]" />
+                <X className="w-4 h-4 text-[#6B705C]" />
               ) : (
-                <Menu className="w-4 h-4 text-[#283618]" />
+                <Menu className="w-4 h-4 text-[#6B705C]" />
               )}
             </button>
 
-            {/* Curated Non-Duplicate Hamburger Dropdown */}
+            {/* Curated Hamburger Dropdown */}
             {isMenuOpen && (
               <>
                 <div
                   className="fixed inset-0 z-40"
                   onClick={() => setIsMenuOpen(false)}
                 />
-                <div className="absolute left-0 mt-2 w-72 bg-[#FEFAE0] rounded-2xl shadow-2xl border border-[#DDA15E]/60 py-2 z-50 animate-in fade-in zoom-in-95 duration-150">
+                <div className="absolute left-0 mt-2 w-72 bg-[#FFFFFF] rounded-2xl shadow-xl border border-[#DDBEA9] py-2 z-50 animate-in fade-in zoom-in-95 duration-150">
                   {/* Current User Header */}
                   {currentUser ? (
-                    <div className="px-4 py-2.5 border-b border-[#DDA15E]/30 flex items-center gap-3 bg-[#F4EED4]/60">
-                      <div className="w-8 h-8 rounded-full bg-[#283618] text-[#FEFAE0] flex items-center justify-center font-bold text-xs">
+                    <div className="px-4 py-2.5 border-b border-[#DDBEA9]/50 flex items-center gap-3 bg-[#FAEDCD]/50">
+                      <div className="w-8 h-8 rounded-full bg-[#D4A373] text-white flex items-center justify-center font-bold text-xs shadow-2xs">
                         {currentUser.name.charAt(0)}
                       </div>
                       <div className="overflow-hidden">
-                        <div className="text-xs font-black text-[#283618] truncate">
+                        <div className="text-xs font-black text-[#6B705C] truncate">
                           {currentUser.name}
                         </div>
-                        <div className="text-[10px] font-bold text-[#BC6C25] uppercase">
+                        <div className="text-[10px] font-extrabold text-[#CB997E] uppercase">
                           {userRole} • Active Session
                         </div>
                       </div>
                     </div>
                   ) : (
-                    <div className="px-4 py-2.5 border-b border-[#DDA15E]/30 bg-[#F4EED4]/60">
-                      <div className="text-xs font-bold text-[#283618]">
+                    <div className="px-4 py-2.5 border-b border-[#DDBEA9]/50 bg-[#FAEDCD]/50">
+                      <div className="text-xs font-bold text-[#6B705C]">
                         Guest Mode
                       </div>
                       <button
@@ -220,7 +220,7 @@ export const Navbar: React.FC<NavbarProps> = ({
                           setIsMenuOpen(false);
                           onOpenLogin?.();
                         }}
-                        className="text-[11px] font-bold text-[#283618] hover:underline cursor-pointer mt-0.5 block"
+                        className="text-[11px] font-bold text-[#D4A373] hover:underline cursor-pointer mt-0.5 block"
                       >
                         Sign in to select role
                       </button>
@@ -234,12 +234,12 @@ export const Navbar: React.FC<NavbarProps> = ({
                         setIsMenuOpen(false);
                         setCurrentTab('home');
                       }}
-                      className="w-full px-4 py-2 text-left text-xs font-bold text-[#283618] hover:bg-[#EAE2C2] flex items-center gap-3 transition-colors cursor-pointer"
+                      className="w-full px-4 py-2 text-left text-xs font-bold text-[#6B705C] hover:bg-[#FAEDCD] flex items-center gap-3 transition-colors cursor-pointer"
                     >
-                      <Home className="w-4 h-4 text-[#283618] shrink-0" />
+                      <Home className="w-4 h-4 text-[#D4A373] shrink-0" />
                       <div>
                         <div>{getTranslation('tab_home', currentLang)}</div>
-                        <div className="text-[10px] font-normal text-[#606C38]">Main welcome and gateway dashboard</div>
+                        <div className="text-[10px] font-normal text-[#A5A58D]">Main welcome and gateway dashboard</div>
                       </div>
                     </button>
 
@@ -248,12 +248,12 @@ export const Navbar: React.FC<NavbarProps> = ({
                         setIsMenuOpen(false);
                         setCurrentTab('profile');
                       }}
-                      className="w-full px-4 py-2 text-left text-xs font-bold text-[#283618] hover:bg-[#EAE2C2] flex items-center gap-3 transition-colors cursor-pointer"
+                      className="w-full px-4 py-2 text-left text-xs font-bold text-[#6B705C] hover:bg-[#FAEDCD] flex items-center gap-3 transition-colors cursor-pointer"
                     >
-                      <UserIcon className="w-4 h-4 text-[#BC6C25] shrink-0" />
+                      <UserIcon className="w-4 h-4 text-[#CB997E] shrink-0" />
                       <div>
                         <div>{getTranslation('tab_profile', currentLang)}</div>
-                        <div className="text-[10px] font-normal text-[#606C38]">Official credentials, jurisdiction & powers</div>
+                        <div className="text-[10px] font-normal text-[#A5A58D]">Official credentials, jurisdiction & powers</div>
                       </div>
                     </button>
 
@@ -262,12 +262,12 @@ export const Navbar: React.FC<NavbarProps> = ({
                         setIsMenuOpen(false);
                         setCurrentTab('catalog');
                       }}
-                      className="w-full px-4 py-2 text-left text-xs font-bold text-[#283618] hover:bg-[#EAE2C2] flex items-center gap-3 transition-colors cursor-pointer"
+                      className="w-full px-4 py-2 text-left text-xs font-bold text-[#6B705C] hover:bg-[#FAEDCD] flex items-center gap-3 transition-colors cursor-pointer"
                     >
-                      <Layers className="w-4 h-4 text-[#606C38] shrink-0" />
+                      <Layers className="w-4 h-4 text-[#CCD5AE] shrink-0" />
                       <div>
                         <div>{getTranslation('tab_catalog', currentLang)}</div>
-                        <div className="text-[10px] font-normal text-[#606C38]">Multi-image factory batch auto-clustering</div>
+                        <div className="text-[10px] font-normal text-[#A5A58D]">Multi-image factory batch auto-clustering</div>
                       </div>
                     </button>
 
@@ -276,12 +276,12 @@ export const Navbar: React.FC<NavbarProps> = ({
                         setIsMenuOpen(false);
                         onOpenVault?.();
                       }}
-                      className="w-full px-4 py-2 text-left text-xs font-bold text-[#283618] hover:bg-[#EAE2C2] flex items-center gap-3 transition-colors cursor-pointer"
+                      className="w-full px-4 py-2 text-left text-xs font-bold text-[#6B705C] hover:bg-[#FAEDCD] flex items-center gap-3 transition-colors cursor-pointer"
                     >
-                      <Archive className="w-4 h-4 text-[#283618] shrink-0" />
+                      <Archive className="w-4 h-4 text-[#D4A373] shrink-0" />
                       <div>
                         <div>Inspection Vault & Dossier</div>
-                        <div className="text-[10px] font-normal text-[#606C38]">Locally cached & cloud-synced reports</div>
+                        <div className="text-[10px] font-normal text-[#A5A58D]">Locally cached & cloud-synced reports</div>
                       </div>
                     </button>
 
@@ -290,12 +290,12 @@ export const Navbar: React.FC<NavbarProps> = ({
                         setIsMenuOpen(false);
                         onOpenGrievance?.();
                       }}
-                      className="w-full px-4 py-2 text-left text-xs font-bold text-[#283618] hover:bg-[#EAE2C2] flex items-center gap-3 transition-colors cursor-pointer"
+                      className="w-full px-4 py-2 text-left text-xs font-bold text-[#6B705C] hover:bg-[#FAEDCD] flex items-center gap-3 transition-colors cursor-pointer"
                     >
-                      <PhoneCall className="w-4 h-4 text-[#BC6C25] shrink-0" />
+                      <PhoneCall className="w-4 h-4 text-[#CB997E] shrink-0" />
                       <div>
                         <div>National Consumer Helpline (1915)</div>
-                        <div className="text-[10px] font-normal text-[#606C38]">Direct statutory grievance submission</div>
+                        <div className="text-[10px] font-normal text-[#A5A58D]">Direct statutory grievance submission</div>
                       </div>
                     </button>
 
@@ -304,30 +304,30 @@ export const Navbar: React.FC<NavbarProps> = ({
                         setIsMenuOpen(false);
                         setCurrentTab('rulebook');
                       }}
-                      className="w-full px-4 py-2 text-left text-xs font-bold text-[#283618] hover:bg-[#EAE2C2] flex items-center gap-3 transition-colors cursor-pointer"
+                      className="w-full px-4 py-2 text-left text-xs font-bold text-[#6B705C] hover:bg-[#FAEDCD] flex items-center gap-3 transition-colors cursor-pointer"
                     >
-                      <BookOpen className="w-4 h-4 text-[#606C38] shrink-0" />
+                      <BookOpen className="w-4 h-4 text-[#A5A58D] shrink-0" />
                       <div>
                         <div>Official LMPC Gazette (43 Pages)</div>
-                        <div className="text-[10px] font-normal text-[#606C38]">Complete Schedules, Rules & Font Heights</div>
+                        <div className="text-[10px] font-normal text-[#A5A58D]">Complete Schedules, Rules & Font Heights</div>
                       </div>
                     </button>
                   </div>
 
                   {/* Sign Out Action */}
-                  <div className="border-t border-[#DDA15E]/30 pt-1 mt-1">
+                  <div className="border-t border-[#DDBEA9]/50 pt-1 mt-1">
                     {currentUser ? (
                       <button
                         onClick={() => {
                           setIsMenuOpen(false);
                           onSignOut();
                         }}
-                        className="w-full px-4 py-2 text-left text-xs font-bold text-[#BC6C25] hover:bg-[#F4EED4] flex items-center gap-3 transition-colors cursor-pointer"
+                        className="w-full px-4 py-2 text-left text-xs font-bold text-[#CB997E] hover:bg-[#FFE8D6] flex items-center gap-3 transition-colors cursor-pointer"
                       >
-                        <LogOut className="w-4 h-4 text-[#BC6C25] shrink-0" />
+                        <LogOut className="w-4 h-4 text-[#CB997E] shrink-0" />
                         <div>
                           <div>Sign Out</div>
-                          <div className="text-[10px] font-normal text-[#BC6C25]/80">Return to role login portal</div>
+                          <div className="text-[10px] font-normal text-[#CB997E]/80">Return to role login portal</div>
                         </div>
                       </button>
                     ) : (
@@ -336,12 +336,12 @@ export const Navbar: React.FC<NavbarProps> = ({
                           setIsMenuOpen(false);
                           onOpenLogin?.();
                         }}
-                        className="w-full px-4 py-2 text-left text-xs font-bold text-[#283618] hover:bg-[#F4EED4] flex items-center gap-3 transition-colors cursor-pointer"
+                        className="w-full px-4 py-2 text-left text-xs font-bold text-[#6B705C] hover:bg-[#FAEDCD] flex items-center gap-3 transition-colors cursor-pointer"
                       >
-                        <KeyRound className="w-4 h-4 text-[#283618] shrink-0" />
+                        <KeyRound className="w-4 h-4 text-[#D4A373] shrink-0" />
                         <div>
                           <div>Sign In / Select Role</div>
-                          <div className="text-[10px] font-normal text-[#606C38]">Switch to Officer, Citizen, Brand</div>
+                          <div className="text-[10px] font-normal text-[#A5A58D]">Switch to Officer, Citizen, Brand</div>
                         </div>
                       </button>
                     )}
@@ -351,7 +351,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             )}
           </div>
 
-          {/* Logo & Brand Name (Clicking always takes to Home) */}
+          {/* Logo & Brand Name */}
           <div
             className="flex items-center gap-2 cursor-pointer select-none"
             onClick={() => setCurrentTab('home')}
@@ -360,31 +360,31 @@ export const Navbar: React.FC<NavbarProps> = ({
             <img
               src="/logos/inspack-logo.jpg"
               alt="Inspack Logo"
-              className="h-8 w-auto object-contain rounded-md"
+              className="h-8 w-auto object-contain rounded-md border border-[#DDBEA9]"
               onError={(e) => {
                 e.currentTarget.style.display = 'none';
               }}
             />
             <div className="flex flex-col">
-              <span className="text-lg font-black tracking-tight text-[#283618] leading-none">
-                in<span className="text-[#606C38]">spack</span>
+              <span className="text-lg font-black tracking-tight text-[#6B705C] leading-none">
+                in<span className="text-[#D4A373]">spack</span>
               </span>
-              <span className="text-[8.5px] uppercase tracking-wider text-[#BC6C25] font-extrabold mt-0.5 truncate max-w-[150px]">
+              <span className="text-[8.5px] uppercase tracking-wider text-[#CB997E] font-extrabold mt-0.5 truncate max-w-[150px]">
                 {getRoleSubtitle()}
               </span>
             </div>
           </div>
         </div>
 
-        {/* Middle Navigation Tabs - Single Row with Horizontal Scroll on Small Displays */}
+        {/* Middle Navigation Tabs */}
         <nav className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 flex-nowrap">
           {/* Universal Home Button */}
           <button
             onClick={() => setCurrentTab('home')}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer shrink-0 ${
               currentTab === 'home'
-                ? 'bg-[#283618] text-[#FEFAE0] shadow-md'
-                : 'text-[#283618] hover:bg-[#F4EED4] bg-white/70 border border-[#DDA15E]/30'
+                ? 'bg-[#D4A373] text-white shadow-xs'
+                : 'text-[#6B705C] hover:bg-[#FAEDCD] bg-[#FFFFFF] border border-[#DDBEA9]'
             }`}
           >
             <Home className="w-3.5 h-3.5" />
@@ -398,8 +398,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                 onClick={() => setCurrentTab('manufacturer')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer shrink-0 ${
                   currentTab === 'manufacturer'
-                    ? 'bg-[#BC6C25] text-white shadow-md'
-                    : 'text-[#283618] hover:bg-[#F4EED4] bg-white/70 border border-[#DDA15E]/30'
+                    ? 'bg-[#CB997E] text-white shadow-xs'
+                    : 'text-[#6B705C] hover:bg-[#FAEDCD] bg-[#FFFFFF] border border-[#DDBEA9]'
                 }`}
               >
                 <Building2 className="w-3.5 h-3.5" />
@@ -410,8 +410,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                 onClick={() => setCurrentTab('scanner')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer shrink-0 ${
                   currentTab === 'scanner'
-                    ? 'bg-[#606C38] text-white shadow-md'
-                    : 'text-[#283618] hover:bg-[#F4EED4] bg-white/70 border border-[#DDA15E]/30'
+                    ? 'bg-[#CCD5AE] text-[#6B705C] shadow-xs'
+                    : 'text-[#6B705C] hover:bg-[#FAEDCD] bg-[#FFFFFF] border border-[#DDBEA9]'
                 }`}
               >
                 <CheckCircle className="w-3.5 h-3.5" />
@@ -422,8 +422,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                 onClick={() => setCurrentTab('catalog')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer shrink-0 ${
                   currentTab === 'catalog'
-                    ? 'bg-[#283618] text-white shadow-md'
-                    : 'text-[#283618] hover:bg-[#F4EED4] bg-white/70 border border-[#DDA15E]/30'
+                    ? 'bg-[#D4A373] text-white shadow-xs'
+                    : 'text-[#6B705C] hover:bg-[#FAEDCD] bg-[#FFFFFF] border border-[#DDBEA9]'
                 }`}
               >
                 <Layers className="w-3.5 h-3.5" />
@@ -439,8 +439,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                 onClick={() => setCurrentTab('upload')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer shrink-0 ${
                   currentTab === 'upload'
-                    ? 'bg-[#606C38] text-white shadow-md'
-                    : 'text-[#283618] hover:bg-[#F4EED4] bg-white/70 border border-[#DDA15E]/30'
+                    ? 'bg-[#CCD5AE] text-[#6B705C] shadow-xs'
+                    : 'text-[#6B705C] hover:bg-[#FAEDCD] bg-[#FFFFFF] border border-[#DDBEA9]'
                 }`}
               >
                 <Camera className="w-3.5 h-3.5" />
@@ -451,8 +451,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                 onClick={() => setCurrentTab('scanner')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer shrink-0 ${
                   currentTab === 'scanner'
-                    ? 'bg-[#283618] text-white shadow-md'
-                    : 'text-[#283618] hover:bg-[#F4EED4] bg-white/70 border border-[#DDA15E]/30'
+                    ? 'bg-[#D4A373] text-white shadow-xs'
+                    : 'text-[#6B705C] hover:bg-[#FAEDCD] bg-[#FFFFFF] border border-[#DDBEA9]'
                 }`}
               >
                 <Scale className="w-3.5 h-3.5" />
@@ -463,8 +463,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                 onClick={() => setCurrentTab('ecommerce')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer shrink-0 ${
                   currentTab === 'ecommerce'
-                    ? 'bg-[#BC6C25] text-white shadow-md'
-                    : 'text-[#283618] hover:bg-[#F4EED4] bg-white/70 border border-[#DDA15E]/30'
+                    ? 'bg-[#CB997E] text-white shadow-xs'
+                    : 'text-[#6B705C] hover:bg-[#FAEDCD] bg-[#FFFFFF] border border-[#DDBEA9]'
                 }`}
               >
                 <Globe className="w-3.5 h-3.5" />
@@ -473,15 +473,15 @@ export const Navbar: React.FC<NavbarProps> = ({
             </>
           )}
 
-          {/* 3. OFFICER (LEGAL METROLOGY INSPECTOR) TABS */}
+          {/* 3. OFFICER TABS */}
           {userRole === 'OFFICER' && (
             <>
               <button
                 onClick={() => setCurrentTab('upload')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer shrink-0 ${
                   currentTab === 'upload'
-                    ? 'bg-[#283618] text-white shadow-md'
-                    : 'text-[#283618] hover:bg-[#F4EED4] bg-white/70 border border-[#DDA15E]/30'
+                    ? 'bg-[#D4A373] text-white shadow-xs'
+                    : 'text-[#6B705C] hover:bg-[#FAEDCD] bg-[#FFFFFF] border border-[#DDBEA9]'
                 }`}
               >
                 <Camera className="w-3.5 h-3.5" />
@@ -492,8 +492,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                 onClick={() => setCurrentTab('scanner')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer shrink-0 ${
                   currentTab === 'scanner'
-                    ? 'bg-[#606C38] text-white shadow-md'
-                    : 'text-[#283618] hover:bg-[#F4EED4] bg-white/70 border border-[#DDA15E]/30'
+                    ? 'bg-[#CCD5AE] text-[#6B705C] shadow-xs'
+                    : 'text-[#6B705C] hover:bg-[#FAEDCD] bg-[#FFFFFF] border border-[#DDBEA9]'
                 }`}
               >
                 <Scale className="w-3.5 h-3.5" />
@@ -504,8 +504,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                 onClick={() => setCurrentTab('analytics')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer shrink-0 ${
                   currentTab === 'analytics'
-                    ? 'bg-[#283618] text-white shadow-md'
-                    : 'text-[#283618] hover:bg-[#F4EED4] bg-white/70 border border-[#DDA15E]/30'
+                    ? 'bg-[#CB997E] text-white shadow-xs'
+                    : 'text-[#6B705C] hover:bg-[#FAEDCD] bg-[#FFFFFF] border border-[#DDBEA9]'
                 }`}
               >
                 <BarChart3 className="w-3.5 h-3.5" />
@@ -516,8 +516,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                 onClick={() => setCurrentTab('ecommerce')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer shrink-0 ${
                   currentTab === 'ecommerce'
-                    ? 'bg-[#BC6C25] text-white shadow-md'
-                    : 'text-[#283618] hover:bg-[#F4EED4] bg-white/70 border border-[#DDA15E]/30'
+                    ? 'bg-[#D4A373] text-white shadow-xs'
+                    : 'text-[#6B705C] hover:bg-[#FAEDCD] bg-[#FFFFFF] border border-[#DDBEA9]'
                 }`}
               >
                 <Globe className="w-3.5 h-3.5" />
@@ -528,8 +528,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                 onClick={() => setCurrentTab('catalog')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer shrink-0 ${
                   currentTab === 'catalog'
-                    ? 'bg-[#606C38] text-white shadow-md'
-                    : 'text-[#283618] hover:bg-[#F4EED4] bg-white/70 border border-[#DDA15E]/30'
+                    ? 'bg-[#CCD5AE] text-[#6B705C] shadow-xs'
+                    : 'text-[#6B705C] hover:bg-[#FAEDCD] bg-[#FFFFFF] border border-[#DDBEA9]'
                 }`}
               >
                 <Layers className="w-3.5 h-3.5" />
@@ -545,11 +545,11 @@ export const Navbar: React.FC<NavbarProps> = ({
                 onClick={() => setCurrentTab('surveillance')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer shrink-0 ${
                   currentTab === 'surveillance'
-                    ? 'bg-[#283618] text-white shadow-md'
-                    : 'text-[#283618] hover:bg-[#F4EED4] bg-white/70 border border-[#DDA15E]/30'
+                    ? 'bg-[#D4A373] text-white shadow-xs'
+                    : 'text-[#6B705C] hover:bg-[#FAEDCD] bg-[#FFFFFF] border border-[#DDBEA9]'
                 }`}
               >
-                <Radio className="w-3.5 h-3.5 text-[#DDA15E] animate-pulse" />
+                <Radio className="w-3.5 h-3.5 text-white animate-pulse" />
                 <span>{getTranslation('tab_surveillance_hub', currentLang)}</span>
               </button>
 
@@ -557,8 +557,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                 onClick={() => setCurrentTab('analytics')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer shrink-0 ${
                   currentTab === 'analytics'
-                    ? 'bg-[#606C38] text-white shadow-md'
-                    : 'text-[#283618] hover:bg-[#F4EED4] bg-white/70 border border-[#DDA15E]/30'
+                    ? 'bg-[#CCD5AE] text-[#6B705C] shadow-xs'
+                    : 'text-[#6B705C] hover:bg-[#FAEDCD] bg-[#FFFFFF] border border-[#DDBEA9]'
                 }`}
               >
                 <Archive className="w-3.5 h-3.5" />
@@ -569,8 +569,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                 onClick={() => setCurrentTab('ecommerce')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer shrink-0 ${
                   currentTab === 'ecommerce'
-                    ? 'bg-[#BC6C25] text-white shadow-md'
-                    : 'text-[#283618] hover:bg-[#F4EED4] bg-white/70 border border-[#DDA15E]/30'
+                    ? 'bg-[#CB997E] text-white shadow-xs'
+                    : 'text-[#6B705C] hover:bg-[#FAEDCD] bg-[#FFFFFF] border border-[#DDBEA9]'
                 }`}
               >
                 <Globe className="w-3.5 h-3.5" />
@@ -586,8 +586,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                 onClick={() => setCurrentTab('admin')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer shrink-0 ${
                   currentTab === 'admin'
-                    ? 'bg-[#283618] text-white shadow-md'
-                    : 'text-[#283618] hover:bg-[#F4EED4] bg-white/70 border border-[#DDA15E]/30'
+                    ? 'bg-[#D4A373] text-white shadow-xs'
+                    : 'text-[#6B705C] hover:bg-[#FAEDCD] bg-[#FFFFFF] border border-[#DDBEA9]'
                 }`}
               >
                 <Settings className="w-3.5 h-3.5" />
@@ -598,8 +598,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                 onClick={() => setCurrentTab('analytics')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer shrink-0 ${
                   currentTab === 'analytics'
-                    ? 'bg-[#606C38] text-white shadow-md'
-                    : 'text-[#283618] hover:bg-[#F4EED4] bg-white/70 border border-[#DDA15E]/30'
+                    ? 'bg-[#CCD5AE] text-[#6B705C] shadow-xs'
+                    : 'text-[#6B705C] hover:bg-[#FAEDCD] bg-[#FFFFFF] border border-[#DDBEA9]'
                 }`}
               >
                 <BarChart3 className="w-3.5 h-3.5" />
@@ -610,8 +610,8 @@ export const Navbar: React.FC<NavbarProps> = ({
                 onClick={() => setCurrentTab('upload')}
                 className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer shrink-0 ${
                   currentTab === 'upload'
-                    ? 'bg-[#BC6C25] text-white shadow-md'
-                    : 'text-[#283618] hover:bg-[#F4EED4] bg-white/70 border border-[#DDA15E]/30'
+                    ? 'bg-[#CB997E] text-white shadow-xs'
+                    : 'text-[#6B705C] hover:bg-[#FAEDCD] bg-[#FFFFFF] border border-[#DDBEA9]'
                 }`}
               >
                 <Camera className="w-3.5 h-3.5" />
@@ -625,56 +625,56 @@ export const Navbar: React.FC<NavbarProps> = ({
             onClick={() => setCurrentTab('rulebook')}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all cursor-pointer shrink-0 ${
               currentTab === 'rulebook'
-                ? 'bg-[#283618] text-[#FEFAE0] shadow-md'
-                : 'text-[#283618] hover:bg-[#F4EED4] bg-white/70 border border-[#DDA15E]/30'
+                ? 'bg-[#D4A373] text-white shadow-xs'
+                : 'text-[#6B705C] hover:bg-[#FAEDCD] bg-[#FFFFFF] border border-[#DDBEA9]'
             }`}
             title="Gazette of India: Legal Metrology (Packaged Commodities) Rules, 2011"
           >
-            <BookOpen className="w-3.5 h-3.5 text-[#BC6C25]" />
+            <BookOpen className="w-3.5 h-3.5 text-[#D4A373]" />
             <span>{getTranslation('rulebook_concise', currentLang) || 'Rulebook'}</span>
           </button>
         </nav>
 
-        {/* Right Section: Compact Officer / Role Dropdown (Zero-Wrap, Minimal) */}
+        {/* Right Section: Compact Officer / Role Dropdown */}
         <div className="flex items-center gap-2 shrink-0 relative" ref={userMenuRef}>
           {currentUser ? (
             <div className="relative">
               <button
                 onClick={() => setIsUserDropdownOpen(!isUserDropdownOpen)}
-                className="flex items-center gap-2 px-3 py-1.5 bg-[#F4EED4] hover:bg-[#EAE2C2] border border-[#DDA15E]/60 rounded-xl text-xs font-black text-[#283618] transition-all cursor-pointer shadow-2xs"
+                className="flex items-center gap-2 px-3 py-1.5 bg-[#FAEDCD] hover:bg-[#E9EDC9] border border-[#DDBEA9] rounded-xl text-xs font-black text-[#6B705C] transition-all cursor-pointer shadow-xs"
                 title={`${currentUser.name} (${userRole}) - Click for Profile, Switch Role & Sign Out`}
               >
-                <div className="w-5 h-5 rounded-full bg-[#283618] text-[#FEFAE0] flex items-center justify-center text-[10px] font-bold">
+                <div className="w-5 h-5 rounded-full bg-[#D4A373] text-white flex items-center justify-center text-[10px] font-bold">
                   {currentUser.name.charAt(0)}
                 </div>
                 <div className="flex flex-col text-left leading-tight">
-                  <span className="text-[11px] font-black text-[#283618] truncate max-w-[85px] sm:max-w-[110px]">
+                  <span className="text-[11px] font-black text-[#6B705C] truncate max-w-[85px] sm:max-w-[110px]">
                     {currentUser.name.split(' ')[0]}
                   </span>
-                  <span className="text-[8.5px] font-extrabold text-[#BC6C25] uppercase tracking-wider">
+                  <span className="text-[8.5px] font-extrabold text-[#CB997E] uppercase tracking-wider">
                     {userRole}
                   </span>
                 </div>
-                <ChevronDown className={`w-3.5 h-3.5 text-[#283618] transition-transform duration-150 ${isUserDropdownOpen ? 'rotate-180' : ''}`} />
+                <ChevronDown className={`w-3.5 h-3.5 text-[#6B705C] transition-transform duration-150 ${isUserDropdownOpen ? 'rotate-180' : ''}`} />
               </button>
 
-              {/* Sleek Small Dropdown for Officer/User Details */}
+              {/* Sleek Small Dropdown */}
               {isUserDropdownOpen && (
-                <div className="absolute right-0 mt-2 w-64 bg-[#FEFAE0] rounded-2xl shadow-2xl border border-[#DDA15E]/70 py-2 z-50 animate-in fade-in zoom-in-95 duration-150">
+                <div className="absolute right-0 mt-2 w-64 bg-[#FFFFFF] rounded-2xl shadow-xl border border-[#DDBEA9] py-2 z-50 animate-in fade-in zoom-in-95 duration-150">
                   {/* User Overview */}
-                  <div className="px-4 py-2.5 border-b border-[#DDA15E]/30 bg-[#F4EED4]/60">
-                    <div className="text-xs font-black text-[#283618] truncate">
+                  <div className="px-4 py-2.5 border-b border-[#DDBEA9]/50 bg-[#FAEDCD]/40">
+                    <div className="text-xs font-black text-[#6B705C] truncate">
                       {currentUser.name}
                     </div>
-                    <div className="text-[10px] font-mono text-[#606C38] truncate">
+                    <div className="text-[10px] font-mono text-[#A5A58D] truncate">
                       {currentUser.email}
                     </div>
                     <div className="mt-1 flex items-center gap-1.5">
-                      <span className="text-[9px] font-extrabold px-1.5 py-0.5 rounded-full bg-[#283618] text-[#FEFAE0] uppercase">
+                      <span className="text-[9px] font-extrabold px-1.5 py-0.5 rounded-full bg-[#CCD5AE] text-[#6B705C] uppercase">
                         {userRole}
                       </span>
                       {currentUser.badgeNumber && (
-                        <span className="text-[9px] font-mono text-[#BC6C25] font-bold">
+                        <span className="text-[9px] font-mono text-[#CB997E] font-bold">
                           {currentUser.badgeNumber}
                         </span>
                       )}
@@ -688,9 +688,9 @@ export const Navbar: React.FC<NavbarProps> = ({
                         setIsUserDropdownOpen(false);
                         setCurrentTab('profile');
                       }}
-                      className="w-full px-4 py-2 text-left text-xs font-bold text-[#283618] hover:bg-[#EAE2C2] flex items-center gap-2.5 transition-colors cursor-pointer"
+                      className="w-full px-4 py-2 text-left text-xs font-bold text-[#6B705C] hover:bg-[#FAEDCD] flex items-center gap-2.5 transition-colors cursor-pointer"
                     >
-                      <UserIcon className="w-4 h-4 text-[#BC6C25]" />
+                      <UserIcon className="w-4 h-4 text-[#CB997E]" />
                       <span>{getTranslation('tab_profile', currentLang)}</span>
                     </button>
 
@@ -699,23 +699,23 @@ export const Navbar: React.FC<NavbarProps> = ({
                         setIsUserDropdownOpen(false);
                         onOpenLogin?.();
                       }}
-                      className="w-full px-4 py-2 text-left text-xs font-bold text-[#283618] hover:bg-[#EAE2C2] flex items-center gap-2.5 transition-colors cursor-pointer"
+                      className="w-full px-4 py-2 text-left text-xs font-bold text-[#6B705C] hover:bg-[#FAEDCD] flex items-center gap-2.5 transition-colors cursor-pointer"
                     >
-                      <Shield className="w-4 h-4 text-[#606C38]" />
+                      <Shield className="w-4 h-4 text-[#D4A373]" />
                       <span>Switch Role / Re-Authenticate</span>
                     </button>
                   </div>
 
                   {/* Sign Out */}
-                  <div className="border-t border-[#DDA15E]/30 pt-1 mt-1">
+                  <div className="border-t border-[#DDBEA9]/50 pt-1 mt-1">
                     <button
                       onClick={() => {
                         setIsUserDropdownOpen(false);
                         onSignOut();
                       }}
-                      className="w-full px-4 py-2 text-left text-xs font-bold text-[#BC6C25] hover:bg-[#F4EED4] flex items-center gap-2.5 transition-colors cursor-pointer"
+                      className="w-full px-4 py-2 text-left text-xs font-bold text-[#CB997E] hover:bg-[#FFE8D6] flex items-center gap-2.5 transition-colors cursor-pointer"
                     >
-                      <LogOut className="w-4 h-4 text-[#BC6C25]" />
+                      <LogOut className="w-4 h-4 text-[#CB997E]" />
                       <span>Sign Out</span>
                     </button>
                   </div>
@@ -725,7 +725,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           ) : (
             <button
               onClick={onOpenLogin}
-              className="flex items-center gap-1.5 px-3 py-1.5 bg-[#283618] hover:bg-[#1c2610] text-[#FEFAE0] rounded-xl text-xs font-black transition-all cursor-pointer shadow-xs"
+              className="flex items-center gap-1.5 px-3 py-1.5 bg-[#D4A373] hover:bg-[#CB997E] text-white rounded-xl text-xs font-black transition-all cursor-pointer shadow-xs"
             >
               <KeyRound className="w-3.5 h-3.5" />
               <span>{getTranslation('sign_in_btn', currentLang)}</span>

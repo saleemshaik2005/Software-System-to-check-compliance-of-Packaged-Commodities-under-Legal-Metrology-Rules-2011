@@ -104,11 +104,20 @@ export function getScanReports(): ComplianceReport[] {
   }
 }
 
+let _lastCloudSyncTime = 0;
+const CLOUD_SYNC_THROTTLE_MS = 60000; // 60 seconds minimum interval between automatic syncs
+
 /**
  * Synchronize local database with Google Cloud Firestore
  * Fetches all audits created across all devices and merges them in real time
  */
 export async function syncWithCloudDatabase(isManual = false): Promise<ComplianceReport[]> {
+  const now = Date.now();
+  if (!isManual && now - _lastCloudSyncTime < CLOUD_SYNC_THROTTLE_MS) {
+    return getScanReports();
+  }
+  _lastCloudSyncTime = now;
+
   if (isManual) {
     notifySyncStatus(true);
   }

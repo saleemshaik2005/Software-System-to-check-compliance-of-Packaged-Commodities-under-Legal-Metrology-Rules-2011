@@ -271,10 +271,21 @@ export async function deleteReportFromFirestore(
   }
 }
 
+let _firestoreQuotaExceededUntil = 0;
+
+export function isFirestoreQuotaExceeded(): boolean {
+  return Date.now() < _firestoreQuotaExceededUntil;
+}
+
 /**
  * Fetch all audits from Google Cloud Firestore
  */
 export async function fetchReportsFromFirestore(): Promise<ComplianceReport[]> {
+  if (isFirestoreQuotaExceeded()) {
+    // Quota paused on Spark tier; gracefully skip network request to save bandwidth
+    return [];
+  }
+
   const cfg = getCloudConfig();
   const projectId = cfg.firestoreProjectId || DEFAULT_FIRESTORE_PROJECT_ID;
   const apiKey = cfg.firestoreApiKey || DEFAULT_FIRESTORE_API_KEY;
@@ -288,7 +299,14 @@ export async function fetchReportsFromFirestore(): Promise<ComplianceReport[]> {
     }
 
     const res = await fetch(url);
-    if (!res.ok) return [];
+    if (!res.ok) {
+      if (res.status === 429 || res.status === 403) {
+        // Spark plan daily read quota reached (50k reads). Pause cloud requests for 30 mins
+        _firestoreQuotaExceededUntil = Date.now() + 30 * 60 * 1000;
+        console.info('Firestore daily read quota reached on Spark tier. Switching seamlessly to offline local-first mode.');
+      }
+      return [];
+    }
 
     const json = await res.json();
     if (!json.documents) return [];
@@ -302,7 +320,7 @@ export async function fetchReportsFromFirestore(): Promise<ComplianceReport[]> {
       return rep as ComplianceReport;
     });
   } catch (err) {
-    console.warn('Failed to fetch from Firestore:', err);
+    console.warn('Local-first fallback active:', err);
     return [];
   }
 }

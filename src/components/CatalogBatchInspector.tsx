@@ -364,14 +364,14 @@ export const CatalogBatchInspector: React.FC<CatalogBatchInspectorProps> = ({
       <div className="bg-white rounded-3xl p-6 border border-[#E2DAC0] shadow-xs flex flex-wrap items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="p-2 rounded-2xl bg-[#283618] text-[#FEFAE0]">
+            <span className="p-2 rounded-2xl bg-[#6B705C] text-[#FEFAE0]">
               <Layers className="w-5 h-5" />
             </span>
-            <h1 className="text-xl font-black text-[#283618] tracking-tight">
+            <h1 className="text-xl font-black text-[#6B705C] tracking-tight">
               Industrial Product Catalog & Batch Inspector
             </h1>
           </div>
-          <p className="text-xs text-[#606C38]">
+          <p className="text-xs text-[#A5A58D]">
             Enables legal metrology inspectors to simultaneously audit an entire factory catalog or shelf batch of packaged commodities instead of individual manual uploads.
           </p>
         </div>
@@ -379,9 +379,9 @@ export const CatalogBatchInspector: React.FC<CatalogBatchInspectorProps> = ({
         <div className="flex items-center gap-2 flex-wrap">
           <button
             onClick={loadFactoryDemoCatalog}
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#FEFAE0] hover:bg-[#f5eecd] text-[#283618] font-bold text-xs border border-[#E2DAC0] transition-colors cursor-pointer"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#FEFAE0] hover:bg-[#f5eecd] text-[#6B705C] font-bold text-xs border border-[#E2DAC0] transition-colors cursor-pointer"
           >
-            <Sparkles className="w-3.5 h-3.5 text-[#BC6C25]" />
+            <Sparkles className="w-3.5 h-3.5 text-[#CB997E]" />
             <span>Load Factory Demo Catalog (4 Products)</span>
           </button>
         </div>
@@ -398,13 +398,13 @@ export const CatalogBatchInspector: React.FC<CatalogBatchInspectorProps> = ({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Upload Mode 1: Multiple Product Photos */}
         <div className="bg-white rounded-3xl p-6 border border-[#E2DAC0] shadow-xs space-y-3">
-          <div className="flex items-center gap-2 text-[#283618]">
-            <Upload className="w-5 h-5 text-[#606C38]" />
+          <div className="flex items-center gap-2 text-[#6B705C]">
+            <Upload className="w-5 h-5 text-[#A5A58D]" />
             <h2 className="text-sm font-black uppercase tracking-wider">
               Upload Plant Catalog / Mixed Photos
             </h2>
           </div>
-          <p className="text-xs text-[#1F2416]/70 leading-relaxed">
+          <p className="text-xs text-[#6B705C]/70 leading-relaxed">
             Select 515 mixed product photos. AI will automatically group images by product identity and classify front, back, and side panels.
           </p>
 
@@ -420,7 +420,7 @@ export const CatalogBatchInspector: React.FC<CatalogBatchInspectorProps> = ({
           <button
             onClick={() => fileInputRef.current?.click()}
             disabled={isProcessingUpload}
-            className="w-full py-3 rounded-2xl bg-[#283618] hover:bg-[#1f2b13] text-[#FEFAE0] font-black text-xs transition-all shadow-xs cursor-pointer flex items-center justify-center gap-2"
+            className="w-full py-3 rounded-2xl bg-[#6B705C] hover:bg-[#1f2b13] text-[#FEFAE0] font-black text-xs transition-all shadow-xs cursor-pointer flex items-center justify-center gap-2"
           >
             <Upload className="w-4 h-4" />
             <span>{isProcessingUpload ? 'Analyzing Photos...' : 'Select Mixed Product Images (Up to 15)'}</span>
@@ -429,13 +429,13 @@ export const CatalogBatchInspector: React.FC<CatalogBatchInspectorProps> = ({
 
         {/* Upload Mode 2: Shelf / Pallet Wide Photo Auto-Crop */}
         <div className="bg-white rounded-3xl p-6 border border-[#E2DAC0] shadow-xs space-y-3">
-          <div className="flex items-center gap-2 text-[#BC6C25]">
+          <div className="flex items-center gap-2 text-[#CB997E]">
             <Camera className="w-5 h-5" />
             <h2 className="text-sm font-black uppercase tracking-wider">
               Factory Shelf Photo (Auto-Crop AI)
             </h2>
           </div>
-          <p className="text-xs text-[#1F2416]/70 leading-relaxed">
+          <p className="text-xs text-[#6B705C]/70 leading-relaxed">
             Upload 1 panoramic or shelf photo of multiple products together. AI will isolate, crop, and generate individual product queue entries.
           </p>
 
@@ -450,7 +450,7 @@ export const CatalogBatchInspector: React.FC<CatalogBatchInspectorProps> = ({
           <button
             onClick={() => shelfInputRef.current?.click()}
             disabled={isProcessingUpload}
-            className="w-full py-3 rounded-2xl bg-[#BC6C25] hover:bg-[#a55e20] text-white font-black text-xs transition-all shadow-xs cursor-pointer flex items-center justify-center gap-2"
+            className="w-full py-3 rounded-2xl bg-[#CB997E] hover:bg-[#a55e20] text-white font-black text-xs transition-all shadow-xs cursor-pointer flex items-center justify-center gap-2"
           >
             <Camera className="w-4 h-4" />
             <span>Upload Shelf / Pallet Photo</span>
@@ -459,8 +459,8 @@ export const CatalogBatchInspector: React.FC<CatalogBatchInspectorProps> = ({
       </div>
 
       {uploadProgressText && (
-        <div className="p-4 rounded-2xl bg-[#FEFAE0] border border-[#DDA15E] text-[#283618] text-xs font-bold flex items-center gap-2">
-          <RefreshCw className="w-4 h-4 animate-spin text-[#BC6C25]" />
+        <div className="p-4 rounded-2xl bg-[#FEFAE0] border border-[#DDBEA9] text-[#6B705C] text-xs font-bold flex items-center gap-2">
+          <RefreshCw className="w-4 h-4 animate-spin text-[#CB997E]" />
           <span>{uploadProgressText}</span>
         </div>
       )}
@@ -468,13 +468,13 @@ export const CatalogBatchInspector: React.FC<CatalogBatchInspectorProps> = ({
       {/* Queue Status & Bulk Control Bar */}
       <div className="bg-[#FCFBF5] rounded-3xl p-5 border border-[#E2DAC0] shadow-xs flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <span className="text-xs font-black uppercase tracking-wider text-[#283618]">
+          <span className="text-xs font-black uppercase tracking-wider text-[#6B705C]">
             Batch Queue: {queue.length} Products Detected
           </span>
-          <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-[#283618] text-[#FEFAE0]">
+          <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-[#6B705C] text-[#FEFAE0]">
             {queue.filter((q) => q.verificationStatus === 'VERIFIED').length} Verified
           </span>
-          <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-[#BC6C25] text-white">
+          <span className="text-[11px] font-bold px-2 py-0.5 rounded-full bg-[#CB997E] text-white">
             {queue.filter((q) => q.verificationStatus === 'PENDING').length} Pending
           </span>
         </div>
@@ -483,16 +483,16 @@ export const CatalogBatchInspector: React.FC<CatalogBatchInspectorProps> = ({
           <button
             onClick={verifyAllInBulk}
             disabled={isBulkVetting || queue.filter((q) => q.verificationStatus === 'PENDING').length === 0}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-[#283618] hover:bg-[#1f2b13] text-[#FEFAE0] font-black text-xs transition-all shadow-xs cursor-pointer disabled:opacity-50"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-[#6B705C] hover:bg-[#1f2b13] text-[#FEFAE0] font-black text-xs transition-all shadow-xs cursor-pointer disabled:opacity-50"
           >
-            <CheckCircle2 className="w-4 h-4 text-[#DDA15E]" />
+            <CheckCircle2 className="w-4 h-4 text-[#DDBEA9]" />
             <span>{isBulkVetting ? 'Verifying Queue...' : 'Verify All in Bulk (One-by-One)'}</span>
           </button>
 
           <button
             onClick={saveAllVerified}
             disabled={queue.filter((q) => q.verificationStatus === 'VERIFIED').length === 0}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-[#606C38] hover:bg-[#505a2f] text-white font-bold text-xs transition-all shadow-xs cursor-pointer disabled:opacity-50"
+            className="flex items-center gap-2 px-4 py-2.5 rounded-2xl bg-[#A5A58D] hover:bg-[#505a2f] text-white font-bold text-xs transition-all shadow-xs cursor-pointer disabled:opacity-50"
           >
             <Save className="w-4 h-4" />
             <span>Save All Verified to Database</span>
@@ -511,7 +511,7 @@ export const CatalogBatchInspector: React.FC<CatalogBatchInspectorProps> = ({
       </div>
 
       {isBulkVetting && bulkProgress && (
-        <div className="p-4 rounded-2xl bg-[#FEFAE0] border border-[#BC6C25] text-[#283618] text-xs font-bold space-y-2">
+        <div className="p-4 rounded-2xl bg-[#FEFAE0] border border-[#CB997E] text-[#6B705C] text-xs font-bold space-y-2">
           <div className="flex justify-between">
             <span>
               Verifying Product {bulkProgress.current} of {bulkProgress.total}: {bulkProgress.currentName}
@@ -520,7 +520,7 @@ export const CatalogBatchInspector: React.FC<CatalogBatchInspectorProps> = ({
           </div>
           <div className="w-full bg-[#E2DAC0] h-2 rounded-full overflow-hidden">
             <div
-              className="bg-[#283618] h-full transition-all duration-200"
+              className="bg-[#6B705C] h-full transition-all duration-200"
               style={{ width: `${(bulkProgress.current / bulkProgress.total) * 100}%` }}
             />
           </div>
@@ -530,11 +530,11 @@ export const CatalogBatchInspector: React.FC<CatalogBatchInspectorProps> = ({
       {/* Queue Items List */}
       {queue.length === 0 ? (
         <div className="bg-white rounded-3xl p-12 border border-dashed border-[#E2DAC0] text-center space-y-3">
-          <Layers className="w-12 h-12 text-[#606C38]/40 mx-auto" />
-          <h3 className="text-base font-black text-[#283618]">
+          <Layers className="w-12 h-12 text-[#A5A58D]/40 mx-auto" />
+          <h3 className="text-base font-black text-[#6B705C]">
             No Products in Catalog Batch Queue
           </h3>
-          <p className="text-xs text-[#606C38] max-w-md mx-auto">
+          <p className="text-xs text-[#A5A58D] max-w-md mx-auto">
             Upload a manufacturing plant catalog or mixed packaging images above, or click "Load Factory Demo Catalog" to test the bulk verification pipeline.
           </p>
         </div>
@@ -561,7 +561,7 @@ export const CatalogBatchInspector: React.FC<CatalogBatchInspectorProps> = ({
                       }}
                     />
                     {item.images.back && (
-                      <span className="absolute bottom-0 right-0 bg-[#283618] text-[#FEFAE0] text-[8px] font-black px-1 rounded-tl-md">
+                      <span className="absolute bottom-0 right-0 bg-[#6B705C] text-[#FEFAE0] text-[8px] font-black px-1 rounded-tl-md">
                         2 PANELS
                       </span>
                     )}
@@ -569,17 +569,17 @@ export const CatalogBatchInspector: React.FC<CatalogBatchInspectorProps> = ({
 
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
-                      <span className="text-[10px] font-mono font-bold text-[#606C38]">
+                      <span className="text-[10px] font-mono font-bold text-[#A5A58D]">
                         #{idx + 1}
                       </span>
-                      <h3 className="text-sm font-black text-[#283618]">
+                      <h3 className="text-sm font-black text-[#6B705C]">
                         {item.name}
                       </h3>
                     </div>
 
                     {/* Missing Panels Warning */}
                     {item.missingPanelsWarning ? (
-                      <div className="flex items-center gap-1 text-[11px] text-[#BC6C25] font-bold">
+                      <div className="flex items-center gap-1 text-[11px] text-[#CB997E] font-bold">
                         <AlertTriangle className="w-3.5 h-3.5 shrink-0" />
                         <span className="line-clamp-1">{item.missingPanelsWarning}</span>
                       </div>
@@ -593,7 +593,7 @@ export const CatalogBatchInspector: React.FC<CatalogBatchInspectorProps> = ({
                     {/* Verification Status Tag */}
                     <div className="flex items-center gap-2">
                       {item.verificationStatus === 'PENDING' && (
-                        <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-[#FEFAE0] text-[#283618] border border-[#E2DAC0]">
+                        <span className="text-[10px] font-black px-2 py-0.5 rounded-full bg-[#FEFAE0] text-[#6B705C] border border-[#E2DAC0]">
                           Queued (Unverified)
                         </span>
                       )}
@@ -628,9 +628,9 @@ export const CatalogBatchInspector: React.FC<CatalogBatchInspectorProps> = ({
                   {item.verificationStatus === 'PENDING' && (
                     <button
                       onClick={() => verifySingleProduct(item)}
-                      className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#283618] hover:bg-[#1f2b13] text-[#FEFAE0] font-black text-xs transition-all cursor-pointer shadow-xs"
+                      className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#6B705C] hover:bg-[#1f2b13] text-[#FEFAE0] font-black text-xs transition-all cursor-pointer shadow-xs"
                     >
-                      <CheckCircle2 className="w-3.5 h-3.5 text-[#DDA15E]" />
+                      <CheckCircle2 className="w-3.5 h-3.5 text-[#DDBEA9]" />
                       <span>Verify Individually</span>
                     </button>
                   )}
@@ -639,16 +639,16 @@ export const CatalogBatchInspector: React.FC<CatalogBatchInspectorProps> = ({
                     <>
                       <button
                         onClick={() => onSelectReport(item.report!)}
-                        className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#FEFAE0] hover:bg-[#f5eecd] text-[#283618] font-bold text-xs border border-[#E2DAC0] transition-colors cursor-pointer"
+                        className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#FEFAE0] hover:bg-[#f5eecd] text-[#6B705C] font-bold text-xs border border-[#E2DAC0] transition-colors cursor-pointer"
                       >
-                        <Eye className="w-3.5 h-3.5 text-[#606C38]" />
+                        <Eye className="w-3.5 h-3.5 text-[#A5A58D]" />
                         <span>View Report</span>
                       </button>
 
                       {!item.savedToDatabase && (
                         <button
                           onClick={() => saveSingleItem(item)}
-                          className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#606C38] hover:bg-[#505a2f] text-white font-bold text-xs transition-colors cursor-pointer"
+                          className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-[#A5A58D] hover:bg-[#505a2f] text-white font-bold text-xs transition-colors cursor-pointer"
                         >
                           <Save className="w-3.5 h-3.5" />
                           <span>Save to DB</span>
@@ -672,4 +672,5 @@ export const CatalogBatchInspector: React.FC<CatalogBatchInspectorProps> = ({
       )}
     </div>
   );
-};
+};
+
