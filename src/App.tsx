@@ -25,6 +25,7 @@ import { Footer } from './components/Footer';
 import { DEMO_PRESETS, DemoProductPreset } from './data/demoProducts';
 import { evaluateCompliance } from './services/complianceEngine';
 import { saveScanReport, getScanReports, syncWithCloudDatabase, DB_CHANGE_EVENT } from './services/dbService';
+import { isFirebaseSyncPaused } from './services/cloudService';
 import { getCurrentUser, switchRole, logoutUser } from './services/authService';
 import { ComplianceReport, UserRole, AuthUser, ActiveTab, Language } from './types';
 import { getStoredLanguage, setStoredLanguage, LANG_CHANGE_EVENT } from './services/i18nService';
@@ -79,8 +80,10 @@ export function App() {
 
   // Two-Way Cloud Firestore Synchronization (Local-first & Smart On-Demand)
   useEffect(() => {
-    // Hydrate from Firestore on mount
-    syncWithCloudDatabase();
+    // Hydrate from Firestore on mount only if cloud sync is active
+    if (!isFirebaseSyncPaused()) {
+      syncWithCloudDatabase();
+    }
   }, []);
 
   // Listen to DB changes across all tabs and components

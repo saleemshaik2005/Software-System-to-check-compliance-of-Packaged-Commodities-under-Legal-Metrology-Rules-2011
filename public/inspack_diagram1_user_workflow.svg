@@ -1,0 +1,501 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080" style="background:#F8FAFC; font-family:'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;">
+  <defs>
+    <!-- Shadow filter for clean cards -->
+    <filter id="cardShadow" x="-2%" y="-2%" width="104%" height="106%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#0F172A" flood-opacity="0.06"/>
+    </filter>
+    <filter id="headerShadow" x="-1%" y="-2%" width="102%" height="106%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000000" flood-opacity="0.12"/>
+    </filter>
+    
+    <!-- Markers for arrows -->
+    <marker id="arrowBlue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#0284C7"/>
+    </marker>
+    <marker id="arrowNavy" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#0A3663"/>
+    </marker>
+    <marker id="arrowGreen" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#16A34A"/>
+    </marker>
+    <marker id="arrowRed" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#DC2626"/>
+    </marker>
+    <marker id="arrowSlate" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#64748B"/>
+    </marker>
+  </defs>
+
+  <!-- ==================== TOP HEADER BANNER ==================== -->
+  <rect x="0" y="0" width="1920" height="84" fill="#0A2540" filter="url(#headerShadow)"/>
+  <rect x="0" y="80" width="1920" height="4" fill="#D97706"/> <!-- Govt Gold Stripe -->
+
+  <!-- Top Metadata & Team Badge -->
+  <g transform="translate(45, 14)">
+    <!-- Ministry & SIH Pill -->
+    <rect x="0" y="0" width="460" height="26" rx="13" fill="#1E3A8A"/>
+    <text x="15" y="17" fill="#F8FAFC" font-size="11" font-weight="600" letter-spacing="0.5">SMART INDIA HACKATHON 2026 | PS ID: SIH-26034</text>
+    <text x="315" y="17" fill="#FCD34D" font-size="11" font-weight="700">| MoCA, Food &amp; PD</text>
+    
+    <!-- Title -->
+    <text x="0" y="52" fill="#FFFFFF" font-size="22" font-weight="700" letter-spacing="0.3">INSPACK — FIELD OFFICER INSPECTION &amp; COMPLIANCE WORKFLOW</text>
+  </g>
+
+  <!-- Right Header Badge -->
+  <g transform="translate(1485, 16)">
+    <rect x="0" y="0" width="390" height="52" rx="8" fill="#0F2F57" stroke="#334E68" stroke-width="1"/>
+    <text x="20" y="22" fill="#94A3B8" font-size="10" font-weight="600" text-transform="uppercase" letter-spacing="1">PROJECT INSPACK • LEGAL METROLOGY ACT, 2009</text>
+    <text x="20" y="42" fill="#38BDF8" font-size="13" font-weight="700">Team: Neural Knights</text>
+    <text x="180" y="42" fill="#E2E8F0" font-size="12" font-weight="400">| Chaitanya Bharathi Institute of Technology</text>
+  </g>
+
+  <!-- ==================== MACRO JOURNEY PHASE CHEVRON BAR ==================== -->
+  <g transform="translate(45, 96)">
+    <rect x="0" y="0" width="1830" height="44" rx="8" fill="#FFFFFF" stroke="#E2E8F0" stroke-width="1.5" filter="url(#cardShadow)"/>
+    
+    <!-- Phase 1: CAPTURE -->
+    <rect x="6" y="6" width="280" height="32" rx="6" fill="#EFF6FF"/>
+    <text x="20" y="26" fill="#1E40AF" font-size="12" font-weight="800" letter-spacing="0.5">PHASE 1: CAPTURE &amp; QA</text>
+    <path d="M 292 22 L 306 22" stroke="#94A3B8" stroke-width="2" marker-end="url(#arrowSlate)"/>
+
+    <!-- Phase 2: AI/OCR -->
+    <rect x="316" y="6" width="290" height="32" rx="6" fill="#F0FDF4"/>
+    <text x="330" y="26" fill="#166534" font-size="12" font-weight="800" letter-spacing="0.5">PHASE 2: AI/OCR EXTRACTION</text>
+    <path d="M 612 22 L 626 22" stroke="#94A3B8" stroke-width="2" marker-end="url(#arrowSlate)"/>
+
+    <!-- Phase 3: RULE CHECKING -->
+    <rect x="636" y="6" width="300" height="32" rx="6" fill="#FEF3C7"/>
+    <text x="650" y="26" fill="#92400E" font-size="12" font-weight="800" letter-spacing="0.5">PHASE 3: LEGAL RULES ENGINE</text>
+    <path d="M 942 22 L 956 22" stroke="#94A3B8" stroke-width="2" marker-end="url(#arrowSlate)"/>
+
+    <!-- Phase 4: DECISION -->
+    <rect x="966" y="6" width="260" height="32" rx="6" fill="#FAF5FF"/>
+    <text x="980" y="26" fill="#6B21A8" font-size="12" font-weight="800" letter-spacing="0.5">PHASE 4: DECISION SUPPORT</text>
+    <path d="M 1232 22 L 1246 22" stroke="#94A3B8" stroke-width="2" marker-end="url(#arrowSlate)"/>
+
+    <!-- Phase 5: EVIDENCE -->
+    <rect x="1256" y="6" width="260" height="32" rx="6" fill="#FFF1F2"/>
+    <text x="1270" y="26" fill="#9F1239" font-size="12" font-weight="800" letter-spacing="0.5">PHASE 5: EVIDENCE ATTESTATION</text>
+    <path d="M 1522 22 L 1536 22" stroke="#94A3B8" stroke-width="2" marker-end="url(#arrowSlate)"/>
+
+    <!-- Phase 6: REPORT & SYNC -->
+    <rect x="1546" y="6" width="278" height="32" rx="6" fill="#F1F5F9"/>
+    <text x="1560" y="26" fill="#334155" font-size="12" font-weight="800" letter-spacing="0.5">PHASE 6: STATUTORY REPORT &amp; SYNC</text>
+  </g>
+
+  <!-- ========================================================================= -->
+  <!-- ROW 1: STEPS 01 TO 05 (Left to Right)                                     -->
+  <!-- Card Width: 346, Height: 374, Gap: 25                                     -->
+  <!-- ========================================================================= -->
+
+  <!-- STEP 01: Officer Authentication -->
+  <g transform="translate(45, 154)" filter="url(#cardShadow)">
+    <rect x="0" y="0" width="346" height="374" rx="10" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
+    <path d="M 0 10 Q 0 0 10 0 L 336 0 Q 346 0 346 10 L 346 48 L 0 48 Z" fill="#0A3663"/>
+    <rect x="12" y="10" width="34" height="28" rx="6" fill="#D97706"/>
+    <text x="29" y="29" fill="#FFFFFF" font-size="14" font-weight="800" text-anchor="middle">01</text>
+    <text x="56" y="30" fill="#FFFFFF" font-size="14" font-weight="700">Officer Login &amp; Session</text>
+    
+    <!-- Stage Pill -->
+    <rect x="16" y="58" width="105" height="20" rx="4" fill="#EFF6FF"/>
+    <text x="24" y="72" fill="#1D4ED8" font-size="10" font-weight="700">STAGE: CAPTURE</text>
+    
+    <!-- Body Content -->
+    <text x="16" y="102" fill="#0F172A" font-size="13" font-weight="700">Field Inspector Authentication</text>
+    <text x="16" y="122" fill="#475569" font-size="12">• Authorized Officer Govt ID / SSO login</text>
+    <text x="16" y="142" fill="#475569" font-size="12">• Biometric / Cached PIN for remote mandis</text>
+    <text x="16" y="162" fill="#475569" font-size="12">• Inspection session initiated with GPS &amp; Time</text>
+    
+    <line x1="16" y1="180" x2="330" y2="180" stroke="#F1F5F9" stroke-width="1.5"/>
+    
+    <text x="16" y="202" fill="#0F172A" font-size="13" font-weight="700">Inspection Context Setup</text>
+    <text x="16" y="222" fill="#475569" font-size="12">• Commodity category selection (Food, Oil, etc.)</text>
+    <text x="16" y="242" fill="#475569" font-size="12">• Retail store / Warehouse / Dark-store ID</text>
+    <text x="16" y="262" fill="#475569" font-size="12">• Offline session token cached locally</text>
+
+    <!-- Key Takeaway Box -->
+    <rect x="14" y="285" width="318" height="74" rx="6" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+    <text x="24" y="306" fill="#0A3663" font-size="11" font-weight="700">OFFLINE RESILIENCE GUARANTEE</text>
+    <text x="24" y="324" fill="#64748B" font-size="11">Inspectors can operate fully without network;</text>
+    <text x="24" y="342" fill="#64748B" font-size="11">cryptographic session created locally on device.</text>
+  </g>
+
+  <!-- Horizontal Arrow 1 -> 2 -->
+  <path d="M 391 341 L 413 341" stroke="#0284C7" stroke-width="2.5" marker-end="url(#arrowBlue)"/>
+
+  <!-- STEP 02: Capture Package Images -->
+  <g transform="translate(416, 154)" filter="url(#cardShadow)">
+    <rect x="0" y="0" width="346" height="374" rx="10" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
+    <path d="M 0 10 Q 0 0 10 0 L 336 0 Q 346 0 346 10 L 346 48 L 0 48 Z" fill="#0A3663"/>
+    <rect x="12" y="10" width="34" height="28" rx="6" fill="#D97706"/>
+    <text x="29" y="29" fill="#FFFFFF" font-size="14" font-weight="800" text-anchor="middle">02</text>
+    <text x="56" y="30" fill="#FFFFFF" font-size="14" font-weight="700">Capture Package Images</text>
+    
+    <!-- Stage Pill -->
+    <rect x="16" y="58" width="105" height="20" rx="4" fill="#EFF6FF"/>
+    <text x="24" y="72" fill="#1D4ED8" font-size="10" font-weight="700">STAGE: CAPTURE</text>
+
+    <!-- Body Content -->
+    <text x="16" y="102" fill="#0F172A" font-size="13" font-weight="700">Multi-View Photographic Capture</text>
+    <text x="16" y="122" fill="#475569" font-size="12">• <tspan font-weight="700" fill="#0A3663">Front Panel:</tspan> Principal Display Panel (PDP)</text>
+    <text x="16" y="142" fill="#475569" font-size="12">• <tspan font-weight="700" fill="#0A3663">Back Panel:</tspan> Mandatory statutory text &amp; Mfg</text>
+    <text x="16" y="162" fill="#475569" font-size="12">• <tspan font-weight="700" fill="#0A3663">Side Panels:</tspan> Consumer care, MRP, Dates</text>
+
+    <line x1="16" y1="180" x2="330" y2="180" stroke="#F1F5F9" stroke-width="1.5"/>
+
+    <text x="16" y="202" fill="#0F172A" font-size="13" font-weight="700">Assisted Camera Interface</text>
+    <text x="16" y="222" fill="#475569" font-size="12">• On-screen PDP rectangular guide overlay</text>
+    <text x="16" y="242" fill="#475569" font-size="12">• Torch toggle for dimly lit retail shelves</text>
+    <text x="16" y="262" fill="#475569" font-size="12">• High-resolution raw image buffer retention</text>
+
+    <!-- Key Takeaway Box -->
+    <rect x="14" y="285" width="318" height="74" rx="6" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+    <text x="24" y="306" fill="#0A3663" font-size="11" font-weight="700">COMPLETE PACKAGING EVIDENCE</text>
+    <text x="24" y="324" fill="#64748B" font-size="11">Captures all sides to satisfy Rule 6 requirements</text>
+    <text x="24" y="342" fill="#64748B" font-size="11">without requiring multiple physical visits.</text>
+  </g>
+
+  <!-- Horizontal Arrow 2 -> 3 -->
+  <path d="M 762 341 L 784 341" stroke="#0284C7" stroke-width="2.5" marker-end="url(#arrowBlue)"/>
+
+  <!-- STEP 03: Image Quality Check -->
+  <g transform="translate(787, 154)" filter="url(#cardShadow)">
+    <rect x="0" y="0" width="346" height="374" rx="10" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
+    <path d="M 0 10 Q 0 0 10 0 L 336 0 Q 346 0 346 10 L 346 48 L 0 48 Z" fill="#0A3663"/>
+    <rect x="12" y="10" width="34" height="28" rx="6" fill="#D97706"/>
+    <text x="29" y="29" fill="#FFFFFF" font-size="14" font-weight="800" text-anchor="middle">03</text>
+    <text x="56" y="30" fill="#FFFFFF" font-size="14" font-weight="700">Image Quality Check</text>
+    
+    <!-- Stage Pill -->
+    <rect x="16" y="58" width="105" height="20" rx="4" fill="#EFF6FF"/>
+    <text x="24" y="72" fill="#1D4ED8" font-size="10" font-weight="700">STAGE: CAPTURE</text>
+
+    <!-- Body Content -->
+    <text x="16" y="102" fill="#0F172A" font-size="13" font-weight="700">On-Device QA Verification</text>
+    <text x="16" y="122" fill="#475569" font-size="12">• <tspan font-weight="700" fill="#0A3663">Blur Detection:</tspan> Laplacian variance analysis</text>
+    <text x="16" y="142" fill="#475569" font-size="12">• <tspan font-weight="700" fill="#0A3663">Sharpness Score:</tspan> Validates micro-text legibility</text>
+    <text x="16" y="162" fill="#475569" font-size="12">• <tspan font-weight="700" fill="#0A3663">Glare &amp; Lighting:</tspan> Identifies reflective washouts</text>
+
+    <line x1="16" y1="180" x2="330" y2="180" stroke="#F1F5F9" stroke-width="1.5"/>
+
+    <text x="16" y="202" fill="#0F172A" font-size="13" font-weight="700">Immediate Officer Feedback</text>
+    <text x="16" y="222" fill="#475569" font-size="12">• <tspan font-weight="700" fill="#16A34A">PASS:</tspan> Proceeds instantly to AI/OCR pipeline</text>
+    <text x="16" y="242" fill="#475569" font-size="12">• <tspan font-weight="700" fill="#DC2626">FAIL:</tspan> Haptic alert &amp; instant retake prompt</text>
+    <text x="16" y="262" fill="#475569" font-size="12">• Prevents corrupted evidence from reaching engine</text>
+
+    <!-- Key Takeaway Box -->
+    <rect x="14" y="285" width="318" height="74" rx="6" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+    <text x="24" y="306" fill="#0A3663" font-size="11" font-weight="700">ZERO GARBAGE-IN PRINCIPLE</text>
+    <text x="24" y="324" fill="#64748B" font-size="11">Pre-flight validation guarantees only sharp,</text>
+    <text x="24" y="342" fill="#64748B" font-size="11">usable packaging photos are analyzed.</text>
+  </g>
+
+  <!-- Horizontal Arrow 3 -> 4 -->
+  <path d="M 1133 341 L 1155 341" stroke="#0284C7" stroke-width="2.5" marker-end="url(#arrowBlue)"/>
+
+  <!-- STEP 04: AI/OCR Extraction -->
+  <g transform="translate(1158, 154)" filter="url(#cardShadow)">
+    <rect x="0" y="0" width="346" height="374" rx="10" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
+    <path d="M 0 10 Q 0 0 10 0 L 336 0 Q 346 0 346 10 L 346 48 L 0 48 Z" fill="#0A3663"/>
+    <rect x="12" y="10" width="34" height="28" rx="6" fill="#D97706"/>
+    <text x="29" y="29" fill="#FFFFFF" font-size="14" font-weight="800" text-anchor="middle">04</text>
+    <text x="56" y="30" fill="#FFFFFF" font-size="14" font-weight="700">AI / OCR Text Extraction</text>
+    
+    <!-- Stage Pill -->
+    <rect x="16" y="58" width="105" height="20" rx="4" fill="#F0FDF4"/>
+    <text x="24" y="72" fill="#166534" font-size="10" font-weight="700">STAGE: AI / OCR</text>
+
+    <!-- Body Content -->
+    <text x="16" y="102" fill="#0F172A" font-size="13" font-weight="700">Sovereign On-Device Extraction</text>
+    <text x="16" y="122" fill="#475569" font-size="12">• <tspan font-weight="700" fill="#0A3663">Product Name:</tspan> Generic commodity identifier</text>
+    <text x="16" y="142" fill="#475569" font-size="12">• <tspan font-weight="700" fill="#0A3663">Manufacturer:</tspan> Complete name, address &amp; PIN</text>
+    <text x="16" y="162" fill="#475569" font-size="12">• <tspan font-weight="700" fill="#0A3663">Net Quantity:</tspan> Numeric value &amp; SI unit symbols</text>
+
+    <line x1="16" y1="180" x2="330" y2="180" stroke="#F1F5F9" stroke-width="1.5"/>
+
+    <text x="16" y="202" fill="#0F172A" font-size="13" font-weight="700">Statutory Field Parsing</text>
+    <text x="16" y="222" fill="#475569" font-size="12">• <tspan font-weight="700" fill="#0A3663">MRP:</tspan> Price and "incl. of all taxes" text</text>
+    <text x="16" y="242" fill="#475569" font-size="12">• <tspan font-weight="700" fill="#0A3663">Dates:</tspan> Month &amp; Year of packing / import / expiry</text>
+    <text x="16" y="262" fill="#475569" font-size="12">• <tspan font-weight="700" fill="#0A3663">Consumer Care:</tspan> Helpline phone &amp; official email</text>
+
+    <!-- Key Takeaway Box -->
+    <rect x="14" y="285" width="318" height="74" rx="6" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+    <text x="24" y="306" fill="#0A3663" font-size="11" font-weight="700">NO EXTERNAL PROPRIETARY LLMS</text>
+    <text x="24" y="324" fill="#64748B" font-size="11">Powered by sovereign OCR &amp; local edge vision</text>
+    <text x="24" y="342" fill="#64748B" font-size="11">without transmitting data to commercial clouds.</text>
+  </g>
+
+  <!-- Horizontal Arrow 4 -> 5 -->
+  <path d="M 1504 341 L 1526 341" stroke="#0284C7" stroke-width="2.5" marker-end="url(#arrowBlue)"/>
+
+  <!-- STEP 05: Data Structuring & Doc Understanding -->
+  <g transform="translate(1529, 154)" filter="url(#cardShadow)">
+    <rect x="0" y="0" width="346" height="374" rx="10" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
+    <path d="M 0 10 Q 0 0 10 0 L 336 0 Q 346 0 346 10 L 346 48 L 0 48 Z" fill="#0A3663"/>
+    <rect x="12" y="10" width="34" height="28" rx="6" fill="#D97706"/>
+    <text x="29" y="29" fill="#FFFFFF" font-size="14" font-weight="800" text-anchor="middle">05</text>
+    <text x="56" y="30" fill="#FFFFFF" font-size="14" font-weight="700">Data Structuring &amp; Doc AI</text>
+    
+    <!-- Stage Pill -->
+    <rect x="16" y="58" width="105" height="20" rx="4" fill="#F0FDF4"/>
+    <text x="24" y="72" fill="#166534" font-size="10" font-weight="700">STAGE: AI / OCR</text>
+
+    <!-- Body Content -->
+    <text x="16" y="102" fill="#0F172A" font-size="13" font-weight="700">Document Understanding</text>
+    <text x="16" y="122" fill="#475569" font-size="12">• Detects packaging text lines and visual blocks</text>
+    <text x="16" y="142" fill="#475569" font-size="12">• Computes PDP surface area (cm²) from image</text>
+    <text x="16" y="162" fill="#475569" font-size="12">• Measures numeral &amp; font heights in millimeters</text>
+
+    <line x1="16" y1="180" x2="330" y2="180" stroke="#F1F5F9" stroke-width="1.5"/>
+
+    <text x="16" y="202" fill="#0F172A" font-size="13" font-weight="700">Spatial-Semantic Association</text>
+    <text x="16" y="222" fill="#475569" font-size="12">• Binds extracted values to 2D bounding boxes</text>
+    <text x="16" y="242" fill="#475569" font-size="12">• Links fields: "MRP" ↔ [₹ Price, Coordinates]</text>
+    <text x="16" y="262" fill="#475569" font-size="12">• Outputs normalized, typed Structured JSON</text>
+
+    <!-- Key Takeaway Box -->
+    <rect x="14" y="285" width="318" height="74" rx="6" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+    <text x="24" y="306" fill="#0A3663" font-size="11" font-weight="700">STRUCTURED DECLARATION PAYLOAD</text>
+    <text x="24" y="324" fill="#64748B" font-size="11">Converts raw packaging pixels into a structured,</text>
+    <text x="24" y="342" fill="#64748B" font-size="11">coordinate-aware JSON ready for legal rules.</text>
+  </g>
+
+  <!-- ========================================================================= -->
+  <!-- TRANSITION CONNECTOR: ROW 1 (Step 5) -> ROW 2 (Step 6)                   -->
+  <!-- ========================================================================= -->
+  <g>
+    <!-- Path flowing from bottom of Card 5, across left, and into top of Card 6 -->
+    <path d="M 1702 528 L 1702 555 L 218 555 L 218 584" fill="none" stroke="#0A3663" stroke-width="3" stroke-dasharray="6,4" marker-end="url(#arrowNavy)"/>
+    
+    <!-- Transition Badge in Center -->
+    <rect x="740" y="540" width="440" height="30" rx="15" fill="#0A3663" filter="url(#headerShadow)"/>
+    <text x="960" y="560" fill="#FFFFFF" font-size="12" font-weight="700" text-anchor="middle" letter-spacing="0.5">
+      TRANSFER: Structured JSON &amp; Coordinate Map ➔ Legal Rules Engine
+    </text>
+  </g>
+
+  <!-- ========================================================================= -->
+  <!-- ROW 2: STEPS 06 TO 10 (Left to Right)                                     -->
+  <!-- Card Width: 346, Height: 374, Gap: 25                                     -->
+  <!-- ========================================================================= -->
+
+  <!-- STEP 06: Deterministic Legal Rules Engine -->
+  <g transform="translate(45, 592)" filter="url(#cardShadow)">
+    <rect x="0" y="0" width="346" height="374" rx="10" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
+    <path d="M 0 10 Q 0 0 10 0 L 336 0 Q 346 0 346 10 L 346 48 L 0 48 Z" fill="#0A3663"/>
+    <rect x="12" y="10" width="34" height="28" rx="6" fill="#D97706"/>
+    <text x="29" y="29" fill="#FFFFFF" font-size="14" font-weight="800" text-anchor="middle">06</text>
+    <text x="56" y="30" fill="#FFFFFF" font-size="14" font-weight="700">Deterministic Rules Engine</text>
+    
+    <!-- Stage Pill -->
+    <rect x="16" y="58" width="135" height="20" rx="4" fill="#FEF3C7"/>
+    <text x="24" y="72" fill="#92400E" font-size="10" font-weight="700">STAGE: RULE CHECKING</text>
+
+    <!-- Body Content -->
+    <text x="16" y="102" fill="#0F172A" font-size="13" font-weight="700">PCR, 2011 Statutory Rulebase</text>
+    <text x="16" y="122" fill="#475569" font-size="12">• <tspan font-weight="700" fill="#0A3663">Rule 6:</tspan> Mandatory declarations completeness</text>
+    <text x="16" y="142" fill="#475569" font-size="12">• <tspan font-weight="700" fill="#0A3663">Rule 7 / Tables I-II:</tspan> Minimum numeral height</text>
+    <text x="16" y="162" fill="#475569" font-size="12">• <tspan font-weight="700" fill="#0A3663">Rule 13:</tspan> SI units compliance (flags `gm/gms`)</text>
+
+    <line x1="16" y1="180" x2="330" y2="180" stroke="#F1F5F9" stroke-width="1.5"/>
+
+    <text x="16" y="202" fill="#0F172A" font-size="13" font-weight="700">Schedule &amp; Format Checks</text>
+    <text x="16" y="222" fill="#475569" font-size="12">• <tspan font-weight="700" fill="#0A3663">Second Schedule:</tspan> Standard pack sizes (19 types)</text>
+    <text x="16" y="242" fill="#475569" font-size="12">• <tspan font-weight="700" fill="#0A3663">First Schedule:</tspan> Max Permissible Error (MPE)</text>
+    <text x="16" y="262" fill="#475569" font-size="12">• <tspan font-weight="700" fill="#0A3663">Rule 18:</tspan> Statutory MRP format &amp; sticker check</text>
+
+    <!-- Key Takeaway Box -->
+    <rect x="14" y="285" width="318" height="74" rx="6" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+    <text x="24" y="306" fill="#0A3663" font-size="11" font-weight="700">DETERMINISTIC CODE — ZERO HALLUCINATIONS</text>
+    <text x="24" y="324" fill="#64748B" font-size="11">Coded statutory legal logic guarantees 100%</text>
+    <text x="24" y="342" fill="#64748B" font-size="11">repeatable, legally audit-proof rule execution.</text>
+  </g>
+
+  <!-- Horizontal Arrow 6 -> 7 -->
+  <path d="M 391 779 L 413 779" stroke="#0284C7" stroke-width="2.5" marker-end="url(#arrowBlue)"/>
+
+  <!-- STEP 07: Compliance Verification -->
+  <g transform="translate(416, 592)" filter="url(#cardShadow)">
+    <rect x="0" y="0" width="346" height="374" rx="10" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
+    <path d="M 0 10 Q 0 0 10 0 L 336 0 Q 346 0 346 10 L 346 48 L 0 48 Z" fill="#0A3663"/>
+    <rect x="12" y="10" width="34" height="28" rx="6" fill="#D97706"/>
+    <text x="29" y="29" fill="#FFFFFF" font-size="14" font-weight="800" text-anchor="middle">07</text>
+    <text x="56" y="30" fill="#FFFFFF" font-size="14" font-weight="700">Compliance Verification</text>
+    
+    <!-- Stage Pill -->
+    <rect x="16" y="58" width="115" height="20" rx="4" fill="#FAF5FF"/>
+    <text x="24" y="72" fill="#6B21A8" font-size="10" font-weight="700">STAGE: DECISION</text>
+
+    <!-- Branching Visual: Compliant vs Non-Compliant -->
+    <g transform="translate(14, 90)">
+      <!-- Compliant Box -->
+      <rect x="0" y="0" width="154" height="82" rx="6" fill="#F0FDF4" stroke="#86EFAC" stroke-width="1.5"/>
+      <rect x="8" y="8" width="85" height="18" rx="4" fill="#16A34A"/>
+      <text x="14" y="21" fill="#FFFFFF" font-size="10" font-weight="800">✓ COMPLIANT</text>
+      <text x="8" y="42" fill="#166534" font-size="11" font-weight="700">All Rules Satisfied</text>
+      <text x="8" y="58" fill="#4B5563" font-size="10">• Full statutory match</text>
+      <text x="8" y="72" fill="#4B5563" font-size="10">• Clearance cert issued</text>
+
+      <!-- Non-Compliant Box -->
+      <rect x="164" y="0" width="154" height="82" rx="6" fill="#FEF2F2" stroke="#FCA5A5" stroke-width="1.5"/>
+      <rect x="172" y="8" width="115" height="18" rx="4" fill="#DC2626"/>
+      <text x="178" y="21" fill="#FFFFFF" font-size="10" font-weight="800">✗ NON-COMPLIANT</text>
+      <text x="172" y="42" fill="#991B1B" font-size="11" font-weight="700">Infraction Flagged</text>
+      <text x="172" y="58" fill="#4B5563" font-size="10">• Specific rule breached</text>
+      <text x="172" y="72" fill="#4B5563" font-size="10">• Penalty compounding</text>
+    </g>
+
+    <line x1="16" y1="186" x2="330" y2="186" stroke="#F1F5F9" stroke-width="1.5"/>
+
+    <text x="16" y="208" fill="#0F172A" font-size="13" font-weight="700">Officer Review &amp; Confirmation</text>
+    <text x="16" y="228" fill="#475569" font-size="12">• Inspector examines flagged rule infractions</text>
+    <text x="16" y="248" fill="#475569" font-size="12">• Inspects bounding boxes on actual commodity</text>
+    <text x="16" y="268" fill="#475569" font-size="12">• Exercises statutory discretion &amp; enters remarks</text>
+
+    <!-- Key Takeaway Box -->
+    <rect x="14" y="285" width="318" height="74" rx="6" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+    <text x="24" y="306" fill="#0A3663" font-size="11" font-weight="700">AUTHORIZED OFFICER IN THE LOOP</text>
+    <text x="24" y="324" fill="#64748B" font-size="11">AI never acts as judge; final statutory decision</text>
+    <text x="24" y="342" fill="#64748B" font-size="11">strictly rests with the authorized human officer.</text>
+  </g>
+
+  <!-- Horizontal Arrow 7 -> 8 -->
+  <path d="M 762 779 L 784 779" stroke="#0284C7" stroke-width="2.5" marker-end="url(#arrowBlue)"/>
+
+  <!-- STEP 08: Evidence Generation -->
+  <g transform="translate(787, 592)" filter="url(#cardShadow)">
+    <rect x="0" y="0" width="346" height="374" rx="10" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
+    <path d="M 0 10 Q 0 0 10 0 L 336 0 Q 346 0 346 10 L 346 48 L 0 48 Z" fill="#0A3663"/>
+    <rect x="12" y="10" width="34" height="28" rx="6" fill="#D97706"/>
+    <text x="29" y="29" fill="#FFFFFF" font-size="14" font-weight="800" text-anchor="middle">08</text>
+    <text x="56" y="30" fill="#FFFFFF" font-size="14" font-weight="700">Evidence Generation</text>
+    
+    <!-- Stage Pill -->
+    <rect x="16" y="58" width="115" height="20" rx="4" fill="#FFF1F2"/>
+    <text x="24" y="72" fill="#9F1239" font-size="10" font-weight="700">STAGE: EVIDENCE</text>
+
+    <!-- Body Content -->
+    <text x="16" y="102" fill="#0F172A" font-size="13" font-weight="700">Visual Bounding-Box Overlay</text>
+    <text x="16" y="122" fill="#475569" font-size="12">• Highlights exact infraction zones in Red</text>
+    <text x="16" y="142" fill="#475569" font-size="12">• Superimposes Rule Pin &amp; Gazette Citation</text>
+    <text x="16" y="162" fill="#475569" font-size="12">• Displays Measured vs. Required statutory values</text>
+
+    <line x1="16" y1="180" x2="330" y2="180" stroke="#F1F5F9" stroke-width="1.5"/>
+
+    <text x="16" y="202" fill="#0F172A" font-size="13" font-weight="700">Statutory Penalty Calculation</text>
+    <text x="16" y="222" fill="#475569" font-size="12">• Compounding fee calculation under Rule 32</text>
+    <text x="16" y="242" fill="#475569" font-size="12">• Links extracted values to exact legal clauses</text>
+    <text x="16" y="262" fill="#475569" font-size="12">• Cryptographic SHA-256 hash locks photos</text>
+
+    <!-- Key Takeaway Box -->
+    <rect x="14" y="285" width="318" height="74" rx="6" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+    <text x="24" y="306" fill="#0A3663" font-size="11" font-weight="700">COURT-ADMISSIBLE EVIDENCE TRAIL</text>
+    <text x="24" y="324" fill="#64748B" font-size="11">Every violation is anchored directly to pixels on</text>
+    <text x="24" y="342" fill="#64748B" font-size="11">the packaging image with statutory citations.</text>
+  </g>
+
+  <!-- Horizontal Arrow 8 -> 9 -->
+  <path d="M 1133 779 L 1155 779" stroke="#0284C7" stroke-width="2.5" marker-end="url(#arrowBlue)"/>
+
+  <!-- STEP 09: Generate Inspection Report -->
+  <g transform="translate(1158, 592)" filter="url(#cardShadow)">
+    <rect x="0" y="0" width="346" height="374" rx="10" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
+    <path d="M 0 10 Q 0 0 10 0 L 336 0 Q 346 0 346 10 L 346 48 L 0 48 Z" fill="#0A3663"/>
+    <rect x="12" y="10" width="34" height="28" rx="6" fill="#D97706"/>
+    <text x="29" y="29" fill="#FFFFFF" font-size="14" font-weight="800" text-anchor="middle">09</text>
+    <text x="56" y="30" fill="#FFFFFF" font-size="14" font-weight="700">Generate Statutory Report</text>
+    
+    <!-- Stage Pill -->
+    <rect x="16" y="58" width="105" height="20" rx="4" fill="#F1F5F9"/>
+    <text x="24" y="72" fill="#334155" font-size="10" font-weight="700">STAGE: REPORT</text>
+
+    <!-- Body Content -->
+    <text x="16" y="102" fill="#0F172A" font-size="13" font-weight="700">Official Seventh Schedule Forms</text>
+    <text x="16" y="122" fill="#475569" font-size="12">• <tspan font-weight="700" fill="#0A3663">Form A:</tspan> Weight Checking Data Sheet</text>
+    <text x="16" y="142" fill="#475569" font-size="12">• <tspan font-weight="700" fill="#0A3663">Form B:</tspan> Volume / Length Checking Sheet</text>
+    <text x="16" y="162" fill="#475569" font-size="12">• Auto-populated with sample metrics &amp; MPE</text>
+
+    <line x1="16" y1="180" x2="330" y2="180" stroke="#F1F5F9" stroke-width="1.5"/>
+
+    <text x="16" y="202" fill="#0F172A" font-size="13" font-weight="700">Comprehensive Dossier Assembly</text>
+    <text x="16" y="222" fill="#475569" font-size="12">• High-resolution photographic evidence dossier</text>
+    <text x="16" y="242" fill="#475569" font-size="12">• Digital signature blocks: Officer &amp; Trader</text>
+    <text x="16" y="262" fill="#475569" font-size="12">• Exportable as standardized 1-click legal PDF</text>
+
+    <!-- Key Takeaway Box -->
+    <rect x="14" y="285" width="318" height="74" rx="6" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+    <text x="24" y="306" fill="#0A3663" font-size="11" font-weight="700">INSTANT STATUTORY NOTICE CREATION</text>
+    <text x="24" y="324" fill="#64748B" font-size="11">Replaces hours of manual form-filling with</text>
+    <text x="24" y="342" fill="#64748B" font-size="11">standardized government-ready PDF sheets.</text>
+  </g>
+
+  <!-- Horizontal Arrow 9 -> 10 -->
+  <path d="M 1504 779 L 1526 779" stroke="#0284C7" stroke-width="2.5" marker-end="url(#arrowBlue)"/>
+
+  <!-- STEP 10: Save Inspection & Cloud Sync -->
+  <g transform="translate(1529, 592)" filter="url(#cardShadow)">
+    <rect x="0" y="0" width="346" height="374" rx="10" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
+    <path d="M 0 10 Q 0 0 10 0 L 336 0 Q 346 0 346 10 L 346 48 L 0 48 Z" fill="#0A3663"/>
+    <rect x="12" y="10" width="34" height="28" rx="6" fill="#D97706"/>
+    <text x="29" y="29" fill="#FFFFFF" font-size="14" font-weight="800" text-anchor="middle">10</text>
+    <text x="56" y="30" fill="#FFFFFF" font-size="14" font-weight="700">Save &amp; Central Cloud Sync</text>
+    
+    <!-- Stage Pill -->
+    <rect x="16" y="58" width="135" height="20" rx="4" fill="#F1F5F9"/>
+    <text x="24" y="72" fill="#334155" font-size="10" font-weight="700">STAGE: REPORT &amp; SYNC</text>
+
+    <!-- Body Content -->
+    <text x="16" y="102" fill="#0F172A" font-size="13" font-weight="700">Offline-First Local Vault</text>
+    <text x="16" y="122" fill="#475569" font-size="12">• <tspan font-weight="700" fill="#0A3663">Zero Internet Mode:</tspan> Stored in IndexedDB</text>
+    <text x="16" y="142" fill="#475569" font-size="12">• Local cryptographic storage prevents data loss</text>
+    <text x="16" y="162" fill="#475569" font-size="12">• Inspection immediately completed on-site</text>
+
+    <line x1="16" y1="180" x2="330" y2="180" stroke="#F1F5F9" stroke-width="1.5"/>
+
+    <text x="16" y="202" fill="#0F172A" font-size="13" font-weight="700">Automated Server Synchronization</text>
+    <text x="16" y="222" fill="#475569" font-size="12">• Auto-syncs to Central DB upon connectivity</text>
+    <text x="16" y="242" fill="#475569" font-size="12">• High-res image blobs synced to Cloud Vault</text>
+    <text x="16" y="262" fill="#475569" font-size="12">• National enforcement dashboard updated</text>
+
+    <!-- Key Takeaway Box -->
+    <rect x="14" y="285" width="318" height="74" rx="6" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+    <text x="24" y="306" fill="#0A3663" font-size="11" font-weight="700">DUAL RESILIENCE: OFFLINE + CLOUD</text>
+    <text x="24" y="324" fill="#64748B" font-size="11">Immediate offline local finalization with seamless,</text>
+    <text x="24" y="342" fill="#64748B" font-size="11">conflict-free background server sync.</text>
+  </g>
+
+  <!-- ==================== BOTTOM ARCHITECTURAL PRINCIPLES BAR ==================== -->
+  <g transform="translate(45, 982)">
+    <rect x="0" y="0" width="1830" height="78" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5" filter="url(#cardShadow)"/>
+    
+    <!-- Principle 1 -->
+    <g transform="translate(20, 12)">
+      <rect x="0" y="0" width="40" height="54" rx="6" fill="#EFF6FF"/>
+      <text x="20" y="34" fill="#1D4ED8" font-size="20" text-anchor="middle">🛡️</text>
+      <text x="52" y="24" fill="#0A3663" font-size="13" font-weight="800">OFFICER-IN-THE-LOOP JURISDICTION</text>
+      <text x="52" y="44" fill="#64748B" font-size="11">AI assists detection; statutory enforcement authority strictly rests with authorized officer.</text>
+    </g>
+
+    <!-- Divider -->
+    <line x1="600" y1="12" x2="600" y2="66" stroke="#E2E8F0" stroke-width="1.5"/>
+
+    <!-- Principle 2 -->
+    <g transform="translate(620, 12)">
+      <rect x="0" y="0" width="40" height="54" rx="6" fill="#FEF3C7"/>
+      <text x="20" y="34" fill="#B45309" font-size="20" text-anchor="middle">⚖️</text>
+      <text x="52" y="24" fill="#0A3663" font-size="13" font-weight="800">DETERMINISTIC COMPLIANCE RULES</text>
+      <text x="52" y="44" fill="#64748B" font-size="11">Rules are hardcoded from PCR 2011 &amp; Gazette — no probabilistic hallucination in legal decisions.</text>
+    </g>
+
+    <!-- Divider -->
+    <line x1="1210" y1="12" x2="1210" y2="66" stroke="#E2E8F0" stroke-width="1.5"/>
+
+    <!-- Principle 3 -->
+    <g transform="translate(1230, 12)">
+      <rect x="0" y="0" width="40" height="54" rx="6" fill="#F0FDF4"/>
+      <text x="20" y="34" fill="#15803D" font-size="20" text-anchor="middle">⚡</text>
+      <text x="52" y="24" fill="#0A3663" font-size="13" font-weight="800">100% OFFLINE-FIRST FIELD CAPABILITY</text>
+      <text x="52" y="44" fill="#64748B" font-size="11">Zero dependencies on live cellular data in rural markets; auto-syncs securely when connected.</text>
+    </g>
+  </g>
+</svg>

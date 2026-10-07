@@ -25,6 +25,7 @@ import {
 import { UserRole, AuthUser, ActiveTab, Language } from '../types';
 import { getTranslation, SUPPORTED_LANGUAGES, setStoredLanguage } from '../services/i18nService';
 import { triggerImmediateCloudSync, SYNC_STATUS_EVENT } from '../services/dbService';
+import { isFirebaseSyncPaused } from '../services/cloudService';
 import { getAdminConfig } from '../services/adminService';
 
 interface NavbarProps {
@@ -129,13 +130,22 @@ export const Navbar: React.FC<NavbarProps> = ({
           {/* Cloud Sync Status */}
           <button
             onClick={handleManualSync}
-            disabled={isSyncing}
+            disabled={isSyncing || isFirebaseSyncPaused()}
             className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 font-bold text-[10px] transition-all cursor-pointer shadow-2xs"
-            title={`Local & Cloud Synced. Click to refresh. Last Synced: ${lastSyncedTime}`}
+            title={isFirebaseSyncPaused() ? "Firebase sync is currently paused to preserve your free tier. Local storage is fully active." : `Local & Cloud Synced. Click to refresh. Last Synced: ${lastSyncedTime}`}
           >
-            <RefreshCw className={`w-3 h-3 text-blue-600 ${isSyncing ? 'animate-spin' : ''}`} />
-            <span>{isSyncing ? getTranslation('syncing', currentLang) : (currentLang === 'hi' ? 'सिंक स्थिति' : currentLang === 'te' ? 'సింక్ స్థితి' : '☁️ Synced')}</span>
-            <span className="text-[9px] text-slate-400">({lastSyncedTime})</span>
+            {isFirebaseSyncPaused() ? (
+              <>
+                <span className="w-2 h-2 rounded-full bg-amber-500 inline-block" />
+                <span className="text-amber-800 font-extrabold">Local-Only (Sync Paused)</span>
+              </>
+            ) : (
+              <>
+                <RefreshCw className={`w-3 h-3 text-blue-600 ${isSyncing ? 'animate-spin' : ''}`} />
+                <span>{isSyncing ? getTranslation('syncing', currentLang) : (currentLang === 'hi' ? 'सिंक स्थिति' : currentLang === 'te' ? 'సింక్ స్థితి' : '☁️ Synced')}</span>
+                <span className="text-[9px] text-slate-400">({lastSyncedTime})</span>
+              </>
+            )}
           </button>
 
           {/* Language Switcher Pill */}

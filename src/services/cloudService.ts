@@ -28,6 +28,42 @@ export interface CloudConfig {
 }
 
 const CONFIG_KEY = 'inspack_cloud_config_v1';
+const FIREBASE_PAUSED_KEY = 'inspack_firebase_sync_paused';
+
+/**
+ * Check if Firebase/Firestore cloud synchronization is paused.
+ * Defaults to true to protect the user's free tier / trial quota while the project is on pause.
+ */
+export function isFirebaseSyncPaused(): boolean {
+  try {
+    const val = localStorage.getItem(FIREBASE_PAUSED_KEY);
+    // Default to true (paused) to protect free tier
+    if (val === null) return true;
+    return val === 'true';
+  } catch {
+    return true;
+  }
+}
+
+/**
+ * Toggle Firebase/Firestore cloud synchronization pause state.
+ */
+export function setFirebaseSyncPaused(paused: boolean): void {
+  try {
+    localStorage.setItem(FIREBASE_PAUSED_KEY, String(paused));
+    saveCloudConfig({ autoSyncToCloud: !paused });
+  } catch (err) {
+    console.warn('Failed to update firebase sync pause state:', err);
+  }
+}
+
+export function pauseFirebaseSync(): void {
+  setFirebaseSyncPaused(true);
+}
+
+export function resumeFirebaseSync(): void {
+  setFirebaseSyncPaused(false);
+}
 
 export const DEFAULT_CLOUD_CONFIG: CloudConfig = {
   cloudinaryCloudName: DEFAULT_CLOUDINARY_CLOUD_NAME,
@@ -35,7 +71,7 @@ export const DEFAULT_CLOUD_CONFIG: CloudConfig = {
   firestoreProjectId: DEFAULT_FIRESTORE_PROJECT_ID,
   firestoreApiKey: DEFAULT_FIRESTORE_API_KEY,
   visionApiKey: DEFAULT_VISION_KEY,
-  autoSyncToCloud: true,
+  autoSyncToCloud: false, // PAUSED by default to protect free tier
 };
 
 export function getCloudConfig(): CloudConfig {
@@ -114,6 +150,14 @@ export async function uploadToCloudinary(
   customCloudName?: string,
   customPreset?: string
 ): Promise<{ success: boolean; url?: string; publicId?: string; error?: string }> {
+  if (isFirebaseSyncPaused()) {
+    return {
+      success: true,
+      url: typeof dataUrlOrBlob === 'string' ? dataUrlOrBlob : undefined,
+      publicId: 'local-offline'
+    };
+  }
+
   const cfg = getCloudConfig();
   const cloudName = (customCloudName || cfg.cloudinaryCloudName || DEFAULT_CLOUDINARY_CLOUD_NAME).trim();
   const uploadPreset = (customPreset || cfg.cloudinaryUploadPreset || DEFAULT_CLOUDINARY_UPLOAD_PRESET).trim();
@@ -166,6 +210,13 @@ export async function saveReportToFirestore(
   customProjectId?: string,
   customApiKey?: string
 ): Promise<{ success: boolean; message?: string; error?: string }> {
+  if (isFirebaseSyncPaused()) {
+    return {
+      success: true,
+      message: 'Firebase cloud sync is paused (free tier protected).'
+    };
+  }
+
   const cfg = getCloudConfig();
   const projectId = (customProjectId || cfg.firestoreProjectId || DEFAULT_FIRESTORE_PROJECT_ID).trim();
   const apiKey = (customApiKey || cfg.firestoreApiKey || DEFAULT_FIRESTORE_API_KEY).trim();
@@ -248,6 +299,10 @@ export async function deleteReportFromFirestore(
   customProjectId?: string,
   customApiKey?: string
 ): Promise<{ success: boolean; error?: string }> {
+  if (isFirebaseSyncPaused()) {
+    return { success: true };
+  }
+
   const cfg = getCloudConfig();
   const projectId = (customProjectId || cfg.firestoreProjectId || DEFAULT_FIRESTORE_PROJECT_ID).trim();
   const apiKey = (customApiKey || cfg.firestoreApiKey || DEFAULT_FIRESTORE_API_KEY).trim();
@@ -281,8 +336,8 @@ export function isFirestoreQuotaExceeded(): boolean {
  * Fetch all audits from Google Cloud Firestore
  */
 export async function fetchReportsFromFirestore(): Promise<ComplianceReport[]> {
-  if (isFirestoreQuotaExceeded()) {
-    // Quota paused on Spark tier; gracefully skip network request to save bandwidth
+  if (isFirebaseSyncPaused() || isFirestoreQuotaExceeded()) {
+    // Sync paused or quota limit reached; skip network request to save bandwidth & quota
     return [];
   }
 

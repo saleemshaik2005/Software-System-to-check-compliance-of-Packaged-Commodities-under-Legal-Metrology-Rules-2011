@@ -4,7 +4,9 @@ import {
   DEFAULT_CLOUDINARY_UPLOAD_PRESET,
   DEFAULT_FIRESTORE_PROJECT_ID,
   uploadToCloudinary,
-  saveReportToFirestore
+  saveReportToFirestore,
+  isFirebaseSyncPaused,
+  setFirebaseSyncPaused
 } from '../services/cloudService';
 import { getScanReports } from '../services/dbService';
 import {
@@ -17,7 +19,10 @@ import {
   RefreshCw,
   Sparkles,
   ShieldCheck,
-  Server
+  Server,
+  PauseCircle,
+  Play,
+  Pause
 } from 'lucide-react';
 
 interface CloudConfigModalProps {
@@ -30,8 +35,20 @@ export const CloudConfigModal: React.FC<CloudConfigModalProps> = ({ isOpen, onCl
   const [cloudinaryMsg, setCloudinaryMsg] = useState('');
   const [testFirestoreStatus, setTestFirestoreStatus] = useState<'idle' | 'testing' | 'success' | 'error'>('idle');
   const [firestoreMsg, setFirestoreMsg] = useState('');
+  const [isSyncPaused, setIsSyncPaused] = useState<boolean>(() => isFirebaseSyncPaused());
 
   if (!isOpen) return null;
+
+  const handleTogglePause = () => {
+    const next = !isSyncPaused;
+    setFirebaseSyncPaused(next);
+    setIsSyncPaused(next);
+    setFirestoreMsg(
+      next
+        ? 'Firebase synchronization is now paused. Free trial quota is safe!'
+        : 'Firebase synchronization resumed.'
+    );
+  };
 
   const handleTestCloudinary = async () => {
     setTestCloudinaryStatus('testing');
@@ -155,15 +172,23 @@ export const CloudConfigModal: React.FC<CloudConfigModalProps> = ({ isOpen, onCl
         </div>
 
         {/* 3. Central Regulatory Audit Ledger */}
-        <div className="bg-amber-50/70 border border-amber-200 rounded-2xl p-4 space-y-3">
+        <div className={`border rounded-2xl p-4 space-y-3 transition-colors ${
+          isSyncPaused ? 'bg-amber-50/60 border-amber-300' : 'bg-slate-50 border-slate-200'
+        }`}>
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 text-sm font-black text-slate-900">
               <Database className="w-4 h-4 text-amber-600" />
-              <span>3. Central Regulatory Audit Ledger (Statutory Database)</span>
+              <span>3. Central Regulatory Audit Ledger (Google Cloud Firestore)</span>
             </div>
-            <span className="bg-amber-100 text-amber-900 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full border border-amber-200 flex items-center gap-1">
-              <CheckCircle2 className="w-3 h-3 text-amber-600" /> ENCRYPTED & CONNECTED
-            </span>
+            {isSyncPaused ? (
+              <span className="bg-rose-100 text-rose-800 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full border border-rose-200 flex items-center gap-1">
+                <PauseCircle className="w-3 h-3 text-rose-600" /> SYNC PAUSED (FREE TIER PROTECTED)
+              </span>
+            ) : (
+              <span className="bg-emerald-100 text-emerald-900 text-[10px] font-extrabold px-2.5 py-0.5 rounded-full border border-emerald-200 flex items-center gap-1">
+                <CheckCircle2 className="w-3 h-3 text-emerald-600" /> ACTIVE & CONNECTED
+              </span>
+            )}
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs bg-white p-3 rounded-xl border border-amber-100 font-mono text-slate-700">
@@ -177,18 +202,50 @@ export const CloudConfigModal: React.FC<CloudConfigModalProps> = ({ isOpen, onCl
             </div>
           </div>
 
-          <div className="flex items-center justify-between pt-1">
-            <button
-              onClick={handleTestFirestore}
-              disabled={testFirestoreStatus === 'testing'}
-              className="px-3.5 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer shadow-sm"
-            >
-              <RefreshCw className={`w-3.5 h-3.5 ${testFirestoreStatus === 'testing' ? 'animate-spin' : ''}`} />
-              <span>{testFirestoreStatus === 'testing' ? 'Testing...' : 'Test Firestore Sync'}</span>
-            </button>
+          {/* Pause Status Alert */}
+          {isSyncPaused && (
+            <div className="text-[11px] text-amber-950 bg-amber-100/70 border border-amber-300 rounded-xl p-2.5 font-medium leading-relaxed">
+              ⏸️ <strong>Firebase Synchronization is Paused:</strong> All background sync, reads, and writes to Google Cloud Firestore are completely halted to protect your free trial quota while the project is on hold. The app operates with 100% full functionality using local storage.
+            </div>
+          )}
+
+          <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
+            <div className="flex items-center gap-2">
+              <button
+                onClick={handleTogglePause}
+                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-1.5 cursor-pointer shadow-xs border ${
+                  isSyncPaused
+                    ? 'bg-emerald-600 hover:bg-emerald-700 text-white border-emerald-700'
+                    : 'bg-rose-600 hover:bg-rose-700 text-white border-rose-700'
+                }`}
+              >
+                {isSyncPaused ? (
+                  <>
+                    <Play className="w-3.5 h-3.5" />
+                    <span>Resume Firebase Sync</span>
+                  </>
+                ) : (
+                  <>
+                    <Pause className="w-3.5 h-3.5" />
+                    <span>Pause Firebase Sync</span>
+                  </>
+                )}
+              </button>
+
+              {!isSyncPaused && (
+                <button
+                  onClick={handleTestFirestore}
+                  disabled={testFirestoreStatus === 'testing'}
+                  className="px-3.5 py-1.5 bg-amber-600 hover:bg-amber-700 text-white rounded-xl text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer shadow-xs"
+                >
+                  <RefreshCw className={`w-3.5 h-3.5 ${testFirestoreStatus === 'testing' ? 'animate-spin' : ''}`} />
+                  <span>{testFirestoreStatus === 'testing' ? 'Testing...' : 'Test Firestore Sync'}</span>
+                </button>
+              )}
+            </div>
 
             {firestoreMsg && (
-              <span className={`text-xs font-medium ${testFirestoreStatus === 'success' ? 'text-emerald-700 font-bold' : 'text-amber-800'}`}>
+              <span className={`text-xs font-medium ${testFirestoreStatus === 'success' || !isSyncPaused ? 'text-emerald-700 font-bold' : 'text-slate-600 font-bold'}`}>
                 {firestoreMsg}
               </span>
             )}

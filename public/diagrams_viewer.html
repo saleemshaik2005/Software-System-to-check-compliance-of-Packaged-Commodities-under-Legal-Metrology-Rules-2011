@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>INSPACK — SIH 2026 Presentation Diagrams</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, sans-serif;
+      background: #0F172A;
+      color: #F8FAFC;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    header {
+      background: #0A2540;
+      border-bottom: 2px solid #D97706;
+      padding: 12px 24px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .badge {
+      background: #1E3A8A;
+      color: #93C5FD;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid #3B82F6;
+    }
+    h1 {
+      font-size: 18px;
+      font-weight: 700;
+      color: #FFFFFF;
+    }
+    .controls {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .tab-btn {
+      background: #1E293B;
+      color: #94A3B8;
+      border: 1px solid #334155;
+      padding: 8px 16px;
+      font-size: 13px;
+      font-weight: 600;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .tab-btn.active {
+      background: #0284C7;
+      color: #FFFFFF;
+      border-color: #38BDF8;
+      box-shadow: 0 0 12px rgba(2, 132, 199, 0.4);
+    }
+    .action-btn {
+      background: #D97706;
+      color: #FFFFFF;
+      border: none;
+      padding: 8px 14px;
+      font-size: 13px;
+      font-weight: 700;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.2s;
+    }
+    .action-btn:hover {
+      background: #B45309;
+    }
+    .action-btn.secondary {
+      background: #334155;
+      border: 1px solid #475569;
+    }
+    .action-btn.secondary:hover {
+      background: #475569;
+    }
+    main {
+      flex: 1;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #0B1120;
+    }
+    .diagram-container {
+      width: 100%;
+      max-width: 1600px;
+      background: #FFFFFF;
+      border-radius: 12px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      border: 1px solid #1E293B;
+    }
+    .diagram-viewport {
+      width: 100%;
+      position: relative;
+      background: #F8FAFC;
+    }
+    .diagram-viewport svg, .diagram-viewport img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .meta-bar {
+      background: #1E293B;
+      padding: 12px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      color: #94A3B8;
+      border-top: 1px solid #334155;
+    }
+    .meta-bar strong {
+      color: #F8FAFC;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <span class="badge">SIH-26034</span>
+      <div>
+        <h1>INSPACK Presentation Diagrams</h1>
+        <div style="font-size:11px; color:#94A3B8;">Legal Metrology (Packaged Commodities) Rules, 2011 • Team: Neural Knights</div>
+      </div>
+    </div>
+    <div class="controls">
+      <button class="tab-btn active" id="tab1Btn" onclick="switchDiagram(1)">Diagram 1: User Workflow</button>
+      <button class="tab-btn" id="tab2Btn" onclick="switchDiagram(2)">Diagram 2: Technical Architecture</button>
+      <button class="action-btn" onclick="downloadCurrentSVG()">
+        <span>⬇</span> Download SVG (Vector)
+      </button>
+      <button class="action-btn secondary" onclick="downloadCurrentPNG()">
+        <span>🖼</span> Download 4K PNG (For PPT)
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <div class="diagram-container">
+      <div class="diagram-viewport" id="viewport">
+        <!-- SVG will be injected here -->
+      </div>
+      <div class="meta-bar">
+        <span id="diagramDesc"><strong>Diagram 1:</strong> Complete 10-step Field Officer Inspection & Compliance Workflow</span>
+        <span>Resolution: <strong>1920 × 1080 (16:9 PPT Standard)</strong> • Fully Vector Scalable</span>
+      </div>
+    </div>
+  </main>
+
+  <script>
+    const d1_svg = 'inspack_diagram1_user_workflow.svg';
+    const d2_svg = 'inspack_diagram2_technical_architecture.svg';
+    const d1_png = 'inspack_diagram1_user_workflow.png';
+    const d2_png = 'inspack_diagram2_technical_architecture.png';
+
+    let currentDiagram = 1;
+
+    function switchDiagram(num) {
+      currentDiagram = num;
+      const vp = document.getElementById('viewport');
+      const desc = document.getElementById('diagramDesc');
+      const tab1 = document.getElementById('tab1Btn');
+      const tab2 = document.getElementById('tab2Btn');
+
+      if (num === 1) {
+        tab1.classList.add('active');
+        tab2.classList.remove('active');
+        vp.innerHTML = '<object type="image/svg+xml" data="' + d1_svg + '" style="width:100%; height:auto;"></object>';
+        desc.innerHTML = '<strong>Diagram 1:</strong> Complete 10-step Field Officer Inspection & Compliance Workflow (Capture ➔ AI/OCR ➔ Rule Check ➔ Decision ➔ Evidence ➔ Report)';
+      } else {
+        tab2.classList.add('active');
+        tab1.classList.remove('active');
+        vp.innerHTML = '<object type="image/svg+xml" data="' + d2_svg + '" style="width:100%; height:auto;"></object>';
+        desc.innerHTML = '<strong>Diagram 2:</strong> 6-Layer Modular Technical Architecture with Separate Admin/Rule Management Subsystem';
+      }
+    }
+
+    function downloadCurrentSVG() {
+      const file = currentDiagram === 1 ? d1_svg : d2_svg;
+      const a = document.createElement('a');
+      a.href = file;
+      a.download = file;
+      a.click();
+    }
+
+    function downloadCurrentPNG() {
+      const file = currentDiagram === 1 ? d1_png : d2_png;
+      const a = document.createElement('a');
+      a.href = file;
+      a.download = file;
+      a.click();
+    }
+
+    // Initialize with Diagram 1
+    switchDiagram(1);
+  </script>
+</body>
+</html>

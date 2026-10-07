@@ -10,7 +10,8 @@ import {
   fetchReportsFromFirestore,
   deleteReportFromFirestore,
   uploadToCloudinary,
-  deleteImageFromCloudinary
+  deleteImageFromCloudinary,
+  isFirebaseSyncPaused
 } from './cloudService';
 
 const STORAGE_KEY = 'inspack_inspection_history_v2';
@@ -47,7 +48,9 @@ if (SYNC_CHANNEL) {
     if (event.data?.type === 'DB_CHANGE') {
       window.dispatchEvent(new CustomEvent(DB_CHANGE_EVENT, { detail: { deletedId: event.data?.deletedId } }));
     } else if (event.data?.type === 'SYNC_REQUEST') {
-      syncWithCloudDatabase();
+      if (!isFirebaseSyncPaused()) {
+        syncWithCloudDatabase();
+      }
     }
   };
 }
@@ -112,6 +115,13 @@ const CLOUD_SYNC_THROTTLE_MS = 60000; // 60 seconds minimum interval between aut
  * Fetches all audits created across all devices and merges them in real time
  */
 export async function syncWithCloudDatabase(isManual = false): Promise<ComplianceReport[]> {
+  if (isFirebaseSyncPaused()) {
+    if (isManual) {
+      notifySyncStatus(false, new Date());
+    }
+    return getScanReports();
+  }
+
   const now = Date.now();
   if (!isManual && now - _lastCloudSyncTime < CLOUD_SYNC_THROTTLE_MS) {
     return getScanReports();
@@ -196,7 +206,7 @@ export function saveScanReport(report: ComplianceReport, skipCloudSync = false):
     localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
     notifyDbChange();
 
-    if (!skipCloudSync) {
+    if (!skipCloudSync && !isFirebaseSyncPaused()) {
       // 1. Immediately push to Firestore
       saveReportToFirestore(report).catch(err => {
         console.warn('Background Firestore sync note:', err);
@@ -278,24 +288,26 @@ export function deleteScanReport(id: string): void {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
   notifyDbChange(id);
 
-  // 1. Permanently delete from Google Cloud Firestore
-  deleteReportFromFirestore(id).catch(err => {
-    console.warn('Failed to delete report from Firestore:', err);
-  });
-
-  // 2. Unlink and purge media assets from Cloudinary CDN
-  if (reportToDelete?.capturedImages) {
-    const imgUrls = [
-      reportToDelete.capturedImages.front,
-      reportToDelete.capturedImages.back,
-      reportToDelete.capturedImages.side
-    ].filter(Boolean) as string[];
-
-    imgUrls.forEach(url => {
-      deleteImageFromCloudinary(url).catch(err => {
-        console.warn('Cloudinary image delete note:', err);
-      });
+  if (!isFirebaseSyncPaused()) {
+    // 1. Permanently delete from Google Cloud Firestore
+    deleteReportFromFirestore(id).catch(err => {
+      console.warn('Failed to delete report from Firestore:', err);
     });
+
+    // 2. Unlink and purge media assets from Cloudinary CDN
+    if (reportToDelete?.capturedImages) {
+      const imgUrls = [
+        reportToDelete.capturedImages.front,
+        reportToDelete.capturedImages.back,
+        reportToDelete.capturedImages.side
+      ].filter(Boolean) as string[];
+
+      imgUrls.forEach(url => {
+        deleteImageFromCloudinary(url).catch(err => {
+          console.warn('Cloudinary image delete note:', err);
+        });
+      });
+    }
   }
 }
 
@@ -332,16 +344,18 @@ export async function purgeAllDatabaseData(): Promise<{ success: boolean; count:
     localStorage.removeItem(LEGACY_STORAGE_KEY);
     localStorage.setItem(STORAGE_KEY, JSON.stringify([]));
 
-    // 2. Fetch and purge all documents from Firestore
-    try {
-      const cloudReports = await fetchReportsFromFirestore();
-      for (const cr of cloudReports) {
-        if (cr.id) {
-          await deleteReportFromFirestore(cr.id).catch(() => {});
+    // 2. Fetch and purge all documents from Firestore (only if not paused)
+    if (!isFirebaseSyncPaused()) {
+      try {
+        const cloudReports = await fetchReportsFromFirestore();
+        for (const cr of cloudReports) {
+          if (cr.id) {
+            await deleteReportFromFirestore(cr.id).catch(() => {});
+          }
         }
+      } catch (e) {
+        console.warn('Error purging Firestore:', e);
       }
-    } catch (e) {
-      console.warn('Error purging Firestore:', e);
     }
 
     // 3. Clear deleted IDs cache

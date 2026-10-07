@@ -1,0 +1,570 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080" style="background:#F8FAFC; font-family:'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;">
+  <defs>
+    <!-- Shadow filter for clean cards -->
+    <filter id="cardShadow2" x="-2%" y="-2%" width="104%" height="106%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#0F172A" flood-opacity="0.06"/>
+    </filter>
+    <filter id="headerShadow2" x="-1%" y="-2%" width="102%" height="106%" filterUnits="userSpaceOnUse">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000000" flood-opacity="0.12"/>
+    </filter>
+
+    <!-- Markers -->
+    <marker id="arrowDownNavy" viewBox="0 0 10 10" refX="5" refY="8" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 1.5 0 L 5 8 L 8.5 0 z" fill="#0A3663"/>
+    </marker>
+    <marker id="arrowRightGold" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 1.5 L 8 5 L 0 8.5 z" fill="#D97706"/>
+    </marker>
+    <marker id="arrowLeftGold" viewBox="0 0 10 10" refX="2" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 10 1.5 L 2 5 L 10 8.5 z" fill="#D97706"/>
+    </marker>
+    <marker id="arrowDownBlue" viewBox="0 0 10 10" refX="5" refY="8" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M 1.5 0 L 5 8 L 8.5 0 z" fill="#0284C7"/>
+    </marker>
+  </defs>
+
+  <!-- ==================== TOP HEADER BANNER ==================== -->
+  <rect x="0" y="0" width="1920" height="84" fill="#0A2540" filter="url(#headerShadow2)"/>
+  <rect x="0" y="80" width="1920" height="4" fill="#D97706"/> <!-- Govt Gold Stripe -->
+
+  <!-- Top Metadata & Team Badge -->
+  <g transform="translate(45, 14)">
+    <rect x="0" y="0" width="460" height="26" rx="13" fill="#1E3A8A"/>
+    <text x="15" y="17" fill="#F8FAFC" font-size="11" font-weight="600" letter-spacing="0.5">SMART INDIA HACKATHON 2026 | PS ID: SIH-26034</text>
+    <text x="315" y="17" fill="#FCD34D" font-size="11" font-weight="700">| MoCA, Food &amp; PD</text>
+
+    <text x="0" y="52" fill="#FFFFFF" font-size="22" font-weight="700" letter-spacing="0.3">INSPACK — MULTI-TIER SYSTEM ARCHITECTURE</text>
+  </g>
+
+  <!-- Right Header Badge -->
+  <g transform="translate(1485, 16)">
+    <rect x="0" y="0" width="390" height="52" rx="8" fill="#0F2F57" stroke="#334E68" stroke-width="1"/>
+    <text x="20" y="22" fill="#94A3B8" font-size="10" font-weight="600" text-transform="uppercase" letter-spacing="1">SOVEREIGN • LOCAL-FIRST • DETERMINISTIC</text>
+    <text x="20" y="42" fill="#38BDF8" font-size="13" font-weight="700">Team: Neural Knights</text>
+    <text x="180" y="42" fill="#E2E8F0" font-size="12" font-weight="400">| Chaitanya Bharathi Institute of Technology</text>
+  </g>
+
+  <!-- ========================================================================= -->
+  <!-- MAIN ARCHITECTURE STACK: LAYERS 1 TO 6                                    -->
+  <!-- Width: 1370 (x: 45 to 1415)                                               -->
+  <!-- ========================================================================= -->
+
+  <!-- ==================== LAYER 1: FIELD / USER ==================== -->
+  <g transform="translate(45, 96)" filter="url(#cardShadow2)">
+    <rect x="0" y="0" width="1370" height="118" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
+    <!-- Layer Header Banner -->
+    <path d="M 0 8 Q 0 0 8 0 L 1362 0 Q 1370 0 1370 8 L 1370 32 L 0 32 Z" fill="#0A3663"/>
+    <text x="18" y="21" fill="#FFFFFF" font-size="13" font-weight="800" letter-spacing="0.5">LAYER 1 — FIELD / USER LAYER</text>
+    <rect x="1230" y="6" width="125" height="20" rx="4" fill="#1E40AF"/>
+    <text x="1292" y="19" fill="#FFFFFF" font-size="10" font-weight="700" text-anchor="middle">EDGE CLIENT</text>
+
+    <!-- Sub-blocks (4 items) -->
+    <!-- Block 1.1 -->
+    <g transform="translate(16, 42)">
+      <rect x="0" y="0" width="315" height="64" rx="6" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+      <text x="12" y="22" fill="#0A3663" font-size="12" font-weight="700">Mobile / PWA Application</text>
+      <text x="12" y="40" fill="#475569" font-size="11">• React 18 + TypeScript + Vite PWA</text>
+      <text x="12" y="55" fill="#475569" font-size="11">• Responsive UI for handheld smartphones</text>
+    </g>
+
+    <!-- Block 1.2 -->
+    <g transform="translate(347, 42)">
+      <rect x="0" y="0" width="325" height="64" rx="6" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+      <text x="12" y="22" fill="#0A3663" font-size="12" font-weight="700">Field Inspection Officer</text>
+      <text x="12" y="40" fill="#475569" font-size="11">• Authorized Officer biometric/SSO login</text>
+      <text x="12" y="55" fill="#475569" font-size="11">• Geo-tagging &amp; session tamper verification</text>
+    </g>
+
+    <!-- Block 1.3 -->
+    <g transform="translate(688, 42)">
+      <rect x="0" y="0" width="330" height="64" rx="6" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+      <text x="12" y="22" fill="#0A3663" font-size="12" font-weight="700">Camera / Package Images</text>
+      <text x="12" y="40" fill="#475569" font-size="11">• Multi-View: Front (PDP), Back &amp; Sides</text>
+      <text x="12" y="55" fill="#475569" font-size="11">• On-screen viewfinder &amp; torch toggle</text>
+    </g>
+
+    <!-- Block 1.4 -->
+    <g transform="translate(1034, 42)">
+      <rect x="0" y="0" width="320" height="64" rx="6" fill="#F0FDF4" stroke="#86EFAC" stroke-width="1"/>
+      <text x="12" y="22" fill="#166534" font-size="12" font-weight="700">Online + Offline Operation</text>
+      <text x="12" y="40" fill="#475569" font-size="11">• Automatic connection status detection</text>
+      <text x="12" y="55" fill="#475569" font-size="11">• Seamless local execution with zero latency</text>
+    </g>
+  </g>
+
+  <!-- Data Flow 1 -> 2 -->
+  <g transform="translate(730, 214)">
+    <line x1="0" y1="0" x2="0" y2="24" stroke="#0A3663" stroke-width="2" marker-end="url(#arrowDownNavy)"/>
+    <rect x="-190" y="4" width="380" height="18" rx="4" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="1"/>
+    <text x="0" y="16" fill="#1E40AF" font-size="10" font-weight="700" text-anchor="middle">
+      DATA FLOW: Multi-View Raw Image Frames &amp; Inspection Metadata
+    </text>
+  </g>
+
+  <!-- ==================== LAYER 2: IMAGE PROCESSING ==================== -->
+  <g transform="translate(45, 240)" filter="url(#cardShadow2)">
+    <rect x="0" y="0" width="1370" height="118" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
+    <path d="M 0 8 Q 0 0 8 0 L 1362 0 Q 1370 0 1370 8 L 1370 32 L 0 32 Z" fill="#0A3663"/>
+    <text x="18" y="21" fill="#FFFFFF" font-size="13" font-weight="800" letter-spacing="0.5">LAYER 2 — IMAGE PROCESSING &amp; QUALITY ASSURANCE</text>
+    <rect x="1205" y="6" width="150" height="20" rx="4" fill="#1E40AF"/>
+    <text x="1280" y="19" fill="#FFFFFF" font-size="10" font-weight="700" text-anchor="middle">EDGE COMPUTER VISION</text>
+
+    <!-- Sub-blocks (4 items) -->
+    <!-- Block 2.1 -->
+    <g transform="translate(16, 42)">
+      <rect x="0" y="0" width="315" height="64" rx="6" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+      <text x="12" y="22" fill="#0A3663" font-size="12" font-weight="700">Quality / Sharpness Check</text>
+      <text x="12" y="40" fill="#475569" font-size="11">• Laplacian variance blur estimation</text>
+      <text x="12" y="55" fill="#475569" font-size="11">• Glare / reflection / contrast scoring</text>
+    </g>
+
+    <!-- Block 2.2 -->
+    <g transform="translate(347, 42)">
+      <rect x="0" y="0" width="325" height="64" rx="6" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+      <text x="12" y="22" fill="#0A3663" font-size="12" font-weight="700">Pre-processing Pipeline</text>
+      <text x="12" y="40" fill="#475569" font-size="11">• Grayscale conversion &amp; luminance stretch</text>
+      <text x="12" y="55" fill="#475569" font-size="11">• Adaptive thresholding &amp; noise removal</text>
+    </g>
+
+    <!-- Block 2.3 -->
+    <g transform="translate(688, 42)">
+      <rect x="0" y="0" width="330" height="64" rx="6" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+      <text x="12" y="22" fill="#0A3663" font-size="12" font-weight="700">Multi-view Image Handling</text>
+      <text x="12" y="40" fill="#475569" font-size="11">• Perspective rectification &amp; alignment</text>
+      <text x="12" y="55" fill="#475569" font-size="11">• Multi-angle packaging coordinate registry</text>
+    </g>
+
+    <!-- Block 2.4 -->
+    <g transform="translate(1034, 42)">
+      <rect x="0" y="0" width="320" height="64" rx="6" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+      <text x="12" y="22" fill="#0A3663" font-size="12" font-weight="700">Package Region Detection</text>
+      <text x="12" y="40" fill="#475569" font-size="11">• Principal Display Panel (PDP) bounding</text>
+      <text x="12" y="55" fill="#475569" font-size="11">• Text cluster Region of Interest (ROI) split</text>
+    </g>
+  </g>
+
+  <!-- Data Flow 2 -> 3 -->
+  <g transform="translate(730, 358)">
+    <line x1="0" y1="0" x2="0" y2="24" stroke="#0A3663" stroke-width="2" marker-end="url(#arrowDownNavy)"/>
+    <rect x="-180" y="4" width="360" height="18" rx="4" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="1"/>
+    <text x="0" y="16" fill="#1E40AF" font-size="10" font-weight="700" text-anchor="middle">
+      DATA FLOW: Normalized Packaging ROIs &amp; PDP Dimension Map
+    </text>
+  </g>
+
+  <!-- ==================== LAYER 3: DOCUMENT AI / OCR ==================== -->
+  <g transform="translate(45, 384)" filter="url(#cardShadow2)">
+    <rect x="0" y="0" width="1370" height="118" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
+    <path d="M 0 8 Q 0 0 8 0 L 1362 0 Q 1370 0 1370 8 L 1370 32 L 0 32 Z" fill="#0A3663"/>
+    <text x="18" y="21" fill="#FFFFFF" font-size="13" font-weight="800" letter-spacing="0.5">LAYER 3 — DOCUMENT AI &amp; OPTICAL CHARACTER RECOGNITION (OCR)</text>
+    <rect x="1175" y="6" width="180" height="20" rx="4" fill="#166534"/>
+    <text x="1265" y="19" fill="#FFFFFF" font-size="10" font-weight="700" text-anchor="middle">SOVEREIGN AI / NO CLOUD LLM</text>
+
+    <!-- Sub-blocks (5 items) -->
+    <!-- Block 3.1 -->
+    <g transform="translate(16, 42)">
+      <rect x="0" y="0" width="250" height="64" rx="6" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+      <text x="12" y="22" fill="#0A3663" font-size="12" font-weight="700">OCR Engine</text>
+      <text x="12" y="40" fill="#475569" font-size="11">• Sovereign Edge OCR worker</text>
+      <text x="12" y="55" fill="#475569" font-size="11">• Multi-script (Hindi &amp; English)</text>
+    </g>
+
+    <!-- Block 3.2 -->
+    <g transform="translate(282, 42)">
+      <rect x="0" y="0" width="255" height="64" rx="6" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+      <text x="12" y="22" fill="#0A3663" font-size="12" font-weight="700">Text Extraction</text>
+      <text x="12" y="40" fill="#475569" font-size="11">• Alphanumerics &amp; SI symbols</text>
+      <text x="12" y="55" fill="#475569" font-size="11">• Strict character-level precision</text>
+    </g>
+
+    <!-- Block 3.3 -->
+    <g transform="translate(553, 42)">
+      <rect x="0" y="0" width="265" height="64" rx="6" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+      <text x="12" y="22" fill="#0A3663" font-size="12" font-weight="700">Layout Understanding</text>
+      <text x="12" y="40" fill="#475569" font-size="11">• Spatial line &amp; hierarchy grouping</text>
+      <text x="12" y="55" fill="#475569" font-size="11">• Text bounding-box coordinates</text>
+    </g>
+
+    <!-- Block 3.4 -->
+    <g transform="translate(834, 42)">
+      <rect x="0" y="0" width="260" height="64" rx="6" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+      <text x="12" y="22" fill="#0A3663" font-size="12" font-weight="700">Field &amp; Entity Detection</text>
+      <text x="12" y="40" fill="#475569" font-size="11">• Qty, MRP, Mfg, Dates, Care</text>
+      <text x="12" y="55" fill="#475569" font-size="11">• Key-Value semantic mapping</text>
+    </g>
+
+    <!-- Block 3.5 -->
+    <g transform="translate(1110, 42)">
+      <rect x="0" y="0" width="244" height="64" rx="6" fill="#F0FDF4" stroke="#86EFAC" stroke-width="1"/>
+      <text x="12" y="22" fill="#166534" font-size="12" font-weight="700">Structured JSON Output</text>
+      <text x="12" y="40" fill="#475569" font-size="11">• Typed declaration schema</text>
+      <text x="12" y="55" fill="#475569" font-size="11">• Bounding-box spatial metadata</text>
+    </g>
+  </g>
+
+  <!-- Data Flow 3 -> 4 -->
+  <g transform="translate(730, 502)">
+    <line x1="0" y1="0" x2="0" y2="24" stroke="#0A3663" stroke-width="2" marker-end="url(#arrowDownNavy)"/>
+    <rect x="-195" y="4" width="390" height="18" rx="4" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="1"/>
+    <text x="0" y="16" fill="#1E40AF" font-size="10" font-weight="700" text-anchor="middle">
+      DATA FLOW: Structured Declaration JSON &amp; Pixel Coordinate Registry
+    </text>
+  </g>
+
+  <!-- ==================== LAYER 4: COMPLIANCE ENGINE ==================== -->
+  <g transform="translate(45, 528)" filter="url(#cardShadow2)">
+    <rect x="0" y="0" width="1370" height="126" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
+    <path d="M 0 8 Q 0 0 8 0 L 1362 0 Q 1370 0 1370 8 L 1370 32 L 0 32 Z" fill="#0A3663"/>
+    <text x="18" y="21" fill="#FFFFFF" font-size="13" font-weight="800" letter-spacing="0.5">LAYER 4 — DETERMINISTIC LEGAL METROLOGY COMPLIANCE ENGINE</text>
+    <rect x="1145" y="6" width="210" height="20" rx="4" fill="#B45309"/>
+    <text x="1250" y="19" fill="#FFFFFF" font-size="10" font-weight="700" text-anchor="middle">PURE RULES / ZERO HALLUCINATION</text>
+
+    <!-- Sub-blocks (5 items) -->
+    <!-- Block 4.1 -->
+    <g transform="translate(16, 42)">
+      <rect x="0" y="0" width="250" height="72" rx="6" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+      <text x="12" y="20" fill="#0A3663" font-size="12" font-weight="700">LMPC Statutory Rule Checks</text>
+      <text x="12" y="38" fill="#475569" font-size="11">• Rule 6: Mandatory items</text>
+      <text x="12" y="52" fill="#475569" font-size="11">• Rule 10: Complete address &amp; PIN</text>
+      <text x="12" y="66" fill="#475569" font-size="11">• Rule 13: SI Unit symbols</text>
+    </g>
+
+    <!-- Block 4.2 -->
+    <g transform="translate(282, 42)">
+      <rect x="0" y="0" width="255" height="72" rx="6" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+      <text x="12" y="20" fill="#0A3663" font-size="12" font-weight="700">Numeral &amp; Font Height</text>
+      <text x="12" y="38" fill="#475569" font-size="11">• Rule 7, Table I &amp; II minimums</text>
+      <text x="12" y="52" fill="#475569" font-size="11">• Font height vs. PDP Area</text>
+      <text x="12" y="66" fill="#475569" font-size="11">• Rule 8 clear space check</text>
+    </g>
+
+    <!-- Block 4.3 -->
+    <g transform="translate(553, 42)">
+      <rect x="0" y="0" width="265" height="72" rx="6" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+      <text x="12" y="20" fill="#0A3663" font-size="12" font-weight="700">Standard Pack Sizes</text>
+      <text x="12" y="38" fill="#475569" font-size="11">• Second Schedule compliance</text>
+      <text x="12" y="52" fill="#475569" font-size="11">• 19 Commodity categories</text>
+      <text x="12" y="66" fill="#475569" font-size="11">• Flags non-standard packs</text>
+    </g>
+
+    <!-- Block 4.4 -->
+    <g transform="translate(834, 42)">
+      <rect x="0" y="0" width="260" height="72" rx="6" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+      <text x="12" y="20" fill="#0A3663" font-size="12" font-weight="700">MPE Deficiency Margin</text>
+      <text x="12" y="38" fill="#475569" font-size="11">• First Schedule calculations</text>
+      <text x="12" y="52" fill="#475569" font-size="11">• Maximum Permissible Error</text>
+      <text x="12" y="66" fill="#475569" font-size="11">• Net weight vs. gross tare math</text>
+    </g>
+
+    <!-- Block 4.5 -->
+    <g transform="translate(1110, 42)">
+      <rect x="0" y="0" width="244" height="72" rx="6" fill="#FEF3C7" stroke="#FCD34D" stroke-width="1"/>
+      <text x="12" y="20" fill="#92400E" font-size="12" font-weight="700">Configurable Gazette Rules</text>
+      <text x="12" y="38" fill="#475569" font-size="11">• Versioned statutory logic</text>
+      <text x="12" y="52" fill="#475569" font-size="11">• Dynamic rule table registry</text>
+      <text x="12" y="66" fill="#475569" font-size="11">• Zero code redeployment</text>
+    </g>
+  </g>
+
+  <!-- Data Flow 4 -> 5 -->
+  <g transform="translate(730, 654)">
+    <line x1="0" y1="0" x2="0" y2="24" stroke="#0A3663" stroke-width="2" marker-end="url(#arrowDownNavy)"/>
+    <rect x="-195" y="4" width="390" height="18" rx="4" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="1"/>
+    <text x="0" y="16" fill="#1E40AF" font-size="10" font-weight="700" text-anchor="middle">
+      DATA FLOW: Compliance Findings, Rule Violations &amp; Gazette Citations
+    </text>
+  </g>
+
+  <!-- ==================== LAYER 5: EVIDENCE & DECISION SUPPORT ==================== -->
+  <g transform="translate(45, 680)" filter="url(#cardShadow2)">
+    <rect x="0" y="0" width="1370" height="118" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
+    <path d="M 0 8 Q 0 0 8 0 L 1362 0 Q 1370 0 1370 8 L 1370 32 L 0 32 Z" fill="#0A3663"/>
+    <text x="18" y="21" fill="#FFFFFF" font-size="13" font-weight="800" letter-spacing="0.5">LAYER 5 — EVIDENCE ATTESTATION &amp; DECISION SUPPORT LAYER</text>
+    <rect x="1195" y="6" width="160" height="20" rx="4" fill="#6B21A8"/>
+    <text x="1275" y="19" fill="#FFFFFF" font-size="10" font-weight="700" text-anchor="middle">HUMAN-IN-THE-LOOP</text>
+
+    <!-- Sub-blocks (5 items) -->
+    <!-- Block 5.1 -->
+    <g transform="translate(16, 42)">
+      <rect x="0" y="0" width="250" height="64" rx="6" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+      <text x="12" y="22" fill="#0A3663" font-size="12" font-weight="700">Findings Aggregator</text>
+      <text x="12" y="40" fill="#475569" font-size="11">• Compliant / Non-compliant split</text>
+      <text x="12" y="55" fill="#475569" font-size="11">• Severity &amp; compounding scores</text>
+    </g>
+
+    <!-- Block 5.2 -->
+    <g transform="translate(282, 42)">
+      <rect x="0" y="0" width="255" height="64" rx="6" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+      <text x="12" y="22" fill="#0A3663" font-size="12" font-weight="700">Bounding-Box Evidence</text>
+      <text x="12" y="40" fill="#475569" font-size="11">• Exact visual violation overlays</text>
+      <text x="12" y="55" fill="#475569" font-size="11">• Spatial pinpoints on raw photos</text>
+    </g>
+
+    <!-- Block 5.3 -->
+    <g transform="translate(553, 42)">
+      <rect x="0" y="0" width="265" height="64" rx="6" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+      <text x="12" y="22" fill="#0A3663" font-size="12" font-weight="700">Rule References &amp; Penalties</text>
+      <text x="12" y="40" fill="#475569" font-size="11">• Exact Gazette legal section tags</text>
+      <text x="12" y="55" fill="#475569" font-size="11">• Rule 32 statutory compounding fee</text>
+    </g>
+
+    <!-- Block 5.4 -->
+    <g transform="translate(834, 42)">
+      <rect x="0" y="0" width="260" height="64" rx="6" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+      <text x="12" y="22" fill="#0A3663" font-size="12" font-weight="700">Photographic Dossier</text>
+      <text x="12" y="40" fill="#475569" font-size="11">• Tamper-evident image bundle</text>
+      <text x="12" y="55" fill="#475569" font-size="11">• Cryptographic SHA-256 seal</text>
+    </g>
+
+    <!-- Block 5.5 -->
+    <g transform="translate(1110, 42)">
+      <rect x="0" y="0" width="244" height="64" rx="6" fill="#FAF5FF" stroke="#D8B4FE" stroke-width="1"/>
+      <text x="12" y="22" fill="#6B21A8" font-size="12" font-weight="700">Officer Adjudication</text>
+      <text x="12" y="40" fill="#475569" font-size="11">• Final human review &amp; sign-off</text>
+      <text x="12" y="55" fill="#475569" font-size="11">• Statutory enforcement authority</text>
+    </g>
+  </g>
+
+  <!-- Data Flow 5 -> 6 -->
+  <g transform="translate(730, 798)">
+    <line x1="0" y1="0" x2="0" y2="24" stroke="#0A3663" stroke-width="2" marker-end="url(#arrowDownNavy)"/>
+    <rect x="-195" y="4" width="390" height="18" rx="4" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="1"/>
+    <text x="0" y="16" fill="#1E40AF" font-size="10" font-weight="700" text-anchor="middle">
+      DATA FLOW: Signed Inspection Dossier, Statutory Forms &amp; Image Hashes
+    </text>
+  </g>
+
+  <!-- ==================== LAYER 6: STORAGE / REPORTING ==================== -->
+  <g transform="translate(45, 824)" filter="url(#cardShadow2)">
+    <rect x="0" y="0" width="1370" height="142" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
+    <path d="M 0 8 Q 0 0 8 0 L 1362 0 Q 1370 0 1370 8 L 1370 32 L 0 32 Z" fill="#0A3663"/>
+    <text x="18" y="21" fill="#FFFFFF" font-size="13" font-weight="800" letter-spacing="0.5">LAYER 6 — STORAGE, REPORTING &amp; SYNCHRONIZATION LAYER</text>
+    <rect x="1175" y="6" width="180" height="20" rx="4" fill="#0F766E"/>
+    <text x="1265" y="19" fill="#FFFFFF" font-size="10" font-weight="700" text-anchor="middle">LOCAL-FIRST &amp; CENTRAL SYNC</text>
+
+    <!-- Sub-blocks (6 items in 2 rows or 6 columns) -->
+    <!-- Block 6.1 -->
+    <g transform="translate(16, 42)">
+      <rect x="0" y="0" width="205" height="88" rx="6" fill="#F0FDF4" stroke="#86EFAC" stroke-width="1"/>
+      <text x="12" y="22" fill="#166534" font-size="12" font-weight="700">Local-First Vault</text>
+      <text x="12" y="42" fill="#475569" font-size="11">• IndexedDB / SQLite</text>
+      <text x="12" y="58" fill="#475569" font-size="11">• 100% Offline storage</text>
+      <text x="12" y="74" fill="#475569" font-size="11">• Zero data loss in mandis</text>
+    </g>
+
+    <!-- Block 6.2 -->
+    <g transform="translate(237, 42)">
+      <rect x="0" y="0" width="215" height="88" rx="6" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+      <text x="12" y="22" fill="#0A3663" font-size="12" font-weight="700">Statutory PDF Engine</text>
+      <text x="12" y="42" fill="#475569" font-size="11">• Form A (Weight sheet)</text>
+      <text x="12" y="58" fill="#475569" font-size="11">• Form B (Volume sheet)</text>
+      <text x="12" y="74" fill="#475569" font-size="11">• Seventh Schedule format</text>
+    </g>
+
+    <!-- Block 6.3 -->
+    <g transform="translate(468, 42)">
+      <rect x="0" y="0" width="215" height="88" rx="6" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+      <text x="12" y="22" fill="#0A3663" font-size="12" font-weight="700">PostgreSQL DB</text>
+      <text x="12" y="42" fill="#475569" font-size="11">• Structured central DB</text>
+      <text x="12" y="58" fill="#475569" font-size="11">• Enforcement analytics</text>
+      <text x="12" y="74" fill="#475569" font-size="11">• National inspection log</text>
+    </g>
+
+    <!-- Block 6.4 -->
+    <g transform="translate(699, 42)">
+      <rect x="0" y="0" width="215" height="88" rx="6" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+      <text x="12" y="22" fill="#0A3663" font-size="12" font-weight="700">Object Storage</text>
+      <text x="12" y="42" fill="#475569" font-size="11">• Cloud image repository</text>
+      <text x="12" y="58" fill="#475569" font-size="11">• Encrypted at rest</text>
+      <text x="12" y="74" fill="#475569" font-size="11">• High-res evidence archive</text>
+    </g>
+
+    <!-- Block 6.5 -->
+    <g transform="translate(930, 42)">
+      <rect x="0" y="0" width="205" height="88" rx="6" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+      <text x="12" y="22" fill="#0A3663" font-size="12" font-weight="700">Audit Trail</text>
+      <text x="12" y="42" fill="#475569" font-size="11">• Timestamp &amp; GPS logs</text>
+      <text x="12" y="58" fill="#475569" font-size="11">• Officer identity binding</text>
+      <text x="12" y="74" fill="#475569" font-size="11">• Court-admissible proof</text>
+    </g>
+
+    <!-- Block 6.6 -->
+    <g transform="translate(1151, 42)">
+      <rect x="0" y="0" width="203" height="88" rx="6" fill="#EFF6FF" stroke="#93C5FD" stroke-width="1"/>
+      <text x="12" y="22" fill="#1D4ED8" font-size="12" font-weight="700">Secure Sync</text>
+      <text x="12" y="42" fill="#475569" font-size="11">• TLS 1.3 encryption</text>
+      <text x="12" y="58" fill="#475569" font-size="11">• Background auto-retry</text>
+      <text x="12" y="74" fill="#475569" font-size="11">• Conflict-free merging</text>
+    </g>
+  </g>
+
+  <!-- ========================================================================= -->
+  <!-- RIGHT SIDE: ADMIN / RULE MANAGEMENT SUBSYSTEM                             -->
+  <!-- Width: 430 (x: 1445 to 1875)                                              -->
+  <!-- ========================================================================= -->
+
+  <!-- Top Right Card: Context / Environment Overview -->
+  <g transform="translate(1445, 96)" filter="url(#cardShadow2)">
+    <rect x="0" y="0" width="430" height="262" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
+    <path d="M 0 8 Q 0 0 8 0 L 422 0 Q 430 0 430 8 L 430 32 L 0 32 Z" fill="#1E3A8A"/>
+    <text x="16" y="21" fill="#FFFFFF" font-size="12" font-weight="800" letter-spacing="0.5">INSPECTION ENVIRONMENT &amp; LEGAL CONTEXT</text>
+
+    <g transform="translate(16, 44)">
+      <!-- Item 1 -->
+      <g transform="translate(0, 0)">
+        <rect x="0" y="0" width="398" height="46" rx="6" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+        <text x="12" y="18" fill="#0A3663" font-size="11" font-weight="700">Jurisdiction &amp; Regulatory Act</text>
+        <text x="12" y="34" fill="#475569" font-size="10">Legal Metrology Act, 2009 &amp; Packaged Commodities Rules, 2011</text>
+      </g>
+
+      <!-- Item 2 -->
+      <g transform="translate(0, 52)">
+        <rect x="0" y="0" width="398" height="46" rx="6" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+        <text x="12" y="18" fill="#0A3663" font-size="11" font-weight="700">Enforcement Scope</text>
+        <text x="12" y="34" fill="#475569" font-size="10">Retail stores, Supermarkets, E-Commerce Dark Stores &amp; Mandis</text>
+      </g>
+
+      <!-- Item 3 -->
+      <g transform="translate(0, 104)">
+        <rect x="0" y="0" width="398" height="46" rx="6" fill="#F8FAFC" stroke="#E2E8F0" stroke-width="1"/>
+        <text x="12" y="18" fill="#0A3663" font-size="11" font-weight="700">Deployment Architecture</text>
+        <text x="12" y="34" fill="#475569" font-size="10">Local-first Progressive Web App (PWA) with Edge AI capabilities</text>
+      </g>
+
+      <!-- Item 4 -->
+      <g transform="translate(0, 156)">
+        <rect x="0" y="0" width="398" height="46" rx="6" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="1"/>
+        <text x="12" y="18" fill="#1D4ED8" font-size="11" font-weight="700">Sovereign Edge Guarantee</text>
+        <text x="12" y="34" fill="#475569" font-size="10">Zero commercial LLM dependencies; privacy-preserved edge OCR</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- ADMIN & RULE MANAGEMENT SUBSYSTEM (Directly Connected to Layer 4) -->
+  <g transform="translate(1445, 384)" filter="url(#cardShadow2)">
+    <rect x="0" y="0" width="430" height="380" rx="8" fill="#FFFFFF" stroke="#D97706" stroke-width="2"/>
+    <path d="M 0 8 Q 0 0 8 0 L 422 0 Q 430 0 430 8 L 430 36 L 0 36 Z" fill="#D97706"/>
+    <text x="16" y="24" fill="#FFFFFF" font-size="13" font-weight="800" letter-spacing="0.5">ADMIN &amp; RULE MANAGEMENT SUBSYSTEM</text>
+
+    <!-- Content Items -->
+    <g transform="translate(16, 48)">
+      <!-- Admin 1 -->
+      <g transform="translate(0, 0)">
+        <rect x="0" y="0" width="398" height="56" rx="6" fill="#FFFBEB" stroke="#FDE68A" stroke-width="1"/>
+        <text x="12" y="20" fill="#92400E" font-size="12" font-weight="700">Gazette / Rule Configuration</text>
+        <text x="12" y="36" fill="#78350F" font-size="11">• Central Ministry portal for rule updates</text>
+        <text x="12" y="50" fill="#78350F" font-size="11">• Coded parameters for amendments (2021, 2022)</text>
+      </g>
+
+      <!-- Admin 2 -->
+      <g transform="translate(0, 64)">
+        <rect x="0" y="0" width="398" height="56" rx="6" fill="#FFFBEB" stroke="#FDE68A" stroke-width="1"/>
+        <text x="12" y="20" fill="#92400E" font-size="12" font-weight="700">Versioned Compliance Logic</text>
+        <text x="12" y="36" fill="#78350F" font-size="11">• Multi-version rule repository (v2011.1, v2022.2)</text>
+        <text x="12" y="50" fill="#78350F" font-size="11">• Backward-compatible checking by packing date</text>
+      </g>
+
+      <!-- Admin 3 -->
+      <g transform="translate(0, 128)">
+        <rect x="0" y="0" width="398" height="56" rx="6" fill="#FFFBEB" stroke="#FDE68A" stroke-width="1"/>
+        <text x="12" y="20" fill="#92400E" font-size="12" font-weight="700">Standard Pack Size Manager</text>
+        <text x="12" y="36" fill="#78350F" font-size="11">• Second Schedule table updates via GUI</text>
+        <text x="12" y="50" fill="#78350F" font-size="11">• Commodity-specific exemption overrides</text>
+      </g>
+
+      <!-- Admin 4 -->
+      <g transform="translate(0, 192)">
+        <rect x="0" y="0" width="398" height="56" rx="6" fill="#FFFBEB" stroke="#FDE68A" stroke-width="1"/>
+        <text x="12" y="20" fill="#92400E" font-size="12" font-weight="700">Compounding Penalty Rates</text>
+        <text x="12" y="36" fill="#78350F" font-size="11">• Section 32 penalty fee schedule configuration</text>
+        <text x="12" y="50" fill="#78350F" font-size="11">• State-level compounding rate adjustments</text>
+      </g>
+
+      <!-- Admin 5 -->
+      <g transform="translate(0, 256)">
+        <rect x="0" y="0" width="398" height="56" rx="6" fill="#EFF6FF" stroke="#BFDBFE" stroke-width="1"/>
+        <text x="12" y="20" fill="#1E40AF" font-size="12" font-weight="700">Signed Rule Distribution Engine</text>
+        <text x="12" y="36" fill="#1E3A8A" font-size="11">• Pushes cryptographically signed rule JSON</text>
+        <text x="12" y="50" fill="#1E3A8A" font-size="11">• Seamless edge updates with zero app downtime</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- DYNAMIC BIDIRECTIONAL CONNECTOR: ADMIN -> LAYER 4 -->
+  <g>
+    <!-- Line from Admin Box (left edge, x=1445, y=591) to Layer 4 (right edge, x=1415, y=591) -->
+    <line x1="1445" y1="591" x2="1415" y2="591" stroke="#D97706" stroke-width="3" stroke-dasharray="5,3" marker-end="url(#arrowLeftGold)"/>
+    
+    <!-- Visual label on connection -->
+    <rect x="1390" y="575" width="80" height="32" rx="4" fill="#FEF3C7" stroke="#D97706" stroke-width="1"/>
+    <text x="1430" y="589" fill="#92400E" font-size="9" font-weight="800" text-anchor="middle">GAZETTE</text>
+    <text x="1430" y="601" fill="#92400E" font-size="8" font-weight="700" text-anchor="middle">UPDATES</text>
+  </g>
+
+  <!-- Bottom Right Card: Statutory Citation References -->
+  <g transform="translate(1445, 786)" filter="url(#cardShadow2)">
+    <rect x="0" y="0" width="430" height="180" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5"/>
+    <path d="M 0 8 Q 0 0 8 0 L 422 0 Q 430 0 430 8 L 430 32 L 0 32 Z" fill="#0F766E"/>
+    <text x="16" y="21" fill="#FFFFFF" font-size="12" font-weight="800" letter-spacing="0.5">STATUTORY COMPLIANCE REFERENCES</text>
+
+    <g transform="translate(16, 42)">
+      <text x="0" y="16" fill="#0A3663" font-size="11" font-weight="700">• Rule 6(1): <tspan font-weight="400" fill="#475569">Mandatory declarations (Name, Qty, MRP, Dates)</tspan></text>
+      <text x="0" y="36" fill="#0A3663" font-size="11" font-weight="700">• Rule 7 &amp; Tables I/II: <tspan font-weight="400" fill="#475569">Minimum numeral &amp; font heights</tspan></text>
+      <text x="0" y="56" fill="#0A3663" font-size="11" font-weight="700">• Rule 13: <tspan font-weight="400" fill="#475569">Standard SI units of weight, volume and length</tspan></text>
+      <text x="0" y="76" fill="#0A3663" font-size="11" font-weight="700">• Rule 18: <tspan font-weight="400" fill="#475569">Prohibition of dual MRP &amp; sticker alteration</tspan></text>
+      <text x="0" y="96" fill="#0A3663" font-size="11" font-weight="700">• First Schedule: <tspan font-weight="400" fill="#475569">Maximum Permissible Error (MPE) margins</tspan></text>
+      <text x="0" y="116" fill="#0A3663" font-size="11" font-weight="700">• Second Schedule: <tspan font-weight="400" fill="#475569">Mandatory standard pack size sizes</tspan></text>
+      <text x="0" y="134" fill="#0A3663" font-size="11" font-weight="700">• Seventh Schedule: <tspan font-weight="400" fill="#475569">Form A &amp; Form B statutory data sheets</tspan></text>
+    </g>
+  </g>
+
+  <!-- ==================== BOTTOM ARCHITECTURAL PRINCIPLES BAR ==================== -->
+  <g transform="translate(45, 982)">
+    <rect x="0" y="0" width="1830" height="78" rx="8" fill="#FFFFFF" stroke="#CBD5E1" stroke-width="1.5" filter="url(#cardShadow2)"/>
+
+    <!-- Principle 1 -->
+    <g transform="translate(16, 12)">
+      <rect x="0" y="0" width="38" height="54" rx="6" fill="#F0FDF4"/>
+      <text x="19" y="34" fill="#15803D" font-size="20" text-anchor="middle">⚡</text>
+      <text x="48" y="22" fill="#0A3663" font-size="12" font-weight="800">LOCAL-FIRST &amp; OFFLINE CAPABLE</text>
+      <text x="48" y="38" fill="#64748B" font-size="10.5">Zero cloud dependencies during field inspection;</text>
+      <text x="48" y="52" fill="#64748B" font-size="10.5">operates seamlessly in low-connectivity mandis.</text>
+    </g>
+
+    <!-- Divider -->
+    <line x1="465" y1="12" x2="465" y2="66" stroke="#E2E8F0" stroke-width="1.5"/>
+
+    <!-- Principle 2 -->
+    <g transform="translate(480, 12)">
+      <rect x="0" y="0" width="38" height="54" rx="6" fill="#FEF3C7"/>
+      <text x="19" y="34" fill="#B45309" font-size="20" text-anchor="middle">⚖️</text>
+      <text x="48" y="22" fill="#0A3663" font-size="12" font-weight="800">DETERMINISTIC LEGAL REASONING</text>
+      <text x="48" y="38" fill="#64748B" font-size="10.5">AI is restricted strictly to OCR extraction;</text>
+      <text x="48" y="52" fill="#64748B" font-size="10.5">verdict uses 100% deterministic rule code.</text>
+    </g>
+
+    <!-- Divider -->
+    <line x1="920" y1="12" x2="920" y2="66" stroke="#E2E8F0" stroke-width="1.5"/>
+
+    <!-- Principle 3 -->
+    <g transform="translate(935, 12)">
+      <rect x="0" y="0" width="38" height="54" rx="6" fill="#EFF6FF"/>
+      <text x="19" y="34" fill="#1D4ED8" font-size="20" text-anchor="middle">🛡️</text>
+      <text x="48" y="22" fill="#0A3663" font-size="12" font-weight="800">OFFICER IN THE LOOP</text>
+      <text x="48" y="38" fill="#64748B" font-size="10.5">System acts as an evidentiary copilot; final</text>
+      <text x="48" y="52" fill="#64748B" font-size="10.5">statutory notice strictly requires officer sign-off.</text>
+    </g>
+
+    <!-- Divider -->
+    <line x1="1375" y1="12" x2="1375" y2="66" stroke="#E2E8F0" stroke-width="1.5"/>
+
+    <!-- Principle 4 -->
+    <g transform="translate(1390, 12)">
+      <rect x="0" y="0" width="38" height="54" rx="6" fill="#FAF5FF"/>
+      <text x="19" y="34" fill="#6B21A8" font-size="20" text-anchor="middle">🔒</text>
+      <text x="48" y="22" fill="#0A3663" font-size="12" font-weight="800">EVIDENCE-LINKED AUDIT TRAIL</text>
+      <text x="48" y="38" fill="#64748B" font-size="10.5">Every non-compliance is cryptographically anchored</text>
+      <text x="48" y="52" fill="#64748B" font-size="10.5">to raw photo coordinates &amp; gazette citations.</text>
+    </g>
+  </g>
+</svg>
