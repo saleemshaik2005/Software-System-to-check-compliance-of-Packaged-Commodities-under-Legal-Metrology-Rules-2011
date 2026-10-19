@@ -1,14 +1,19 @@
-
-
-https://github.com/user-attachments/assets/d7507ebb-a275-4644-90bd-e69edabb02a6
-
-﻿# Inspack 🛡️📦 — AI-Powered Legal Metrology Compliance Inspection System
+# Inspack 🛡️📦 — AI-Powered Legal Metrology Compliance Inspection System
 
 > **Smart India Hackathon 2026** | **Problem Statement ID**: `SIH-26034`  
 > **Ministry / Organization**: Ministry of Consumer Affairs, Food and Public Distribution  
 > **Team**: **Neural Knights** (*Ideas • Intelligence • Impact — Tech for a Fairer Market*)  
 > **Theme**: Agriculture, FoodTech & Rural Development  
 > **Category**: Software
+
+---
+
+## 📺 Prototype Demonstration & Walkthrough
+
+https://github.com/user-attachments/assets/d7507ebb-a275-4644-90bd-e69edabb02a6
+
+> 📹 **Watch on YouTube**: [SIH 2026 Prototype Demo (YouTube)](https://www.youtube.com/watch?v=6LDGATgbeEU) • [⚡ Jump to Live System Demo (5:20)](https://www.youtube.com/watch?v=6LDGATgbeEU&t=320s)  
+> 🌐 **Live Deployed Prototype**: [https://inspacknksih2026.vercel.app](https://inspacknksih2026.vercel.app)
 
 ---
 
